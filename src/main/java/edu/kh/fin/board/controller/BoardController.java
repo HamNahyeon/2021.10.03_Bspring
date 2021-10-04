@@ -141,7 +141,7 @@ public class BoardController {
 	@RequestMapping(value="{boardType}/insert", method=RequestMethod.POST)
 	public String insertBoard(@PathVariable("boardType")int boardType,
 										 @ModelAttribute Board board /* 커맨드객체 : 보드객체 필드값이랑 같으면 자동으로 대입 */,
-										 @ModelAttribute("loginMember")Member loginMember /* 세션 로그인 정보 */,
+//										 @ModelAttribute("loginMember")Member loginMember /* 세션 로그인 정보 */,
 										 @RequestParam("images") List<MultipartFile> images /* 업로드된 이미지 파일 */,
 										 HttpServletRequest request, RedirectAttributes ra
 										 ) {
@@ -166,7 +166,7 @@ public class BoardController {
 		// System.out.println("디버그모드 테스트");
 
 		// 1) 로그인 된 회원정보에서 회원 번호를 얻어와 board 커맨드 객체에 세팅
-		board.setMemberNo( loginMember.getMemberNo() );
+//		board.setMemberNo( loginMember.getMemberNo() );
 		
 		// 2) @PathVariabel boardType을 board 커맨드 객체에 세팅
 		board.setBoardType(boardType);
@@ -224,6 +224,7 @@ public class BoardController {
 	// 게시글 수정
 	@RequestMapping(value="{boardType}/update", method=RequestMethod.POST)
 	public String updateBoard(@PathVariable("boardType") int boardType,
+							  @RequestParam("currentPwd") String currentPwd,
 											Board board, /* 커맨드객체 */
 											@RequestParam("images") List<MultipartFile> images, /* 수정 또는 추가된 파일 */
 											@RequestParam("deleteImages") String deleteImages, /* 삭제파일레벨 */
@@ -231,15 +232,16 @@ public class BoardController {
 		
 		// 1) 파일이 저장될 실제 서버 경로, DB에 저장될 웹 접근 경로 구하기
 		String webPath = "resources/images/";
-		
 		switch(boardType) { // 게시판 타입이 여러 개 있을 경우
 		case 1 : webPath += "freeboard/"; break;
+		case 2 : webPath += "informationBoard/"; break;
+		case 3 : webPath += "QnABoard/"; break;
 		}
 		// 실제 저장용 서버 경로
 		String savePath = request.getSession().getServletContext().getRealPath(webPath);
 
 		// 2) 게시글 수정 Service 호출
-		int result = service.updateBoard(board, images, webPath, savePath, deleteImages);
+		int result = service.updateBoard(board, currentPwd, images, webPath, savePath, deleteImages);
 		
 		String path = null;
 		if(result > 0) { // 수정 성공
@@ -247,7 +249,7 @@ public class BoardController {
 			MemberController.swalSetMessage(ra, "success", "게시글 수정 성공", null);
 		}else { // 수정 실패
 			path= "redirect:" + request.getHeader("referer"); // 요청 이전 주소
-			MemberController.swalSetMessage(ra, "error", "게시글 수정 실패", null);
+			MemberController.swalSetMessage(ra, "error", "비밀번호가 틀립니다. 다시 입력해주세요.", null);
 		}
 		
 		return path;

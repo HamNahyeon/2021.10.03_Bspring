@@ -99,8 +99,14 @@
 
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성자</label>
-					<h5 class="my-0" id="writer">${board.memberName}</h5>
+					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}">
 				</div>
+				
+				<div class="form-inline mb-2">
+					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
+					<input type="password" class="form-control" id="currentPwd" name="currentPwd" size="70">
+				</div>
+				
 
 
 				<div class="form-inline mb-2">

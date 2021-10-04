@@ -12,6 +12,9 @@ public class Board {
 	private int readCount;	
 	private Timestamp createDate;
 	
+	private String boardWriter;
+	private String boardPass;
+	
 	private String boardContent;	// 글 내용
 	private int memberNo;			// 작성 회원 번호
 	private Timestamp modifyDate;	// 마지막 수정일
@@ -149,13 +152,36 @@ public class Board {
 	}
 
 
+	public String getBoardWriter() {
+		return boardWriter;
+	}
+
+
+	public void setBoardWriter(String boardWriter) {
+		this.boardWriter = boardWriter;
+	}
+
+
+	public String getBoardPass() {
+		return boardPass;
+	}
+
+
+	public void setBoardPass(String boardPass) {
+		this.boardPass = boardPass;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardContent=" + boardContent + ", memberNo=" + memberNo + ", modifyDate=" + modifyDate
-				+ ", atList=" + atList + ", boardType=" + boardType + ", categoryCode=" + categoryCode + "]";
+				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardContent=" + boardContent
+				+ ", memberNo=" + memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType="
+				+ boardType + ", categoryCode=" + categoryCode + "]";
 	}
+
+
 
 
 	

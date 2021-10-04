@@ -69,13 +69,14 @@ public interface BoardService {
 
 	/** 게시글 수정
 	 * @param board
+	 * @param currentPwd 
 	 * @param images
 	 * @param webPath
 	 * @param savePath
 	 * @param deleteImages
 	 * @return result
 	 */
-	int updateBoard(Board board, List<MultipartFile> images, String webPath, String savePath, String deleteImages);
+	int updateBoard(Board board, String currentPwd, List<MultipartFile> images, String webPath, String savePath, String deleteImages);
 
 	/** 72시간보다 더 과거에 추가된 파일명 조회
 	 * @param standard

@@ -75,6 +75,9 @@
 		right : 0;
 		margin : auto;
 	}
+	#board-content, #boardTitle{
+		word-break:break-all;
+	}
 </style>
 </head>
 <body>
@@ -89,11 +92,11 @@
 				<h6 class="mt-4">카테고리 : [ ${board.categoryName} ]</h6>
 				
 				<!-- Title -->
-				<h3 class="mt-4"> ${board.boardTitle} </h3>
+				<h3 class="mt-4" id="boardTitle"> ${board.boardTitle} </h3>
 
 				<!-- Writer -->
 				<p class="lead">
-					작성자 : ${board.memberName}
+					작성자 : ${board.boardWriter}
 				</p>
 
 				<hr>
@@ -176,10 +179,10 @@
 				<div>
 					
 					<%-- 로그인된 회원과 해당 글 작성자가 같은 경우에만 버튼 노출--%>
-					<c:if test="${loginMember.memberNo == board.memberNo }">
+					<%-- <c:if test="${loginMember.memberNo == board.memberNo }"> --%>
 						<button id="deleteBtn" class="btn btn-primary float-right mr-2">삭제</button> 
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm');">수정</button> 
-					</c:if>
+					<%-- </c:if> --%>
 					
 					
 					<%-- 검색 상태 유지를 위한 쿼리스트링용 변수 선언 --%>

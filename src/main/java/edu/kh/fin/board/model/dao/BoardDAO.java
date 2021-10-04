@@ -134,6 +134,14 @@ public class BoardDAO {
 	public int updateBoard(Board board) {
 		return sqlSession.update("boardMapper.updateBoard", board);
 	}
+	
+	/** 게시글 수정 비밀번호 확인
+	 * @param boardPass
+	 * @return result
+	 */
+	public String selectPassword(int boardNo) {
+		return sqlSession.selectOne("boardMapper.selectPassword", boardNo);
+	}
 
 	/** 첨부파일 정보 삭제
 	 * @param map
@@ -173,6 +181,8 @@ public class BoardDAO {
 	public int deleteBoard(Board board) {
 		return sqlSession.update("boardMapper.deleteBoard", board);
 	}
+
+
 
 
 

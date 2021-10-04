@@ -37,6 +37,9 @@
 				<result property="readCount" column="READ_COUNT"/>
 				<result property="createDate" column="CREATE_DT"/>
 				<result property="boardType" column="BOARD_TYPE_NO"/>
+				<result property="boardWriter" column="BOARD_WRITER"/>
+				<result property="boardPass" column="BOARD_PASS"/>
+				
 				
 				<result property="boardContent" column="BOARD_CONTENT"/>
 				<result property="memberNo" column="MEMBER_NO"/>
@@ -76,25 +79,19 @@
 		<select id="getListCount" parameterType="_int" resultMap="pg_rm">
 				SELECT CNT, (SELECT BOARD_NM FROM BOARD_TYPE WHERE BOARD_TYPE_NO = #{boardType}) BOARD_NM
 				FROM (SELECT COUNT(*) CNT
-					FROM BOARD_LIST
-					JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
-				WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y')
+					  FROM BOARD_LIST
+					  JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
+					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y')
 		</select>
-		
-		<!-- 총 게시글 수 조회 -->
-		<select id="boardCount" parameterType="_int" resultMap="pg_rm">
-			SELECT COUNT(*) FROM BOARD
-		</select>
-
 		
 		<!-- 동적 SQL : if, foreach, bind -->
 		<!-- 특정 게시판 검색 게시글 수 + 게시판 이름 조회 -->
 		<select id="getSearchListCount" parameterType="Search" resultMap="pg_rm">
 				SELECT CNT, (SELECT BOARD_NM FROM BOARD_TYPE WHERE BOARD_TYPE_NO = #{boardType}) BOARD_NM
 				FROM (SELECT COUNT(*) CNT
-					FROM BOARD_LIST
-					JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
-				WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y'
+					  FROM BOARD_LIST
+					  JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
+					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y'
 				
 				<!-- 검색어를 나타내는 sv가 있을 때만 조건을 추가 -->
 				<if test="sv != null">
@@ -113,8 +110,8 @@
 						<when test="sk == 'titcont'">
 							(BOARD_TITLE LIKE '%1%' OR BOARD_CONTENT LIKE #{val})
 						</when>
-						<when test="sk == 'writer'">
-							MEMBER_NM LIKE #{val}
+						<when test="sk == 'boardWriter'">
+							BOARD_WRITER LIKE #{val}
 						</when>
 					</choose>
 				</if>
@@ -167,8 +164,8 @@
 						<when test="sk == 'titcont'">
 							(BOARD_TITLE LIKE #{val} OR BOARD_CONTENT LIKE #{val})
 						</when>
-						<when test="sk == 'writer'">
-							MEMBER_NM LIKE #{val}
+						<when test="sk == 'boardWriter'">
+							BOARD_WRITER LIKE #{val}
 						</when>
 					</choose>
 				</if>
@@ -189,11 +186,10 @@
 		<!-- 게시글 상세조회
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
 		<select id="selectBoard" parameterType="_int" resultMap="board_rm">
-				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, 
-				MEMBER_NO, MEMBER_NM, READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO
+				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,
+				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO
 				FROM BOARD
 				JOIN CATEGORY USING(CATEGORY_CD)
-				JOIN MEMBER USING(MEMBER_NO)
 				WHERE BOARD_NO = #{boardNo}
 				AND BOARD_STATUS = 'Y'
 		</select>
@@ -230,7 +226,7 @@
 				</selectKey>
 				INSERT INTO BOARD VALUES
 				(#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-				#{memberNo}, #{categoryCode}, #{boardType})
+				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass})
 		</insert>
 		
 		<!-- 파일 정보 삽입(List) -->
@@ -258,11 +254,18 @@
 				UPDATE BOARD SET
 				BOARD_TITLE = #{boardTitle},
 				BOARD_CONTENT = #{boardContent},
+				BOARD_WRITER = #{boardWriter},
 				CATEGORY_CD = #{categoryCode},
 				MODIFY_DT = SYSTIMESTAMP
 				WHERE BOARD_NO = #{boardNo}
 				
 		</update>
+		
+		<!-- 게시글 수정용 password조회 -->
+		<select id="selectPassword" resultMap="board_rm">
+				SELECT BOARD_PASS FROM BOARD
+				WHERE BOARD_NO = #{boardNo}
+		</select>
 		
 		<!-- 첨부파일 정보 삭제 -->
 		<delete id="deleteAttachment" parameterType="map">

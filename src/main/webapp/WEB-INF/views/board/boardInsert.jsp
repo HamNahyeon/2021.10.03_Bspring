@@ -71,17 +71,17 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">제목</label> 
-					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70">
+					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70"><span style="color:#aaa;" id="tCounter">(0 / 최대 30자)</span>
 				</div>
 
 				<div class="form-inline mb-2">
 					<label for="boardWriter" class="input-group-addon mr-3 insert-label">작성자</label>
-					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70">
+					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" required >
 				</div>
 				
 				<div class="form-inline mb-2">
 					<label for="boardPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="boardPass" name="boardPass" size="70">
+					<input type="password" class="form-control" id="boardPass" name="boardPass" size="70" required >
 				</div>
 
 				<div class="form-inline mb-2">
@@ -132,6 +132,7 @@
 						<label for="content">내용</label>
 					</div>
 					<textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;"></textarea>
+					<span style="color:#aaa;" id="cCounter">(0 / 최대 300자)</span>
 				</div>
 
 
@@ -212,6 +213,28 @@
 
 			}
 		}
+		
+		// 글자수 카운팅
+		$('#boardContent').keyup(function (e){
+		    var content = $(this).val();
+		    $('#cCounter').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 200){
+		        alert("최대 300자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 300));
+		        $('#cCounter').html("(300 / 최대 300자)");
+		    }
+		});
+		$('#boardTitle').keyup(function (e){
+		    var content = $(this).val();
+		    $('#tCounter').html("("+content.length+" / 최대 30자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 200){
+		        alert("최대 30자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 30));
+		        $('#tCounter').html("(30 / 최대 30자)");
+		    }
+		});
 	</script>
 </body>
 </html>

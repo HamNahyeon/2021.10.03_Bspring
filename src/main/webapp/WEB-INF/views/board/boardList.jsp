@@ -58,6 +58,9 @@
 #searchForm>* {
 	top: 0;
 }
+#listCount{
+	float:right;
+}
 
 
 </style>
@@ -66,11 +69,11 @@
 <body>
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<div class="container my-5">
-
 		<h1>${pagination.boardName} 게시판</h1>
 			<div class="list-wrapper">
 				<table class="table table-hover table-striped my-5" id="list-table">
 					<thead>
+						<h6 id="listCount">총 게시글 수 : ${pagination.listCount}</td>
 						<tr>
 							<th>글번호</th>
 							<th>카테고리</th>
@@ -126,16 +129,32 @@
 							<%-- 조회된 게시글 목록이 있을 경우 --%>
 							<c:otherwise>
 							
-								<c:forEach items="${boardList}" var="board">
+								<c:forEach items="${boardList}" var="board" varStatus="status">
 									<tr>
 										<%-- 글 번호 --%>
+										<td>
+										
+											${(pagination.listCount-status.index) - (pagination.currentPage -1) * pagination.limit}
+<%-- 											
+											${pagination}
+											${status.index}
+ --%>											
+<!-- 
+											totalcount - (Page -1) * PageSize
+											totalcount : 올라온 총 글 갯수의 변수명
+											page : 현재 글을 읽고 있는 페이지의 변수명.
+											pagesize : 한페이지에 몇개의 글을 보여줄꺼냐 하는 변수명
+-->											 
+										</td>
+<%-- 										
 										<td> ${board.boardNo} </td>
+ --%>										
 										
 										<%-- 카테고리 --%>
 										<td> ${board.categoryName} </td>
 										
 										<%-- 글 제목 --%>
-										<td class="boardTitle">                                                         
+										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
 											<a href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">                                
 <%-- 												
 												썸네일 출력
@@ -158,7 +177,7 @@
 									 	</td>
 										
 										<%-- 작성자 --%>
-										<td> ${board.memberName} </td>
+										<td> ${board.boardWriter} </td>
 										
 										<%-- 조회수 --%>
 										<td> ${board.readCount} </td>
@@ -228,9 +247,8 @@
 					</c:if>
  --%>					
 					<c:if test="${pagination.currentPage > 2 }">
-						<li><a class="page-link" href="${pageURL}?cp=${pagination.currentPage - pagination.pageSize}${searchStr}">&lt;</a></li>
+						<li><a class="page-link" href="${pageURL}?cp=${pagination.startPage - pagination.pageSize}${searchStr}">&lt;</a></li>
 					</c:if>
-					
 				
 					<%-- 페이지 목록 --%>
 					<c:forEach var="p" begin="${pagination.startPage}" end="${pagination.endPage}">
@@ -264,7 +282,7 @@
 					</c:if>
 					
 					<%-- 현재 페이지가 마지막 페이지가 아닌 경우 --%>
-					<c:if test="${pagination.currentPage - pagination.maxPage + pagination.pageSize < 0}">
+					<c:if test="${pagination.currentPage - pagination.maxPage < 0}">
 						<li><a class="page-link" href="${pageURL}?cp=${pagination.maxPage}${searchStr}">&gt;&gt;</a></li>
 					</c:if>
 					
@@ -298,7 +316,7 @@
 						<option value="title">글제목</option>
 						<option value="content">내용</option>
 						<option value="titcont">제목+내용</option>
-						<option value="writer">작성자</option>
+						<option value="boardWriter">작성자</option>
 					</select>
 					<input type="text" name="sv" class="form-control" style="width: 25%; display: inline-block;">
 					<button class="form-control btn btn-primary" style="width: 100px; display: inline-block;">검색</button>
