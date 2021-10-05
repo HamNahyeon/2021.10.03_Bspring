@@ -76,7 +76,9 @@ public interface BoardService {
 	 * @param deleteImages
 	 * @return result
 	 */
-	int updateBoard(Board board, String currentPwd, List<MultipartFile> images, String webPath, String savePath, String deleteImages);
+	int updateBoard(String currentPass, Board board, List<MultipartFile> images, 
+					String webPath, String savePath, String deleteImages);
+	
 
 	/** 72시간보다 더 과거에 추가된 파일명 조회
 	 * @param standard
@@ -85,10 +87,19 @@ public interface BoardService {
 	List<String> selectDBList(String standard);
 
 	/** 게시글 삭제
+	 * @param currentPass 
 	 * @param board
 	 * @return result
 	 */
 	int deleteBoard(Board board);
+
+	
+	/** 삭제용 비밀번호조회
+	 * @param boardNo
+	 * @return
+	 */
+	String selectPassword(int boardNo);
+
 
 	
 

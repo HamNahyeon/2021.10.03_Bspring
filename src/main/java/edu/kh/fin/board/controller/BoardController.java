@@ -177,6 +177,8 @@ public class BoardController {
 		// 게시판 타입에 따라 업로드되는 파일의 경로를 지정
 		switch(boardType) {
 			case 1 : webPath += "freeboard/"; break;
+			case 2 : webPath += "informationboard/"; break;
+			case 3 : webPath += "qnaboard/"; break;
 		}
 		
 		// 실제로 파일이 저장되는 경로 얻어오기
@@ -224,7 +226,7 @@ public class BoardController {
 	// 게시글 수정
 	@RequestMapping(value="{boardType}/update", method=RequestMethod.POST)
 	public String updateBoard(@PathVariable("boardType") int boardType,
-							  @RequestParam("currentPwd") String currentPwd,
+							  @RequestParam("currentPass") String currentPass,
 											Board board, /* 커맨드객체 */
 											@RequestParam("images") List<MultipartFile> images, /* 수정 또는 추가된 파일 */
 											@RequestParam("deleteImages") String deleteImages, /* 삭제파일레벨 */
@@ -237,11 +239,14 @@ public class BoardController {
 		case 2 : webPath += "informationBoard/"; break;
 		case 3 : webPath += "QnABoard/"; break;
 		}
+		
 		// 실제 저장용 서버 경로
 		String savePath = request.getSession().getServletContext().getRealPath(webPath);
 
 		// 2) 게시글 수정 Service 호출
-		int result = service.updateBoard(board, currentPwd, images, webPath, savePath, deleteImages);
+		int result = service.updateBoard(currentPass, board, images, webPath, savePath, deleteImages);
+		
+		System.out.println("currentPass : " + currentPass);
 		
 		String path = null;
 		if(result > 0) { // 수정 성공
@@ -255,52 +260,53 @@ public class BoardController {
 		return path;
 	}
 	
-//	@RequestMapping(value="{boardType}/delete", method=RequestMethod.POST)
-//	public String updateBoard(@PathVariable("boardType") int boardType,
-//							  Board board,
-//							  HttpServletRequest request, Model model, RedirectAttributes ra) {
-//	
-//		int result = service.deleteBoard(board);
+	
+//	@RequestMapping(value="{boardType}/delete/{boardNo}", method=RequestMethod.GET)
+//	public String deleteBoard(@PathVariable("boardNo") int boardNo,
+//							  @PathVariable("boardType") int boardType,
+//							  @RequestParam(value="currentPass") String currentPass,
+//						   	  Board board) {
 //		
-//		String path = null;
-//		if(result > 0) { 
-//			path ="redirect:" + board.getBoardType() + "/list";
-//			MemberController.swalSetMessage(ra, "success", "게시글 삭제 완료", null);
-//		}else { 
-//			path= "redirect:" + request.getHeader("referer"); // 요청 이전 주소
-//			MemberController.swalSetMessage(ra, "error", "게시글 삭제 실패", null);
-//		}
-//		
-//		return null;
+//		return "board/boardView";
+////		return "board/boardList";
 //	}
 	
 	// 게시글 삭제
 	@RequestMapping(value="{boardType}/delete/{boardNo}", method=RequestMethod.GET)
 	public String deleteBoard(@PathVariable("boardNo") int boardNo,
 							  @PathVariable("boardType") int boardType,
+//							  @RequestParam(value="currentPass") String currentPass,
 						   	  Board board,
 						   	  HttpServletRequest request, Model model, RedirectAttributes ra) {
 		
 		System.out.println(board);
 		model.addAttribute("board", board);
-		int result = service.deleteBoard(board);
+//		String savePwd = service.selectPassword( board.getBoardNo() );
 		
-		System.out.println(board);
-		System.out.println(boardType);
-		System.out.println("게시글 삭제 결과 cont : " + result);
-		
+		int result = 0;
 		String path = null;
-		if(result > 0) { 
-			//http://localhost:8081/fin/board/1/8?cp=1
-			path ="redirect:/board/" + boardType + "/list";
-//			path ="redirect:/";
-			MemberController.swalSetMessage(ra, "success", "게시글 삭제 완료", null);
-			System.out.println(board);
-			System.out.println(boardType);
-		}else { 
-			path= "redirect:" + request.getHeader("referer");
-			MemberController.swalSetMessage(ra, "error", "게시글 삭제 실패", null);
-		}
+		
+//		if(savePwd.equals(currentPass)) {
+			result = service.deleteBoard( board);
+			
+			//System.out.println("currentPass : " + currentPass);
+			System.out.println("BOARD : " + board);
+			System.out.println("BOARDTYPE : " + boardType);
+			System.out.println("게시글 삭제 결과 cont : " + result);
+			
+			if(result > 0) { 
+				//http://localhost:8081/fin/board/1/8?cp=1
+//				path ="board/boardList";
+				path ="redirect:/board/" + boardType + "/list";
+//				path ="redirect:/";
+				MemberController.swalSetMessage(ra, "success", "게시글 삭제 완료", null);
+				System.out.println(board);
+				System.out.println(boardType);
+			}else { 
+				path= "redirect:" + request.getHeader("referer");
+				MemberController.swalSetMessage(ra, "error", "게시글 삭제 실패", null);
+			}
+//		}
 		
 		return path;
 	}

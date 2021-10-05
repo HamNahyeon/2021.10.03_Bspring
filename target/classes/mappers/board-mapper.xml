@@ -187,7 +187,7 @@
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
 		<select id="selectBoard" parameterType="_int" resultMap="board_rm">
 				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,
-				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO
+				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO, BOARD_PASS
 				FROM BOARD
 				JOIN CATEGORY USING(CATEGORY_CD)
 				WHERE BOARD_NO = #{boardNo}
@@ -262,7 +262,7 @@
 		</update>
 		
 		<!-- 게시글 수정용 password조회 -->
-		<select id="selectPassword" resultMap="board_rm">
+		<select id="selectPassword" parameterType="_int" resultType="string">
 				SELECT BOARD_PASS FROM BOARD
 				WHERE BOARD_NO = #{boardNo}
 		</select>
@@ -309,7 +309,7 @@
 											-> 내용 안에 포함된 <> 기호가 문자 자체로 인식됨
 		 -->
 		 
-		 
+		 <!-- 게시글 삭제 sql -->
 		<delete id="deleteBoard" parameterType="Board">
 				UPDATE BOARD SET
 				BOARD_STATUS = 'N'

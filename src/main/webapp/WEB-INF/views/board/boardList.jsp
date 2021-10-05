@@ -62,11 +62,15 @@
 	float:right;
 }
 
-
 </style>
 
 </head>
 <body>
+
+
+
+
+
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<div class="container my-5">
 		<h1>${pagination.boardName} 게시판</h1>
@@ -325,6 +329,7 @@
 					 -->
 				</form>
 			</div>
+			
 	</div>
 	
 	<jsp:include page="../common/footer.jsp"></jsp:include>
@@ -350,6 +355,8 @@
 				
 				// 검색어 입력창에 searchValue 값 출력
 				$("input[name=sv]").val(searchValue);
+				
+
 				
 				// 쿼리스트링에 카테고리가 있을 경우 체크하기
 				

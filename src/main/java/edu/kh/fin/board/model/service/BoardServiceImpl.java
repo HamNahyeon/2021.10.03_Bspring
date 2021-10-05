@@ -87,11 +87,10 @@ public class BoardServiceImpl implements BoardService{
 		// int result = dao.increaseReadCount(boardNo);
 		if(board != null) {
 			dao.increaseReadCount(boardNo);
-			
+			// board.setBoardContent(board.getBoardContent().replace("<br>", "\r\n"));
 			// 3) 조회된 board의 readCount와 DB의 READ_COUNT동기화
 			board.setReadCount(board.getReadCount() + 1);
 		}
-		
 		
 		return board;
 	}
@@ -123,6 +122,8 @@ public class BoardServiceImpl implements BoardService{
 		board.setBoardPass(replaceParameter(board.getBoardPass()));
 		
 		board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+		board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
+		
 		
 		// 2) 글 부분 삽입
 		// 기존) 다음 글 번호를 조회한 후 게시글을 삽입
@@ -222,6 +223,7 @@ public class BoardServiceImpl implements BoardService{
 		
 		// <br> -> \r\n으로 변경
 		board.setBoardContent(board.getBoardContent().replaceAll("<br>", "\r\n"));
+		board.setBoardContent(board.getBoardContent().replaceAll("&nbsp", " "));
 		
 		return board;
 	}
@@ -229,23 +231,25 @@ public class BoardServiceImpl implements BoardService{
 	// 게시글 수정
 	@Transactional(rollbackFor=Exception.class)
 	@Override
-	public int updateBoard(Board board, String currentPwd, List<MultipartFile> images, 
-						   String webPath, String savePath, String deleteImages) {
-
+	public int updateBoard(String currentPass, Board board, List<MultipartFile> images, String webPath, String savePath,
+			String deleteImages) {
+		
 		// 1) 크로스 사이트 스크립트 방지 처리 + 개행문자처리(\r\n -> <br>)
 		board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
 		board.setBoardContent(replaceParameter( board.getBoardContent() ) );
 		
 		board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+		board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
 		
 //		암호가 일치할 때 수정
 		// DB에 저장되어 있는 현재 회원의 비밀번호 조회 
 		String savePwd = dao.selectPassword( board.getBoardNo() );
-		System.out.println(savePwd);
 		System.out.println(board.getBoardNo());
+		System.out.println(savePwd);
+//		System.out.println(board.getBoardNo());
 		int result = 0;
 		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
-		if( currentPwd.equals(savePwd)) {
+		if( savePwd.equals(currentPass)) {
 //			if( bCryptPasswordEncoder.matches(currentPwd, savePwd) ) {
 			
 			// 2) 비밀번호 변경
@@ -331,13 +335,14 @@ public class BoardServiceImpl implements BoardService{
 						throw new SaveFileException();
 					}
 				}
-//			}else {
-//				result = -1;
+			}else {
+				result = -1;
 			}
 		}
 		
 		return result;
 	}
+
 	
 	
 	
@@ -383,12 +388,30 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int deleteBoard(Board board) {
 		
-		int result = dao.deleteBoard(board);
-		
-		System.out.println("게시글 삭제 결과 ser : " + result);
+		//String savePwd = dao.selectPassword( board.getBoardNo() );
+		//System.out.println("savePwd : " + savePwd);
+		//System.out.println(board.getBoardNo());
+		int result = 0;
+		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
+		//if( savePwd.equals(currentPass)) {
+			
+			result = dao.deleteBoard(board);
+			
+			System.out.println("게시글 삭제 결과 ser : " + result);
+			
+		//}
 		
 		return result;
 	}
+
+	/**
+	 * 삭제용 비밀번호 조회
+	 */
+	@Override
+	public String selectPassword(int boardNo) {
+		return dao.selectPassword(boardNo);
+	}
+
 
 
 

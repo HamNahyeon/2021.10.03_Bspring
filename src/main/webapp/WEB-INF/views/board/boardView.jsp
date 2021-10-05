@@ -75,19 +75,23 @@
 		right : 0;
 		margin : auto;
 	}
-	#board-content, #boardTitle{
+	#board-content, #boardTitle, #boardContent{
+	/* 글자 줄바꿈 css */
 		word-break:break-all;
 	}
 </style>
 </head>
 <body>
+
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<div class="container  my-5">
 
 		<div>
-
+<!-- 		
+			<form action="delete" method="post" 
+				  enctype="multipart/form-data" role="form" onsubmit="return boardDelete();">
 			<div id="board-area">
-
+ -->
 				<!-- Category -->
 				<h6 class="mt-4">카테고리 : [ ${board.categoryName} ]</h6>
 				
@@ -98,7 +102,17 @@
 				<p class="lead">
 					작성자 : ${board.boardWriter}
 				</p>
-
+				
+				<div class="form-inline mb-2">
+					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+				</div>
+<!-- 				
+				<div class="form-inline mb-2">
+					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+				</div>
+ -->				
 				<hr>
 
 				<!-- Date -->
@@ -171,6 +185,7 @@
 
 				<!-- Content -->
 				<div id="board-content">${board.boardContent}</div>
+				<%-- <div id="board-content"><pre style="overflow-x:hidden; width:100%;">${board.boardContent}</pre></div> --%>
 				
 
 				<hr>
@@ -180,7 +195,8 @@
 					
 					<%-- 로그인된 회원과 해당 글 작성자가 같은 경우에만 버튼 노출--%>
 					<%-- <c:if test="${loginMember.memberNo == board.memberNo }"> --%>
-						<button id="deleteBtn" class="btn btn-primary float-right mr-2">삭제</button> 
+						<button id="deleteBtn" class="btn btn-primary float-right mr-2" >삭제</button> 
+						<!-- onclick="fnRequest('delete');" -->
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm');">수정</button> 
 					<%-- </c:if> --%>
 					
@@ -201,10 +217,13 @@
 				</div>
 				
 				<%-- 댓글 영역 --%>
+<%-- 				
 				<jsp:include page="reply.jsp"></jsp:include>
-				
+ --%>				
 			</div>
-
+<!-- 			
+			</form>
+ -->
 
 
 		</div>
@@ -216,8 +235,15 @@
 		<input type="hidden" name="boardNo" value="${board.boardNo}">
 		<input type="hidden" name="cp" value="${param.cp}">
 		<input type="hidden" name="type" value="${param.type}">
+		<input type="hidden" name="currentPass" value="#currentPass">
 	</form>
-	
+<%-- 	
+	<form action="#" method="POST" name="requestForm">
+		<input type="hidden" name="boardNo" value="${board.boardNo}">
+		<input type="hidden" name="cp" value="${param.cp}">
+		<input type="hidden" name="type" value="${param.type}">
+	</form>
+ --%>	
 	
 	<script>
 		function fnRequest(addr){
@@ -230,9 +256,26 @@
 			
 		}
  
+		
+		function boardDelete(){
+			if ($("#currentPass").val().trim().length == 0) {
+				alert("비밀번호를 입력해주세요 입력해 주세요.");
+				$("#currentPass").focus();
+				return false;
+			}
+		}
 		$('#deleteBtn').click(function(){
+			
+			//$('#deleteModal').empty(); // 모달에 작성되어있는 이 전 내용 삭제
+
 			if(confirm("정말 삭제 하시겠습니까?")){
 				self.location.href= "${contextPath}/board/${board.boardType}/delete/${board.boardNo}";
+				// http://localhost:8081/fin/board/1/list
+				
+/* 				
+				var input1 = document.createElement('input');
+				input1.setAttribute("id", "deletePass");
+ */
 				//self.location.href= "${contextPath}/board/${board.boardType}/list/${board.boardNo}";
 				
 				//document.requestForm.action = delete;
@@ -245,6 +288,88 @@
  */				
 			}
 		}); 
+		
+		
+		
+/* 		
+		// 정규식
+		// 특수 문자 체크 
+		function checkSpecial(str) { 
+			const regExp = /[!?@#$%^&*():;+-=~{}<>\_\[\]\|\\\"\'\,\.\/\`\₩]/g; 
+			if(regExp.test(str)) { 
+				return true; }else{ return false; 
+				} 
+			}
+		
+		// 한글 체크 
+		function checkKor(str) { 
+			const regExp = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g; 
+			if(regExp.test(str)){ 
+				return true; 
+				}else{ 
+					return false; 
+					} 
+			}
+
+		// 숫자 체크 
+		function checkNum(str){
+			const regExp = /[0-9]/g; 
+			if(regExp.test(str)){ 
+				return true; 
+				}else{ 
+					return false; 
+					} 
+			}
+		
+		// 영문(영어) 체크 
+		function checkEng(str){ 
+			const regExp = /[a-zA-Z]/g; 
+			// 영어 
+			if(regExp.test(str)){ 
+				return true; 
+				}else{ 
+					return false; 
+					} 
+			}
+
+		// 영문+숫자만 입력 체크 
+		function checkEngNum(str) { 
+			const regExp = /[a-zA-Z0-9]/g; 
+			if(regExp.test(str)){ 
+				return true; 
+				}else{ 
+					return false; 
+					} 
+			}
+		// 공백(스페이스 바) 체크 
+		function checkSpace(str) {
+			if(str.search(/\s/) !== -1) { 
+				return true;
+				// 스페이스가 있는 경우 
+				}else{ 
+					return false; 
+					// 스페이스 없는 경우 
+					} 
+			}
+		
+		//var regExp = /\s/g;      
+		$(" #board-content" ).val().trim() == "";
+ */
+ 
+ 
+/*  
+	function DeleteCheck(){
+	  var password = document.getElementById('currentPass');
+	  
+	  if(password.value == ""){
+	   alert("비밀번호를 입력하세요!!");
+	   password.focus();
+	   return false;
+	  }else{
+	   return true; 
+	  }  
+	 }
+ */
 	 
 	</script>
 	
