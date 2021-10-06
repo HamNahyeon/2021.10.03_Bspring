@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,9 @@ import edu.kh.fin.board.model.vo.Search;
 @Service
 public class BoardServiceImpl implements BoardService{
 
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	@Autowired
 	private BoardDAO dao;
 
@@ -83,11 +87,10 @@ public class BoardServiceImpl implements BoardService{
 		// int result = dao.increaseReadCount(boardNo);
 		if(board != null) {
 			dao.increaseReadCount(boardNo);
-			
+			// board.setBoardContent(board.getBoardContent().replace("<br>", "\r\n"));
 			// 3) 조회된 board의 readCount와 DB의 READ_COUNT동기화
 			board.setReadCount(board.getReadCount() + 1);
 		}
-		
 		
 		return board;
 	}
@@ -103,11 +106,24 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int insertBoard(Board board, List<MultipartFile> images, String webPath, String savePath) {
 		
+//		암호화
+//		System.out.println(inputMember); // 아이디, 비밀번호
+//		System.out.println("변경 전 비밀번호 : " + inputMember.getMemberPw());
+//		
+//		// 입력받은 비밀번호를 암호화
+//		String encPw = bCryptPasswordEncoder.encode(inputMember.getMemberPw());
+//		System.out.println("변경 후 비밀번호 : " + encPw);
+		
+		
 		// 1) 크로스사이트 스크립트 방지 처리 + 개행 문자 처리
 		board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
 		board.setBoardContent(replaceParameter( board.getBoardContent() ) );
+		board.setBoardWriter(replaceParameter(board.getBoardWriter()));
+		board.setBoardPass(replaceParameter(board.getBoardPass()));
 		
 		board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+		board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
+		
 		
 		// 2) 글 부분 삽입
 		// 기존) 다음 글 번호를 조회한 후 게시글을 삽입
@@ -207,6 +223,7 @@ public class BoardServiceImpl implements BoardService{
 		
 		// <br> -> \r\n으로 변경
 		board.setBoardContent(board.getBoardContent().replaceAll("<br>", "\r\n"));
+		board.setBoardContent(board.getBoardContent().replaceAll("&nbsp", " "));
 		
 		return board;
 	}
@@ -214,86 +231,118 @@ public class BoardServiceImpl implements BoardService{
 	// 게시글 수정
 	@Transactional(rollbackFor=Exception.class)
 	@Override
-	public int updateBoard(Board board, List<MultipartFile> images, String webPath, String savePath, String deleteImages) {
-
+	public int updateBoard(String currentPass, Board board, List<MultipartFile> images, String webPath, String savePath,
+			String deleteImages) {
+		
 		// 1) 크로스 사이트 스크립트 방지 처리 + 개행문자처리(\r\n -> <br>)
 		board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
 		board.setBoardContent(replaceParameter( board.getBoardContent() ) );
 		
 		board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+		board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
 		
-		// 2) 글 부분만 수정
-		int result = dao.updateBoard(board);
-		
-		// 3) 이미지 관련 코드 작성
-		if(result > 0) {
-			// 3-1) deleteImages와 일치하는 파일 레벨의 ATTACHMENT행 삭제 
-			// deleteImages : 삭제해야할 이미지 파일 레벨 -> , 를 구분자로 만들어진 String -> 0,1,2,3
-			if(!deleteImages.equals("")) { // 삭제할 파일레벨이 존재하는 경우 -> 삭제
-				// DB삭제 구문에 필요한 값 : deleteImages, boardNo
-				// 두데이터를 한 번에 담을 VO가 없음 -> Map사용
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("boardNo", board.getBoardNo());
-				map.put("deleteImages", deleteImages);
-				
-				// 반환값이 아무런 의미를 갖지 못하므로 반환 받을 필요가 없다.
-				dao.deleteAttachment(map);
-			}
-			// 3-2) 수정된 이미지 정보 update
-			List<Attachment> atList = new ArrayList<Attachment>();
+//		암호가 일치할 때 수정
+		// DB에 저장되어 있는 현재 회원의 비밀번호 조회 
+		String savePwd = dao.selectPassword( board.getBoardNo() );
+		System.out.println(board.getBoardNo());
+		System.out.println(savePwd);
+//		System.out.println(board.getBoardNo());
+		int result = 0;
+		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
+		if( savePwd.equals(currentPass)) {
+//			if( bCryptPasswordEncoder.matches(currentPwd, savePwd) ) {
 			
-			for(int i = 0; i < images.size(); i++) {
-				if( !images.get(i).getOriginalFilename().equals("") ) {
-					// images의 i번째 요소의 파일명이 ""이 아닐경우
-					// -> 업로드된 파일이 없을 경우 파일명이 ""(빈문자열)로 존재함
+			// 2) 비밀번호 변경
+			// - 새 비밀번호를 암호화
+			// encPwd : 암호화된 비밀번호
+			//String encPwd = bCryptPasswordEncoder.encode(newPwd);
+			
+			// 마이바티스 메서드는 SQL 수행 시 사용할 파라미터를 하나만 추가할 수 있다.
+			// -> loginMEmber에 담아서 전달
+			//loginMember.setMemberPw(encPwd);
+			
+			//result = dao.changePwd(loginMember);
+			
+			// loginMember에 저장한 encPwd를 제거(Session에 비밀번호 저장하면 안된다.)
+			//loginMember.setMemberPw(null);
+			
+			
+			// 2) 글 부분만 수정
+			result = dao.updateBoard(board);
+			
+			// 3) 이미지 관련 코드 작성
+			if(result > 0) {
+				// 3-1) deleteImages와 일치하는 파일 레벨의 ATTACHMENT행 삭제 
+				// deleteImages : 삭제해야할 이미지 파일 레벨 -> , 를 구분자로 만들어진 String -> 0,1,2,3
+				if(!deleteImages.equals("")) { // 삭제할 파일레벨이 존재하는 경우 -> 삭제
+					// DB삭제 구문에 필요한 값 : deleteImages, boardNo
+					// 두데이터를 한 번에 담을 VO가 없음 -> Map사용
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("boardNo", board.getBoardNo());
+					map.put("deleteImages", deleteImages);
 					
-					// 파일명 변경 작업 수행
-					String fileName = rename(images.get(i).getOriginalFilename());
-					
-					// Attachment 객체 생성
-					Attachment at = new Attachment();
-					at.setFileName(fileName); // 변경한 파일명
-					at.setFilePath(webPath); // 웹 접근 경로
-					at.setBoardNo(board.getBoardNo()); // 수정중인 게시글 번호
-					at.setFileLevel(i); // for문 반복자 == 파일레벨
-					
-					// 만들어진 객체를 atList에 추가
-					atList.add(at);
+					// 반환값이 아무런 의미를 갖지 못하므로 반환 받을 필요가 없다.
+					dao.deleteAttachment(map);
 				}
-			}
-			// atList를 하나씩 반복 접근하여 한 행씩 update진행
-			for(Attachment at : atList) {
-				result = dao.updateAttachment(at);
+				// 3-2) 수정된 이미지 정보 update
+				List<Attachment> atList = new ArrayList<Attachment>();
 				
-				// update를 시도했으나 결과가 0이 나온경우
-				// == 기존에 이미지가 없던 레벨에 새로운 이미지가 추가되었다.
-				// -> insert진행
-				
-				// 3-3) 기존에 이미지가 없던 레벨을 insert
-				if(result == 0) {
-					result = dao.insertAttchment(at);
-					
-					if(result == 0) { // 삽입실패
-						// 강제로 예외를 발생시켜 전체 롤백 수행
-						throw new InsertAttachmentException();
+				for(int i = 0; i < images.size(); i++) {
+					if( !images.get(i).getOriginalFilename().equals("") ) {
+						// images의 i번째 요소의 파일명이 ""이 아닐경우
+						// -> 업로드된 파일이 없을 경우 파일명이 ""(빈문자열)로 존재함
+						
+						// 파일명 변경 작업 수행
+						String fileName = rename(images.get(i).getOriginalFilename());
+						
+						// Attachment 객체 생성
+						Attachment at = new Attachment();
+						at.setFileName(fileName); // 변경한 파일명
+						at.setFilePath(webPath); // 웹 접근 경로
+						at.setBoardNo(board.getBoardNo()); // 수정중인 게시글 번호
+						at.setFileLevel(i); // for문 반복자 == 파일레벨
+						
+						// 만들어진 객체를 atList에 추가
+						atList.add(at);
 					}
 				}
-			}
-
-			// 4) 새로 업로드된 이미지 서버에 저장 -> 게시글 추가에서 복사해온 것
-			for(int i = 0; i < atList.size(); i++) {
-				try {
-					images.get( atList.get(i).getFileLevel() )
-					.transferTo( new File(savePath + "/" + atList.get(i).getFileName() ) );
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new SaveFileException();
+				// atList를 하나씩 반복 접근하여 한 행씩 update진행
+				for(Attachment at : atList) {
+					result = dao.updateAttachment(at);
+					
+					// update를 시도했으나 결과가 0이 나온경우
+					// == 기존에 이미지가 없던 레벨에 새로운 이미지가 추가되었다.
+					// -> insert진행
+					
+					// 3-3) 기존에 이미지가 없던 레벨을 insert
+					if(result == 0) {
+						result = dao.insertAttchment(at);
+						
+						if(result == 0) { // 삽입실패
+							// 강제로 예외를 발생시켜 전체 롤백 수행
+							throw new InsertAttachmentException();
+						}
+					}
 				}
+
+				// 4) 새로 업로드된 이미지 서버에 저장 -> 게시글 추가에서 복사해온 것
+				for(int i = 0; i < atList.size(); i++) {
+					try {
+						images.get( atList.get(i).getFileLevel() )
+						.transferTo( new File(savePath + "/" + atList.get(i).getFileName() ) );
+					} catch (Exception e) {
+						e.printStackTrace();
+						throw new SaveFileException();
+					}
+				}
+			}else {
+				result = -1;
 			}
 		}
 		
 		return result;
 	}
+
 	
 	
 	
@@ -339,12 +388,31 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int deleteBoard(Board board) {
 		
-		int result = dao.deleteBoard(board);
-		
-		System.out.println("게시글 삭제 결과 ser : " + result);
+		//String savePwd = dao.selectPassword( board.getBoardNo() );
+		//System.out.println("savePwd : " + savePwd);
+		//System.out.println(board.getBoardNo());
+		int result = 0;
+		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
+		//if( savePwd.equals(currentPass)) {
+			
+			result = dao.deleteBoard(board);
+			
+			System.out.println("게시글 삭제 결과 ser : " + result);
+			
+		//}
 		
 		return result;
 	}
+
+	/**
+	 * 삭제용 비밀번호 조회
+	 */
+	@Override
+	public String selectPassword(int boardNo) {
+		return dao.selectPassword(boardNo);
+	}
+
+
 
 
 

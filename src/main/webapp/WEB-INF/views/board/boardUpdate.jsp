@@ -60,6 +60,7 @@
 	.deleteImg:hover{
 		background-color:rgba(50,50,50,0.5);
 	}
+
 	
 </style>
 </head>
@@ -94,13 +95,19 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">제목</label> 
-					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}">
+					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}"/>
 				</div>
 
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성자</label>
-					<h5 class="my-0" id="writer">${board.memberName}</h5>
+					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/>
 				</div>
+				
+				<div class="form-inline mb-2">
+					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+				</div>
+				
 
 
 				<div class="form-inline mb-2">
@@ -344,6 +351,7 @@
 			}
 			
 		});
+		
 		
 	</script>																																																																													
 </body>

@@ -12,27 +12,55 @@ public class Board {
 	private int readCount;	
 	private Timestamp createDate;
 	
+	private String boardWriter;
+	private String boardPass;
+	
 	private String boardContent;	// 글 내용
 	private int memberNo;			// 작성 회원 번호
 	private Timestamp modifyDate;	// 마지막 수정일
 	private List<Attachment> atList;// 게시글에 첨부된 파일(이미지) 목록
 	
-	int boardType;
-	
 	// 삽입 시 필요한 필드 추가
+	int boardType;
 	private int categoryCode;
 	
 	
-	public Board() {
-		// TODO Auto-generated constructor stub
-	}
+	public Board() {}
 
+	// 게시글 작성용 매개변수 생성자
+	public Board(int boardNo, String boardTitle, String boardContent, int categoryCode, int boardType,
+			String boardWriter, String boardPass) {
+		super();
+		this.boardNo = boardNo;
+		this.boardTitle = boardTitle;
+		this.boardContent = boardContent;
+		this.categoryCode = categoryCode;
+		this.boardType = boardType;
+		this.boardWriter = boardWriter;
+		this.boardPass = boardPass;
+	}
+	
+	// 게시글 조회용 
+	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
+				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass) {
+		super();
+		this.boardNo = boardNo;
+		this.categoryName = categoryName;
+		this.boardTitle = boardTitle;
+		this.boardContent = boardContent;
+		this.boardWriter = boardWriter;
+		this.readCount = readCount;
+		this.createDate = createDate;
+		this.modifyDate = modifyDate;
+		this.boardType = boardType;
+		this.boardPass = boardPass;
+	}
 
 	public int getBoardNo() {
 		return boardNo;
 	}
 
-
+	
 	public void setBoardNo(int boardNo) {
 		this.boardNo = boardNo;
 	}
@@ -149,13 +177,36 @@ public class Board {
 	}
 
 
+	public String getBoardWriter() {
+		return boardWriter;
+	}
+
+
+	public void setBoardWriter(String boardWriter) {
+		this.boardWriter = boardWriter;
+	}
+
+
+	public String getBoardPass() {
+		return boardPass;
+	}
+
+
+	public void setBoardPass(String boardPass) {
+		this.boardPass = boardPass;
+	}
+
+
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardContent=" + boardContent + ", memberNo=" + memberNo + ", modifyDate=" + modifyDate
-				+ ", atList=" + atList + ", boardType=" + boardType + ", categoryCode=" + categoryCode + "]";
+				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardContent=" + boardContent
+				+ ", memberNo=" + memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType="
+				+ boardType + ", categoryCode=" + categoryCode + "]";
 	}
+
+
 
 
 	

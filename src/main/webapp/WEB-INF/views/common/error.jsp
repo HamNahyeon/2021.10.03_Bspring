@@ -12,7 +12,7 @@
 
 	<div align="center">
 		<button type="button" onclick="history.back();">이전 페이지로 이동</button>
-		<button type="button" onclck="location.href='${ pageContext.servletContext.contextPath }';">메인 페이지로 이동</button>
+		<button type="button" onclck="location.href='${ pageContext.servletContext.contextPath}';">메인 페이지로 이동</button>
 	</div>
 </body>
 </html>
