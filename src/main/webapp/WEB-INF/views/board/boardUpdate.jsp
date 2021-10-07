@@ -95,17 +95,17 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">제목</label> 
-					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}"/>
+					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}"/><span style="color:#aaa;" id="tCounter" >(0 / 최대 30자)</span>
 				</div>
 
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성자</label>
-					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/>
+					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/><span style="color:#aaa;" id="wCounter" >(0 / 최대 10자)</span>
 				</div>
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+					<input type="password" class="form-control" id="boardPass" name="boardPass" size="70"/><span style="color:#aaa;" id="pCounter" >(0 / 최대 20자)</span>
 				</div>
 				
 
@@ -190,7 +190,7 @@
 					<div>
 						<label for="content">내용</label>
 					</div>
-					<textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;">${board.boardContent}</textarea>
+					<textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;">${board.boardContent}</textarea><span style="color:#aaa;" id="cCounter" >(0 / 최대 300자)</span>
 					<!-- textarea에 값을 넣을 때는 한줄로 길게 작성해야 함 -> why? 코드상의 공백이 그대로 보여짐.. 그야말로 진짜 개행 -->
 				</div>
 
@@ -233,13 +233,25 @@
 		function boardValidate() {
 			if ($("#boardTitle").val().trim().length == 0) {
 				alert("제목을 입력해 주세요.");
-				$("#title").focus();
+				$("#boardTitle").focus();
+				return false;
+			}
+			
+			if ($("#boardWriter").val().trim().length == 0) {
+				alert("이름을 입력해 주세요.");
+				$("#boardWriter").focus();
+				return false;
+			}
+			
+			if ($("#boardPass").val().trim().length == 0) {
+				alert("비밀번호를 입력해 주세요.");
+				$("#boardPass").focus();
 				return false;
 			}
 
 			if ($("#boardContent").val().trim().length == 0) {
 				alert("내용을 입력해 주세요.");
-				$("#content").focus();
+				$("#boardContent").focus();
 				return false;
 			}
 			
@@ -350,6 +362,95 @@
 				$(this).prev().removeAttr("src"); // 클릭한 x버튼의 이전 요소의 속성 중 src제거
 			}
 			
+		});
+		
+/* 		
+		$(document).ready(function(){
+		    var getTextLength = function(str) {
+		        var len = 0;
+		        for (var i = 0; i < str.length; i++) {
+		            if (escape(str.charAt(i)).length == 6) {
+		                len++;
+		            }
+		            len++;
+		        }
+		        return len;
+		    }
+		    
+		    document.write(getTextLength('#boardTitle'));   
+			
+		});
+ */
+		
+		
+		// 글자수 카운팅
+		$('#boardTitle').keyup(function (e){
+		    var content = $(this).val();
+		    $('#tCounter').html("("+content.length+" / 최대 30자)");    //글자수 실시간 카운팅
+		
+s		    if (content.length > 30){
+		        alert("최대 30자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 30));
+		        $('#tCounter').html("(30 / 최대 30자)");
+		    }
+		});
+		$("#boardTitle").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+
+		$('#boardWriter').keyup(function (e){
+		    var content = $(this).val();
+		    $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("최대 10자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 10));
+		        $('#wCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardWriter").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		$('#boardPass').keyup(function (e){
+		    var content = $(this).val();
+		    $('#pCounter').html("("+content.length+" / 최대 20자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 20){
+		        alert("최대 20자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 20));
+		        $('#pCounter').html("(20 / 최대 20자)");
+		    }
+		});
+		$("#boardPass").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		$('#boardContent').keyup(function (e){
+		    var content = $(this).val();
+		    $('#cCounter').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 300){
+		        alert("최대 300자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 300));
+		        $('#cCounter').html("(300 / 최대 300자)");
+		    }
+		});
+		$("#boardContent").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
 		});
 		
 		

@@ -27,10 +27,13 @@
 }
 
 /* 게시글 목록의 높이가 최소 540px은 유지하도록 설정 */
+/* 
 .list-wrapper{
 	min-height: 540px;
 }
-
+ */
+ 
+ 
 /* 글 제목 영역의 너비를 table의 50% 넓게 설정*/
 #list-table td:nth-child(3){
 	width: 50%;
@@ -137,13 +140,16 @@
 									<tr>
 										<%-- 글 번호 --%>
 										<td>
-										
 											${(pagination.listCount-status.index) - (pagination.currentPage -1) * pagination.limit}
 <%-- 											
 											${pagination}
 											${status.index}
  --%>											
 <!-- 
+											pagination.listCount : 게시글 총 수 
+											${status.index} : 게시글 인덱스번호
+											currentPage : 현재페이지
+											limit : 한페이지에 보이는 게시글 총 수 
 											totalcount - (Page -1) * PageSize
 											totalcount : 올라온 총 글 갯수의 변수명
 											page : 현재 글을 읽고 있는 페이지의 변수명.

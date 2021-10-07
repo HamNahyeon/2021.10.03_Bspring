@@ -226,7 +226,7 @@ public class BoardController {
 	// 게시글 수정
 	@RequestMapping(value="{boardType}/update", method=RequestMethod.POST)
 	public String updateBoard(@PathVariable("boardType") int boardType,
-							  @RequestParam("currentPass") String currentPass,
+//							  @RequestParam("currentPass") String currentPass,
 											Board board, /* 커맨드객체 */
 											@RequestParam("images") List<MultipartFile> images, /* 수정 또는 추가된 파일 */
 											@RequestParam("deleteImages") String deleteImages, /* 삭제파일레벨 */
@@ -244,9 +244,11 @@ public class BoardController {
 		String savePath = request.getSession().getServletContext().getRealPath(webPath);
 
 		// 2) 게시글 수정 Service 호출
-		int result = service.updateBoard(currentPass, board, images, webPath, savePath, deleteImages);
+		int result = service.updateBoard(
+//				currentPass, 
+				board, images, webPath, savePath, deleteImages);
 		
-		System.out.println("currentPass : " + currentPass);
+//		System.out.println("currentPass : " + currentPass);
 		
 		String path = null;
 		if(result > 0) { // 수정 성공

@@ -255,6 +255,7 @@
 				BOARD_TITLE = #{boardTitle},
 				BOARD_CONTENT = #{boardContent},
 				BOARD_WRITER = #{boardWriter},
+				BOARD_PASS = #{boardPass},
 				CATEGORY_CD = #{categoryCode},
 				MODIFY_DT = SYSTIMESTAMP
 				WHERE BOARD_NO = #{boardNo}
