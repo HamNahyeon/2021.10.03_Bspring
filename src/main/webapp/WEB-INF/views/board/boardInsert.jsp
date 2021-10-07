@@ -140,7 +140,16 @@
 
 				<div class="text-center">
 					<button type="submit" class="btn btn-primary">등록</button>
+					<button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">목록으로</button>
+					<!-- 
+						이전페이지로 돌아가기 
+						javascript:history.back();
+						history.go(-1);					
+					 -->
+<%-- 					
 					<button type="button" class="btn btn-primary" onclick="location.href='list?type=${param.type}&cp=${param.cp}${searchStr}'">목록으로</button>
+ --%>					
+					<!-- list?type=${param.type}&cp=${param.cp}${searchStr} -->
 				</div>
 
 			</form>
@@ -301,6 +310,21 @@
 	            var text = $(el).val();
 	        },30);
 		});
+		
+		// 포커스 아웃 시 
+		$("#boardTitle").focusout(function(){
+			$("#tCounter").html("(" + $("#boardTitle").val().length + " / 최대 30)");
+		});
+		$("#boardWriter").focusout(function(){
+			$("#cCounter").html("(" + $("#boardWriter").val().length + " / 최대 10)");
+		});
+		$("#boardPass").focusout(function(){
+			$("#pCounter").html("(" + $("#boardPass").val().length + " / 최대 20)");
+		});
+		$("#boardContent").focusout(function(){
+			$("#cCounter").html("(" + $("#boardContent").val().length + " / 최대 300)");
+		});
+		
 	</script>
 </body>
 </html>

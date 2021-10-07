@@ -328,8 +328,8 @@
 						<option value="titcont">제목+내용</option>
 						<option value="boardWriter">작성자</option>
 					</select>
-					<input type="text" name="sv" class="form-control" style="width: 25%; display: inline-block;">
-					<button class="form-control btn btn-primary" style="width: 100px; display: inline-block;">검색</button>
+					<input type="text" id="sv" name="sv" class="form-control" style="width: 25%; display: inline-block;">
+					<button class="form-control btn btn-primary" style="width: 100px; display: inline-block;" id="searchSubmit">검색</button>
 					<!-- 버튼을 누르면 넘어가는 파라미터 값 : 모든 name 속성값
 						   ct, boardType, sk, sv 중 여러값을 받는 것은 ct -> ct는 배열
 					 -->
@@ -385,9 +385,19 @@
 				
 				</c:forEach>
 				
-				
-				
 			})();
+			
+			$('#searchSubmit').click(function(){
+				
+				if ($("#sv").val().trim().length == 0) {
+					alert("공백은 검색할 수 없습니다.");
+					$("#sv").focus();
+					return false;
+				}
+				
+			});
+			
+
 			
 	</script>
 	
