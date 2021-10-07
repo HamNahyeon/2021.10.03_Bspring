@@ -94,25 +94,23 @@
 				
 				
 				<div class="form-inline mb-2">
-					<label class="input-group-addon mr-3 insert-label">제목</label> 
-					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}"/>
+					<label for="boardTitle" class="input-group-addon mr-3 insert-label">제목</label> 
+					<input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70" value="${board.boardTitle}"/><span style="color:#aaa;" id="tCounter" >(0 / 최대 30자)</span>
 				</div>
-
+				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성자</label>
-					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/>
+					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/><span style="color:#aaa;" id="wCounter" >(0 / 최대 10자)</span>
 				</div>
-				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+					<input type="password" class="form-control" id="boardPass" name="boardPass" size="70"/><span style="color:#aaa;" id="pCounter" >(0 / 최대 20자)</span>
 				</div>
-				
 
 
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성일</label>
-					<h5 class="my-0" id="today">${board.createDate }</h5>
+					<h5 class="my-0" id="today">${board.createDate}</h5>
 				</div>
 
 				<hr>
@@ -188,9 +186,9 @@
 
 				<div class="form-group">
 					<div>
-						<label for="content">내용</label>
+						<label for="boardContent">내용</label>
 					</div>
-					<textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;">${board.boardContent}</textarea>
+					<textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;">${board.boardContent}</textarea><span style="color:#aaa;" id="cCounter">(0 / 최대 300자)</span>
 					<!-- textarea에 값을 넣을 때는 한줄로 길게 작성해야 함 -> why? 코드상의 공백이 그대로 보여짐.. 그야말로 진짜 개행 -->
 				</div>
 
@@ -198,7 +196,7 @@
 
 				<div class="text-center">
 					<button type="submit" class="btn btn-primary" onclick="fnRequest('update');">수정</button>
-					<a class="btn btn-primary" href="list?cp=${param.cp}">목록으로</a>
+					<a class="btn btn-primary" href="list?type=${param.type}&cp=${param.cp}${searchStr}">목록으로</a>
 					<a class="btn btn-primary" href="${param.boardNo}?cp=${param.cp}">이전</a>
 					<!-- ${param.boardNo} 혹은 ${board.boardNo} -->
 				</div>
@@ -216,30 +214,34 @@
 		
 		
 	<script>
-		
-/* 		// 오늘 날짜 출력 
- 		(function printToday() {
-			var today = new Date();
-			var month = (today.getMonth() + 1);
-			var date = today.getDate();
 
-			var str = today.getFullYear() + "-"
-					+ (month < 10 ? "0" + month : month) + "-"
-					+ (date < 10 ? "0" + date : date);
-			$("#today").html(str);
-		})();  */
+	// 페이지가 로드 되었을 때 글자수 카운팅
+	$(document).ready(function(){
+		$("#tCounter").html("(" + $("#boardTitle").val().length + " / 최대 30)");
+		$("#cCounter").html("(" + $("#boardContent").val().length + " / 최대 300)");
+	});
 
 		// 유효성 검사 
 		function boardValidate() {
 			if ($("#boardTitle").val().trim().length == 0) {
 				alert("제목을 입력해 주세요.");
-				$("#title").focus();
+				$("#boardTitle").focus();
 				return false;
 			}
-
+			
+			if ($("#boardWriter").val().trim().length == 0) {
+				alert("이름을 입력해 주세요.");
+				$("#boardWriter").focus();
+				return false;
+			}
+			if ($("#boardPass").val().trim().length == 0) {
+				alert("비밀번호를 입력해 주세요.");
+				$("#boardPass").focus();
+				return false;
+			}
 			if ($("#boardContent").val().trim().length == 0) {
 				alert("내용을 입력해 주세요.");
-				$("#content").focus();
+				$("#boardContent").focus();
 				return false;
 			}
 			
@@ -298,7 +300,7 @@
 			
 			
 		}
-			
+		
 		// 카테고리를 이전 게시글에 입력된 값으로 세팅
 		// == 알맞은 option태그에 selected속성을 추가
 		
@@ -352,6 +354,136 @@
 			
 		});
 		
+/* 		
+		$(document).ready(function(){
+		    var getTextLength = function(str) {
+		        var len = 0;
+		        for (var i = 0; i < str.length; i++) {
+		            if (escape(str.charAt(i)).length == 6) {
+		                len++;
+		            }
+		            len++;
+		        }
+		        return len;
+		    }
+		    
+		    document.write(getTextLength('#boardTitle'));   
+			
+		});
+ */
+		
+		
+		// 글자수 카운팅
+		$('#boardTitle').keyup(function (e){
+		    var content = $(this).val();
+		    $('#tCounter').html("("+content.length+" / 최대 30자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 30){
+		        alert("최대 30자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 30));
+		        $('#tCounter').html("(30 / 최대 30자)");
+		    }
+		});
+		$("#boardTitle").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		$('#boardWriter').keyup(function (e){
+		    var content = $(this).val();
+		    $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("최대 10자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 10));
+		        $('#wCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardWriter").bind('paste', function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },10);
+		});
+		
+		$('#boardPass').keyup(function (e){
+		    var content = $(this).val();
+		    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+		        $(this).val(content.substring(0, 300));
+		        $('#pCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardPass").bind('paste', function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+
+		$('#boardContent').keyup(function (e){
+		    var content = $(this).val();
+		    $('#cCounter').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 300){
+		        alert("최대 300자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 300));
+		        $('#cCounter').html("(300 / 최대 300자)");
+		    }
+		});
+		$("#boardContent").bind('paste', function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		/* 		
+		$('#boardWriter').keyup(function (e){
+		    var content = $(this).val();
+		    $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("최대 10자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 10));
+		        $('#wCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardWriter").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		$('#boardPass').keyup(function (e){
+		    var content = $(this).val();
+		    $('#pCounter').html("("+content.length+" / 최대 20자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 20){
+		        alert("최대 20자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 20));
+		        $('#pCounter').html("(20 / 최대 20자)");
+		    }
+		});
+		$("#boardPass").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+ */		
+	$("#boardTitle").focusout(function(){
+		$("#tCounter").html("(" + $("#boardTitle").val().length + " / 최대 30)");
+	});
+	$("#boardContent").focusout(function(){
+		$("#cCounter").html("(" + $("#boardContent").val().length + " / 최대 300)");
+	});
 		
 	</script>																																																																													
 </body>

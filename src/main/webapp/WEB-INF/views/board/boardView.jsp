@@ -23,6 +23,10 @@
 		position : relative;
 		
 	}
+	/* 게시글 조회 댓글 영역 제거시 필요 style */
+	.footer{
+		margin-top:100px;
+	}
 	
 	.replyWrite > table{
 		width: 90%;
@@ -102,10 +106,11 @@
 				<p class="lead">
 					작성자 : ${board.boardWriter}
 				</p>
+				<p id="boardPass" style="display:none;">${board.boardPass}</p>
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70"/>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70" maxlength="10" placeholder="비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 6~10글자 이내로 입력해주세요"/><span style="color:#aaa;" id="pCounter"  >(0 / 최대 10자)</span>
 				</div>
 <!-- 				
 				<div class="form-inline mb-2">
@@ -195,7 +200,7 @@
 					
 					<%-- 로그인된 회원과 해당 글 작성자가 같은 경우에만 버튼 노출--%>
 					<%-- <c:if test="${loginMember.memberNo == board.memberNo }"> --%>
-						<button id="deleteBtn" class="btn btn-primary float-right mr-2" >삭제</button> 
+						<button id="deleteBtn" class="btn btn-primary float-right mr-2" onclick="deleteBoard();">삭제</button> 
 						<!-- onclick="fnRequest('delete');" -->
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm');">수정</button> 
 					<%-- </c:if> --%>
@@ -255,39 +260,88 @@
 			document.requestForm.submit();
 			
 		}
- 
 		
-		function boardDelete(){
-			if ($("#currentPass").val().trim().length == 0) {
-				alert("비밀번호를 입력해주세요 입력해 주세요.");
-				$("#currentPass").focus();
-				return false;
-			}
-		}
-		$('#deleteBtn').click(function(){
-			
-			//$('#deleteModal').empty(); // 모달에 작성되어있는 이 전 내용 삭제
-
-			if(confirm("정말 삭제 하시겠습니까?")){
-				self.location.href= "${contextPath}/board/${board.boardType}/delete/${board.boardNo}";
-				// http://localhost:8081/fin/board/1/list
-				
-/* 				
-				var input1 = document.createElement('input');
-				input1.setAttribute("id", "deletePass");
- */
-				//self.location.href= "${contextPath}/board/${board.boardType}/list/${board.boardNo}";
-				
-				//document.requestForm.action = delete;
-				// http://localhost:8081/fin/board/1/13?cp=1
-						
-/* 						
-				if(result){
-					self.location.href= "${contextPath}/board/${board.boardType}/list";
-				}
- */				
-			}
-		}); 
+	$(document).ready(function(){
+		$("#currentPass").focus();
+	});
+		
+	$('#deleteBtn').click(function(){
+	     let currentPass = document.getElementById("currentPass").value;
+	     // let currentlength = document.getElementById("currentPass").length();
+	     let boardPass = "${board.boardPass}";         
+	     console.log("currentPass : " + currentPass);
+	     // console.log("currentlength : " + currentlength);
+	     console.log("boardPass : " + boardPass);
+	  if ($("#currentPass").val().trim().length == 0) {
+	     alert("비밀번호를 입력해 주세요.");
+	     $("#currentPass").focus();
+	     return false;
+	  }else{
+	     if(currentPass == boardPass){
+	        console.log("currentPass : " + currentPass);
+	        console.log("boardPass : " + boardPass);
+	        
+	        if(confirm("정말 삭제 하시겠습니까?")){
+	           self.location.href= "${contextPath}/board/${board.boardType}/delete/${board.boardNo}";
+	        // self.location.href= "${contextPath}/board/${board.boardType}/list?cp={param.cp}";
+	        }
+	     }else{
+	        alert("비밀번호가 틀렸습니다.");
+	        $("#currentPass").focus();
+	        document.getElementById("currentPass").value = null;
+	        return false;
+	     }
+	
+	  }
+	  
+	}); 
+ 
+	$('#updateBtn').click(function(){
+	     let currentPass = document.getElementById("currentPass").value;
+	     // let currentlength = document.getElementById("currentPass").length();
+	     let boardPass = "${board.boardPass}";         
+	     console.log("currentPass : " + currentPass);
+	     // console.log("currentlength : " + currentlength);
+	     console.log("boardPass : " + boardPass);
+	  if ($("#currentPass").val().trim().length == 0) {
+	     alert("비밀번호를 입력해 주세요.");
+	     $("#currentPass").focus();
+         //self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
+	     return false;
+	  }else{
+	     if(currentPass != boardPass){
+	    	 
+	        alert("비밀번호가 틀렸습니다.");
+	        $("#currentPass").focus();
+	        document.getElementById("currentPass").value = null;
+	        self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
+	        //http://localhost:8081/fin/board/1/list
+	        return false;
+	     }
+	  }
+	}); 
+		
+	$('#currentPass').keyup(function (e){
+	    var content = $(this).val();
+	    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+	
+	    if (content.length > 10){
+	        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+	        $(this).val(content.substring(0, 10));
+	        $('#pCounter').html("(10 / 최대 10자)");
+	    }
+	});
+	$("#currentPass").bind('paste',function(e){
+        var el = $(this);
+        setTimeout(function(){
+            var text = $(el).val();
+        },10);
+	});
+	$("#currentPass").focusout(function(){
+		$("#pCounter").html("(" + $("#currentPass").val().length + " / 최대 10)");
+	});
+	
+	
 		
 		
 		

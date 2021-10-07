@@ -231,7 +231,9 @@ public class BoardServiceImpl implements BoardService{
 	// 게시글 수정
 	@Transactional(rollbackFor=Exception.class)
 	@Override
-	public int updateBoard(String currentPass, Board board, List<MultipartFile> images, String webPath, String savePath,
+	public int updateBoard(
+//			String currentPass, 
+			Board board, List<MultipartFile> images, String webPath, String savePath,
 			String deleteImages) {
 		
 		// 1) 크로스 사이트 스크립트 방지 처리 + 개행문자처리(\r\n -> <br>)
@@ -243,13 +245,13 @@ public class BoardServiceImpl implements BoardService{
 		
 //		암호가 일치할 때 수정
 		// DB에 저장되어 있는 현재 회원의 비밀번호 조회 
-		String savePwd = dao.selectPassword( board.getBoardNo() );
+//		String savePwd = dao.selectPassword( board.getBoardNo() );
 		System.out.println(board.getBoardNo());
-		System.out.println(savePwd);
+//		System.out.println(savePwd);
 //		System.out.println(board.getBoardNo());
 		int result = 0;
 		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
-		if( savePwd.equals(currentPass)) {
+		//if( savePwd.equals(currentPass)) {
 //			if( bCryptPasswordEncoder.matches(currentPwd, savePwd) ) {
 			
 			// 2) 비밀번호 변경
@@ -338,7 +340,7 @@ public class BoardServiceImpl implements BoardService{
 			}else {
 				result = -1;
 			}
-		}
+//		}
 		
 		return result;
 	}

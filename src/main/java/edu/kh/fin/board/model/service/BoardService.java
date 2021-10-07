@@ -76,7 +76,9 @@ public interface BoardService {
 	 * @param deleteImages
 	 * @return result
 	 */
-	int updateBoard(String currentPass, Board board, List<MultipartFile> images, 
+	int updateBoard(
+//			String currentPass,
+			Board board, List<MultipartFile> images, 
 					String webPath, String savePath, String deleteImages);
 	
 

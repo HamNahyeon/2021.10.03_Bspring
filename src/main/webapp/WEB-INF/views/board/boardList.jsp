@@ -27,10 +27,13 @@
 }
 
 /* 게시글 목록의 높이가 최소 540px은 유지하도록 설정 */
+/* 
 .list-wrapper{
 	min-height: 540px;
 }
-
+ */
+ 
+ 
 /* 글 제목 영역의 너비를 table의 50% 넓게 설정*/
 #list-table td:nth-child(3){
 	width: 50%;
@@ -137,13 +140,16 @@
 									<tr>
 										<%-- 글 번호 --%>
 										<td>
-										
 											${(pagination.listCount-status.index) - (pagination.currentPage -1) * pagination.limit}
 <%-- 											
 											${pagination}
 											${status.index}
  --%>											
 <!-- 
+											pagination.listCount : 게시글 총 수 
+											${status.index} : 게시글 인덱스번호
+											currentPage : 현재페이지
+											limit : 한페이지에 보이는 게시글 총 수 
 											totalcount - (Page -1) * PageSize
 											totalcount : 올라온 총 글 갯수의 변수명
 											page : 현재 글을 읽고 있는 페이지의 변수명.
@@ -322,8 +328,8 @@
 						<option value="titcont">제목+내용</option>
 						<option value="boardWriter">작성자</option>
 					</select>
-					<input type="text" name="sv" class="form-control" style="width: 25%; display: inline-block;">
-					<button class="form-control btn btn-primary" style="width: 100px; display: inline-block;">검색</button>
+					<input type="text" id="sv" name="sv" class="form-control" style="width: 25%; display: inline-block;">
+					<button class="form-control btn btn-primary" style="width: 100px; display: inline-block;" id="searchSubmit">검색</button>
 					<!-- 버튼을 누르면 넘어가는 파라미터 값 : 모든 name 속성값
 						   ct, boardType, sk, sv 중 여러값을 받는 것은 ct -> ct는 배열
 					 -->
@@ -379,9 +385,19 @@
 				
 				</c:forEach>
 				
-				
-				
 			})();
+			
+			$('#searchSubmit').click(function(){
+				
+				if ($("#sv").val().trim().length == 0) {
+					alert("공백은 검색할 수 없습니다.");
+					$("#sv").focus();
+					return false;
+				}
+				
+			});
+			
+
 			
 	</script>
 	
