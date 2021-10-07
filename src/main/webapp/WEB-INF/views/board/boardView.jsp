@@ -110,7 +110,7 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70" maxlength="20" placeholder="비밀번호는 20글자 이내로 입력해주세요"/><span style="color:#aaa;" id="pCounter"  >(0 / 최대 20자)</span>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70" maxlength="10" placeholder="비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 6~10글자 이내로 입력해주세요"/><span style="color:#aaa;" id="pCounter"  >(0 / 최대 10자)</span>
 				</div>
 <!-- 				
 				<div class="form-inline mb-2">
@@ -261,6 +261,10 @@
 			
 		}
 		
+	$(document).ready(function(){
+		$("#currentPass").focus();
+	});
+		
 	$('#deleteBtn').click(function(){
 	     let currentPass = document.getElementById("currentPass").value;
 	     // let currentlength = document.getElementById("currentPass").length();
@@ -279,6 +283,7 @@
 	        
 	        if(confirm("정말 삭제 하시겠습니까?")){
 	           self.location.href= "${contextPath}/board/${board.boardType}/delete/${board.boardNo}";
+	        // self.location.href= "${contextPath}/board/${board.boardType}/list?cp={param.cp}";
 	        }
 	     }else{
 	        alert("비밀번호가 틀렸습니다.");
@@ -301,7 +306,7 @@
 	  if ($("#currentPass").val().trim().length == 0) {
 	     alert("비밀번호를 입력해 주세요.");
 	     $("#currentPass").focus();
-         self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
+         //self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
 	     return false;
 	  }else{
 	     if(currentPass != boardPass){
@@ -310,6 +315,7 @@
 	        $("#currentPass").focus();
 	        document.getElementById("currentPass").value = null;
 	        self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
+	        //http://localhost:8081/fin/board/1/list
 	        return false;
 	     }
 	  }
@@ -317,23 +323,25 @@
 		
 	$('#currentPass').keyup(function (e){
 	    var content = $(this).val();
-	    $('#pCounter').html("("+content.length+" / 최대 20자)");    //글자수 실시간 카운팅
+	    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
 	
-	    if (content.length > 20){
-	        alert("최대 20자까지 입력 가능합니다.");
-	        $(this).val(content.substring(0, 20));
-	        $('#pCounter').html("(20 / 최대 20자)");
+	    if (content.length > 10){
+	        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+	        $(this).val(content.substring(0, 10));
+	        $('#pCounter').html("(10 / 최대 10자)");
 	    }
 	});
 	$("#currentPass").bind('paste',function(e){
         var el = $(this);
         setTimeout(function(){
             var text = $(el).val();
-        },30);
+        },10);
 	});
 	$("#currentPass").focusout(function(){
-		$("#pCounter").html("(" + $("#currentPass").val().length + " / 최대 20)");
+		$("#pCounter").html("(" + $("#currentPass").val().length + " / 최대 10)");
 	});
+	
+	
 		
 		
 		

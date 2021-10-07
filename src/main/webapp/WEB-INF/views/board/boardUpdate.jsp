@@ -100,18 +100,12 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">작성자</label>
-					<h5 class="my-0" id="boardWriter">${board.boardWriter}</h5>
-				</div>
-<%-- 
-				<div class="form-inline mb-2">
-					<label class="input-group-addon mr-3 insert-label">작성자</label>
 					<input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" value="${board.boardWriter}"/><span style="color:#aaa;" id="wCounter" >(0 / 최대 10자)</span>
 				</div>
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
 					<input type="password" class="form-control" id="boardPass" name="boardPass" size="70"/><span style="color:#aaa;" id="pCounter" >(0 / 최대 20자)</span>
 				</div>
---%>				
 
 
 				<div class="form-inline mb-2">
@@ -235,7 +229,6 @@
 				return false;
 			}
 			
-/* 			
 			if ($("#boardWriter").val().trim().length == 0) {
 				alert("이름을 입력해 주세요.");
 				$("#boardWriter").focus();
@@ -246,7 +239,6 @@
 				$("#boardPass").focus();
 				return false;
 			}
- */
 			if ($("#boardContent").val().trim().length == 0) {
 				alert("내용을 입력해 주세요.");
 				$("#boardContent").focus();
@@ -393,6 +385,40 @@
 		    }
 		});
 		$("#boardTitle").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },30);
+		});
+		
+		$('#boardWriter').keyup(function (e){
+		    var content = $(this).val();
+		    $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("최대 10자까지 입력 가능합니다.");
+		        $(this).val(content.substring(0, 10));
+		        $('#wCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardWriter").bind('paste', function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },10);
+		});
+		
+		$('#boardPass').keyup(function (e){
+		    var content = $(this).val();
+		    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+		
+		    if (content.length > 10){
+		        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+		        $(this).val(content.substring(0, 300));
+		        $('#pCounter').html("(10 / 최대 10자)");
+		    }
+		});
+		$("#boardPass").bind('paste', function(e){
 	        var el = $(this);
 	        setTimeout(function(){
 	            var text = $(el).val();

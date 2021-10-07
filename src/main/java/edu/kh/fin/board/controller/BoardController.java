@@ -277,14 +277,15 @@ public class BoardController {
 	@RequestMapping(value="{boardType}/delete/{boardNo}", method=RequestMethod.GET)
 	public String deleteBoard(@PathVariable("boardNo") int boardNo,
 							  @PathVariable("boardType") int boardType,
-							  @RequestParam(value="cp", required=false, defaultValue="cp")int cp,
+//							  @RequestParam(value="cp", required=false, defaultValue="cp")int cp,
 //							  @RequestParam(value="currentPass") String currentPass,
-						   	  Board board, Pagination pg,
+						   	  Board board, 
+//						   	  Pagination pg,
 						   	  HttpServletRequest request, Model model, RedirectAttributes ra) {
 		
 		System.out.println(board);
 		model.addAttribute("board", board);
-		pg.setCurrentPage(cp);
+		//pg.setCurrentPage(cp);
 //		String savePwd = service.selectPassword( board.getBoardNo() );
 		
 		int result = 0;
@@ -301,7 +302,7 @@ public class BoardController {
 			if(result > 0) { 
 				//http://localhost:8081/fin/board/1/8?cp=1
 //				path ="board/boardList";
-				path ="redirect:/board/" + boardType + "/list?cp=" + cp;
+				path ="redirect:/board/" + boardType + "/list";
 //				path ="redirect:/";
 				MemberController.swalSetMessage(ra, "success", "게시글 삭제 완료", null);
 				System.out.println(board);

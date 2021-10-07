@@ -313,16 +313,16 @@
 		
 		// 포커스 아웃 시 
 		$("#boardTitle").focusout(function(){
-			$("#tCounter").html("(" + $("#boardTitle").val().length + " / 최대 30)");
+			$("#tCounter").html("(" + $("#boardTitle").val().length + " / 최대 30자)");
 		});
 		$("#boardWriter").focusout(function(){
-			$("#cCounter").html("(" + $("#boardWriter").val().length + " / 최대 10)");
+			$("#cCounter").html("(" + $("#boardWriter").val().length + " / 최대 10자)");
 		});
 		$("#boardPass").focusout(function(){
-			$("#pCounter").html("(" + $("#boardPass").val().length + " / 최대 20)");
+			$("#pCounter").html("(" + $("#boardPass").val().length + " / 최대 20자)");
 		});
 		$("#boardContent").focusout(function(){
-			$("#cCounter").html("(" + $("#boardContent").val().length + " / 최대 300)");
+			$("#cCounter").html("(" + $("#boardContent").val().length + " / 최대 300자)");
 		});
 		
 	</script>
