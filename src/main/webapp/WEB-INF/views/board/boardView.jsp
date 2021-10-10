@@ -110,8 +110,9 @@
 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
-					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70" maxlength="10" placeholder="비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 6~10글자 이내로 입력해주세요"/><span style="color:#aaa;" id="pCounter"  >(0 / 최대 10자)</span>
+					<input type="password" class="form-control" id="currentPass" name="currentPass" size="70" placeholder="비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 6~10글자 이내로 입력"/><span style="color:#aaa;" id="pCounter"  >(0 / 최대 10자)</span>
 				</div>
+				<!--  maxlength="10" 해당 글자 수 이상 입력 불가 -->
 <!-- 				
 				<div class="form-inline mb-2">
 					<label class="input-group-addon mr-3 insert-label">비밀번호</label>
@@ -286,7 +287,7 @@
 	        // self.location.href= "${contextPath}/board/${board.boardType}/list?cp={param.cp}";
 	        }
 	     }else{
-	        alert("비밀번호가 틀렸습니다.");
+	        alert("비밀번호가 틀렸습니다. 비밀번호는 영문자,숫자,특수문자 포함 6~10자리이내로 입력해주세요.");
 	        $("#currentPass").focus();
 	        document.getElementById("currentPass").value = null;
 	        return false;
@@ -306,7 +307,7 @@
 	  if ($("#currentPass").val().trim().length == 0) {
 	     alert("비밀번호를 입력해 주세요.");
 	     $("#currentPass").focus();
-         //self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
+         self.location.href= "${contextPath}/board/${board.boardType}/${board.boardNo}?cp=${param.cp}";
 	     return false;
 	  }else{
 	     if(currentPass != boardPass){
@@ -338,8 +339,34 @@
         },10);
 	});
 	$("#currentPass").focusout(function(){
-		$("#pCounter").html("(" + $("#currentPass").val().length + " / 최대 10)");
+	    var content = $(this).val();
+	    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+	
+	    if (content.length > 10){
+	        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+	        $(this).val(content.substring(0, 10));
+	        $('#pCounter').html("(10 / 최대 10자)");
+	    }
+		$("#currentPass").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },10);
+		});
 	});
+    $("#currentPass").on("input", function(e){
+        var currentPass = $('#currentPass').val();
+        var idReg = /\s/;
+        
+        if(idReg.test(currentPass)){
+      	alert("비밀번호는 공백이 입력이 불가합니다. 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
+         $("#currentPass").focus();
+         var updatePass = $("#currentPass").val().replace(idReg, "");
+         $("#currentPass").val(updatePass);
+      	  return false;
+        }
+        
+    });
 	
 	
 		
