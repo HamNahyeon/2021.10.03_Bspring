@@ -256,7 +256,7 @@ public class BoardController {
 			MemberController.swalSetMessage(ra, "success", "게시글 수정 성공", null);
 		}else { // 수정 실패
 			path= "redirect:" + request.getHeader("referer"); // 요청 이전 주소
-			MemberController.swalSetMessage(ra, "error", "비밀번호가 틀립니다. 다시 입력해주세요.", null);
+			MemberController.swalSetMessage(ra, "error", "게시글 수정 실패", null);
 		}
 		
 		return path;

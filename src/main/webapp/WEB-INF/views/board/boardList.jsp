@@ -136,25 +136,39 @@
 							<%-- 조회된 게시글 목록이 있을 경우 --%>
 							<c:otherwise>
 							
-								<c:forEach items="${boardList}" var="board" varStatus="status">
+								<c:forEach items="${boardList}" var="board" varStatus="bCount">
 									<tr>
 										<%-- 글 번호 --%>
 										<td>
-											${(pagination.listCount-status.index) - (pagination.currentPage -1) * pagination.limit}
-<%-- 											
+											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
+											
+											${pagination.listCount}
+											${bCount.index}
+											${pagination.currentPage - 1}
+											${pagination.limit}
+<%-- 										
+											
 											${pagination}
-											${status.index}
- --%>											
-<!-- 
+											
 											pagination.listCount : 게시글 총 수 
-											${status.index} : 게시글 인덱스번호
+											${bCount.index} : 게시글 인덱스번호 0부터의 순서
 											currentPage : 현재페이지
 											limit : 한페이지에 보이는 게시글 총 수 
 											totalcount - (Page -1) * PageSize
 											totalcount : 올라온 총 글 갯수의 변수명
 											page : 현재 글을 읽고 있는 페이지의 변수명.
 											pagesize : 한페이지에 몇개의 글을 보여줄꺼냐 하는 변수명
--->											 
+											
+											varStatus
+											${bCount.index} : 게시글 인덱스번호 0부터의 순서
+											${bCount.count} : 1부터의 순서
+											${bCount.current} : 현재 for문의 해당하는번호
+											${bCount.first} : 첫번째 인지 여부
+											${bCount.last} : 마지막인지 여부
+											${bCount.befin} : for문의 시작번호
+											${bCount.end} : for문의 끝번호
+											${bCount.step} : for문의 증가값
+ --%>
 										</td>
 <%-- 										
 										<td> ${board.boardNo} </td>
@@ -244,11 +258,15 @@
 			<div class="my-5">
 				<ul class="pagination">
 				
-					<%-- 현재 페이지가 10페이지 초과인 경우 --%>					
+					<%-- 현재 페이지가 10페이지 초과인 경우 --%>		
+<%-- 								
 					<c:if test="${pagination.currentPage > pagination.pageSize }">
-						<li><a class="page-link" href="${prev}">&lt;&lt;</a></li>
+ --%>					
+						<li><a class="page-link" href="${pageURL}?cp=1">&lt;&lt;</a></li>
+						<li><a class="page-link" href="${prev}">&lt;</a></li>
+<%-- 						
 					</c:if>
-
+ --%>
 					
 					<%-- 현재 페이지가 2페이지 초과인 경우 --%>
 <%-- 					
@@ -256,9 +274,6 @@
 						<li><a class="page-link" href="${pageURL}?cp=${pagination.currentPage - 1}${searchStr}">&lt;</a></li>
 					</c:if>
  --%>					
-					<c:if test="${pagination.currentPage > 2 }">
-						<li><a class="page-link" href="${pageURL}?cp=${pagination.startPage - pagination.pageSize}${searchStr}">&lt;</a></li>
-					</c:if>
 				
 					<%-- 페이지 목록 --%>
 					<c:forEach var="p" begin="${pagination.startPage}" end="${pagination.endPage}">
@@ -286,16 +301,22 @@
 					<c:if test="${pagination.currentPage < pagination.maxPage }">
 						<li><a class="page-link" href="${pageURL}?cp=${pagination.currentPage + 1}${searchStr}">&gt;</a></li>
 					</c:if>
- --%>					
+ --%>		
+<%--  			
 					<c:if test="${pagination.currentPage < pagination.maxPage }">
+ --%>					
 						<li><a class="page-link" href="${next}">&gt;</a></li>
+<%-- 						
 					</c:if>
-					
+ --%>					
 					<%-- 현재 페이지가 마지막 페이지가 아닌 경우 --%>
+<%-- 					
 					<c:if test="${pagination.currentPage - pagination.maxPage < 0}">
+ --%>					
 						<li><a class="page-link" href="${pageURL}?cp=${pagination.maxPage}${searchStr}">&gt;&gt;</a></li>
+<%-- 						
 					</c:if>
-					
+ --%>					
 					
 
 				</ul>
