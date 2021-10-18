@@ -145,7 +145,8 @@ public class Pagination {
 		
 		// endPage == 페이지 번호 목록 끝 번호
 		// ex) 10, 20, 30, 40 ....
-		endPage = startPage + pageSize - 1;
+//		endPage = startPage + pageSize - 1;
+		endPage = ((int)Math.ceil((double)currentPage/pageSize))*pageSize;
 		
 		// ** 보여지는 페이지 번호 목록의 끝 번호가 maxPage보다 클 경우
 		if(endPage > maxPage) {
@@ -153,11 +154,13 @@ public class Pagination {
 		}
 		
 		// 이전, 다음 페이지 번호 목록으로 이동
-		if(currentPage < 10) 	prevPage = 1;
-		else					prevPage = (currentPage - 1 ) / pageSize * pageSize ;
+		if(currentPage <= pageSize) 	prevPage = 1;  
+//		else					prevPage = (currentPage - 1 ) / pageSize * pageSize ;
+		else					prevPage = startPage - 1;
 		
 		
-		nextPage = (currentPage + pageSize - 1) / pageSize * pageSize + 1;
+//		nextPage = (currentPage + pageSize - 1) / pageSize * pageSize + 1;
+		nextPage = endPage + 1;
 		
 		if(nextPage > maxPage) {
 			nextPage = maxPage;
