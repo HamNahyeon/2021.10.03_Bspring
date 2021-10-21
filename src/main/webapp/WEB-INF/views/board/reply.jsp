@@ -16,6 +16,9 @@
 	width: 100%;
 }
 .replyBtnArea { text-align: right; }
+.replyUpdateWriter, .replyUpdatePassword{
+	width:30%;
+}
 .replyUpdateContent {
 	resize: none;
 	width: 100%;
@@ -66,7 +69,9 @@
 				<li class="reply-row">
 					<div>
 						<p class="rWriter">${reply.replyId}</p>
-						<input class="rPassword">${reply.replyPw}</p>
+<!-- 						
+						<input type="password" class="rPassword"/>
+ -->						
 						<p class="rDate">작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
@@ -118,8 +123,14 @@ function addReply()	{
 	
 	// 작성된 댓글 내용 얻어오기
 	const replyContent = $("#replyContent").val();
+	const replyId = $("#replyId").val();
+	const replyPw = $("#replyPw").val();
 	
-		if(replyContent.trim() == ""){ // 작성된 댓글 내용이 없을경우
+		if(replyId.trim() == ""){
+			swal("작성자를 입력 후 클릭해주세요");
+		}else if(replyPw.trim() == ""){
+			swal("비밀번호를 입력 후 클릭해주세요");
+		}else if(replyContent.trim() == ""){ // 작성된 댓글 내용이 없을경우
 			swal("댓글 작성 후 클릭해주세요");
 		}else{ // 로그인이 되어있으면서 작성된 댓글내용이 있을 때
 			
@@ -145,6 +156,8 @@ function addReply()	{
 					if(result > 0){ // 댓글 삽입 성공
 						swal({"icon" : "success" , "title" : "댓글 등록 성공"});
 						$("#replyContent").val(""); // 댓글 작성 내용 삭제
+						$("#replyId").val(""); 
+						$("#replyPw").val("");
 						selectReplyList(); // 비동기로 댓글 목록 갱신
 					}
 				}, // 비동기 통신이 성공했을 때
@@ -241,12 +254,16 @@ function showUpdateReply(replyNo, el){
 	
 	   // 이미 열려있는 댓글 수정 창이 있을 경우 닫아주기
 	   if($(".replyUpdateContent").length > 0){
+	      $(".replyUpdateWriter").eq(0).parent().html(beforeReplyRow);
+	      $(".replyUpdatePassword").eq(0).parent().html(beforeReplyRow);
 	      $(".replyUpdateContent").eq(0).parent().html(beforeReplyRow);
 	   }
 	   // 댓글 수정화면 출력 전 요소를 저장해둠.
 	   beforeReplyRow = $(el).parent().parent().html();
 	   
 	   // 작성되어있던 내용(수정 전 댓글 내용) 
+	   var beforeWriter = $(el).parent().prev().html();
+	   var beforePassword = $(el).parent().prev().html();
 	   var beforeContent = $(el).parent().prev().html();
 	   
 	   // 이전 댓글 내용의 크로스사이트 스크립트 처리 해제, 개행문자 변경
@@ -260,9 +277,17 @@ function showUpdateReply(replyNo, el){
 	   
 	   
 	   // 기존 댓글 영역을 삭제하고 textarea를 추가 
+   	   $(el).parent().prev().remove();
+	   var writer = $("<input>").addClass("beforeWriter").attr("rows", "3").val(beforeContent);
+	   $(el).parent().before(writer);
+	   $(el).parent().prev().remove();
+	   var password = $("<input>").addClass("beforePassword").attr("rows", "3").val(beforeContent);
+	   $(el).parent().before(password);
+	   
 	   $(el).parent().prev().remove();
 	   var textarea = $("<textarea>").addClass("replyUpdateContent").attr("rows", "3").val(beforeContent);
 	   $(el).parent().before(textarea);
+
 	   
 	   
 	   // 수정 버튼
