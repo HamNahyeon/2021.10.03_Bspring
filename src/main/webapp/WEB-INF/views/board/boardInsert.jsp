@@ -301,13 +301,37 @@
       $("#boardPass").on("input", function(e){
           var boardPass = $('#boardPass').val();
           var idReg = /\s/;
+          var idReg2 = /^ㄱ-힣$/;
           
-          if(idReg.test(boardPass)){
-        	alert("비밀번호는 공백이 입력이 불가합니다. 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
+          if(idReg.test(boardPass) || idReg2.test(boardPass)){
+        	alert("비밀번호는 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
            $("#boardPass").focus();
            var updatePass = $("#boardPass").val().replace(idReg, "");
            $("#boardPass").val(updatePass);
         	  return false;
+          }
+          
+      });
+      
+      $("#boardContent").on("input", function(e){
+          var content = $(this).val();
+          $('#cCounter').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
+      
+          if (content.length > 300){
+              alert("최대 300자까지 입력 가능합니다.");
+              $(this).val(content.substring(0, 300));
+              $('#cCounter').html("(300 / 최대 300자)");
+          }
+          
+      });
+      $("#boardTitle").on("input", function(e){
+          var content = $(this).val();
+          $('#tCounter').html("("+content.length+" / 최대 30자)");    //글자수 실시간 카운팅
+      
+          if (content.length > 30){
+              alert("최대 30자까지 입력 가능합니다.");
+              $(this).val(content.substring(0, 30));
+              $('#tCounter').html("(30 / 최대 30자)");
           }
           
       });
@@ -351,6 +375,7 @@
       
       $('#boardPass').keyup(function (e){
     	  
+//          var regExp = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
           var regExp = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
           
           var inputPwd = $(this).val().trim();
@@ -435,6 +460,14 @@
            },10);
       });
    });
+   
+   $("#boardPass").onKeyDown(function(){
+	   var pressedKey = String.fromCharCode(event.keyCode).toLowerCase();
+	   if (event.ctrlKey && (pressedKey == "c" || pressedKey == "v")) {
+	   event.returnValue = false;
+	   }
+   });
+
 /*    
    $("#boardPass").focusout(function(){
        var content = $(this).val();

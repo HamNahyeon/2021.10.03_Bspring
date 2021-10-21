@@ -7,13 +7,24 @@ public class Reply {
 	private String replyContent; 		// 댓글 내용
 	private Timestamp createDate;		// 댓글 작성일
 	private int boardNo;			// 댓글이 작성된 게시글 번호
-	private int memberNo;				// 댓글 작성 회원 번호
-	private String memberName;			// 댓글 작성 회원 이름
+//	private int memberNo;				// 댓글 작성 회원 번호
+	private String replyId;			// 댓글 작성 회원 이름
+	private String replyPw;			// 댓글 작성 회원 이름
 	
 	public Reply() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public Reply(int replyNo, String replyContent, Timestamp createDate, int boardNo, String replyId, String replyPw) {
+		super();
+		this.replyNo = replyNo;
+		this.replyContent = replyContent;
+		this.createDate = createDate;
+		this.boardNo = boardNo;
+		this.replyId = replyId;
+		this.replyPw = replyPw;
+	}
+	
 	public int getReplyNo() {
 		return replyNo;
 	}
@@ -46,26 +57,29 @@ public class Reply {
 		this.boardNo = boardNo;
 	}
 
-	public int getMemberNo() {
-		return memberNo;
+	public String getReplyId() {
+		return replyId;
 	}
 
-	public void setMemberNo(int memberNo) {
-		this.memberNo = memberNo;
+	public void setReplyId(String replyId) {
+		this.replyId = replyId;
 	}
 
-	public String getMemberName() {
-		return memberName;
+	public String getReplyPw() {
+		return replyPw;
 	}
 
-	public void setMemberName(String memberName) {
-		this.memberName = memberName;
+	public void setReplyPw(String replyPw) {
+		this.replyPw = replyPw;
 	}
 
 	@Override
 	public String toString() {
 		return "Reply [replyNo=" + replyNo + ", replyContent=" + replyContent + ", createDate=" + createDate
-				+ ", boardNo=" + boardNo + ", memberNo=" + memberNo + ", memberName=" + memberName + "]";
+				+ ", boardNo=" + boardNo + ", replyId=" + replyId + ", replyPw=" + replyPw + "]";
 	}
-	
+
+
+
+
 }

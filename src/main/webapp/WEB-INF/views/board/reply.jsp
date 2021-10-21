@@ -24,6 +24,9 @@
 	border-top : 1px solid #ccc;
 	padding : 15px 0;
 }
+#replyIdArea, #replyPwArea{
+	float:left;
+}
 </style>
 
 <div id="reply-area ">
@@ -31,8 +34,20 @@
 	<div class="replyWrite">
 		<table align="center">
 			<tr>
+				<td id="replyIdArea">
+					<label for="replyId" class="input-group-addon mr-3 insert-label">작성자</label>
+					<input type="text" class="replyId" id="replyId" name="replyId" size="20"/><span style="color:#aaa;" id="RICounter"  >(0 / 최대 10자)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				</td>
+				
+				<td id="replyPwArea">
+					<label for="replyPw" class="input-group-addon mr-3 insert-label">비밀번호</label>
+					<input type="password" class="replyPw" id="replyPw" name="replyPw" size="20"/><span style="color:#aaa;" id="RPCounter"  >(0 / 최대 10자)</span>
+				</td>
+			</tr>
+			<tr>
 				<td id="replyContentArea">
 					<textArea rows="3" id="replyContent"></textArea>
+					<span style="color:#aaa;" id="RCCounter"  >(0 / 최대 10자)</span>
 				</td>
 				<td id="replyBtnArea">
 					<button class="btn btn-primary" id="addReply" onclick="addReply();">
@@ -50,20 +65,23 @@
 			<c:forEach items="${rList}" var="reply">
 				<li class="reply-row">
 					<div>
-						<p class="rWriter">${reply.memberName}</p>
+						<p class="rWriter">${reply.replyId}</p>
+						<input class="rPassword">${reply.replyPw}</p>
 						<p class="rDate">작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
 					<p class="rContent">${reply.replyContent }</p>
 					
-					
+<%-- 					
 					<c:if test="${reply.memberNo == loginMember.memberNo}">
-					
+ --%>					
 						<div class="replyBtnArea">
 							<button class="btn btn-primary btn-sm ml-1" id="updateReply" onclick="showUpdateReply(${reply.replyNo}, this)">수정</button>
 							<button class="btn btn-primary btn-sm ml-1" id="deleteReply" onclick="deleteReply(${reply.replyNo})">삭제</button>
 						</div>
+<%-- 						
 					</c:if>
+ --%>					
 				</li>
 			</c:forEach>
 		</ul>
@@ -81,7 +99,7 @@
 // 여기서 ( )괄호 안에 적힌 매개변수명은 달라도 상관이 없음 
 
 // 로그인한 회원의 회원 번호, 비로그인 시 "" (빈문자열)
-const loginMemberNo = "${loginMember.memberNo}";
+// const loginMemberNo = "${loginMember.memberNo}";
 
 // 현재 게시글 번호
 const boardNo = ${board.boardNo};
@@ -101,10 +119,6 @@ function addReply()	{
 	// 작성된 댓글 내용 얻어오기
 	const replyContent = $("#replyContent").val();
 	
-	// 로그인이 되어있지 않은경우
-	if(loginMemberNo == ""){
-		swal("로그인 후 이용해주세요.");
-	}else{
 		if(replyContent.trim() == ""){ // 작성된 댓글 내용이 없을경우
 			swal("댓글 작성 후 클릭해주세요");
 		}else{ // 로그인이 되어있으면서 작성된 댓글내용이 있을 때
@@ -121,9 +135,12 @@ function addReply()	{
 			$.ajax({
 				url : "${contextPath}/reply/insertReply", // 필수속성!!!!!!!!!! 반드시 ajax안에서 써야하는 코드
 				type : "POST", 
-				data : {"memberNo" : loginMemberNo,
+				data : {
 						"boardNo" : boardNo,
-						"replyContent" : replyContent}, // 비동기 통신을 할 때 전달할 파라미터
+						"replyContent" : replyContent,
+						"replyId" : replyId,
+						"replyPw" : replyPw
+				}, // 비동기 통신을 할 때 전달할 파라미터
 				success : function(result){
 					if(result > 0){ // 댓글 삽입 성공
 						swal({"icon" : "success" , "title" : "댓글 등록 성공"});
@@ -137,7 +154,6 @@ function addReply()	{
 				
 			});
 		}
-	}
 }	
 	
 
@@ -170,7 +186,7 @@ function selectReplyList(){
 	         
 	            // 작성자, 작성일, 수정일 영역 
 	            var div = $("<div>");
-	            var rWriter = $("<p>").addClass("rWriter").text(item.memberName);
+	            var rWriter = $("<p>").addClass("rWriter").text(item.replyId);
 	            var rDate = $("<p>").addClass("rDate").text("작성일 : " + item.createDate);
 	            div.append(rWriter).append(rDate)
 	            
@@ -183,14 +199,14 @@ function selectReplyList(){
 	            var replyBtnArea = $("<div>").addClass("replyBtnArea");
 	            
 	            // 현재 댓글의 작성자와 로그인한 멤버의 아이디가 같을 때 버튼 추가
-	            if(item.memberNo == loginMemberNo){
+	            //if(item.memberNo == loginMemberNo){
 	               
 	               // ** 추가되는 댓글에 onclick 이벤트를 부여하여 버튼 클릭 시 수정, 삭제를 수행할 수 있는 함수를 이벤트 핸들러로 추가함. 
 	               var showUpdate = $("<button>").addClass("btn btn-primary btn-sm ml-1").text("수정").attr("onclick", "showUpdateReply("+item.replyNo+", this)");
 	               var deleteReply = $("<button>").addClass("btn btn-primary btn-sm ml-1").text("삭제").attr("onclick", "deleteReply("+item.replyNo+")");
 	               
 	               replyBtnArea.append(showUpdate).append(deleteReply);
-	            }
+	            //}
 	            
 	            
 	            // 댓글 요소 하나로 합치기

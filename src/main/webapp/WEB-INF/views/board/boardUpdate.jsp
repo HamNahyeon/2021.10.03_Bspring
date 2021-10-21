@@ -300,6 +300,29 @@
           }
           
       });
+      
+      $("#boardContent").on("input", function(e){
+          var content = $(this).val();
+          $('#cCounter').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
+      
+          if (content.length > 300){
+              alert("최대 300자까지 입력 가능합니다.");
+              $(this).val(content.substring(0, 300));
+              $('#cCounter').html("(300 / 최대 300자)");
+          }
+          
+      });
+      $("#boardTitle").on("input", function(e){
+          var content = $(this).val();
+          $('#tCounter').html("("+content.length+" / 최대 30자)");    //글자수 실시간 카운팅
+      
+          if (content.length > 30){
+              alert("최대 30자까지 입력 가능합니다.");
+              $(this).val(content.substring(0, 30));
+              $('#tCounter').html("(30 / 최대 30자)");
+          }
+          
+      });
 
       // 이미지 영역을 클릭할 때 파일 첨부 창이 뜨도록 설정하는 함수
       $(function() {
