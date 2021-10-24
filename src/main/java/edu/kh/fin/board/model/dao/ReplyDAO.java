@@ -30,6 +30,14 @@ public class ReplyDAO {
 		return sqlSession.insert("replyMapper.insertReply", reply);
 	}
 
+	/** 댓글 수정 삭제용 비밀번호 확인
+	 * @param replyPass
+	 * @return result
+	 */
+	public String selectPassword(int replyNo) {
+		return sqlSession.selectOne("replyMapper.selectPassword", replyNo);
+	}
+	
 	/** 댓글 수정
 	 * @param reply
 	 * @return result
@@ -37,7 +45,7 @@ public class ReplyDAO {
 	public int updateReply(Reply reply) {
 		return sqlSession.update("replyMapper.updateReply", reply);
 	}
-
+	
 	/** 댓글 삭제
 	 * @param reply
 	 * @return result

@@ -10,14 +10,17 @@
 	font-size : 1.2em;
 	font-weight: bold;
 }
-.rDate { display: inline-block; }
+.rPass, .rDate { display: inline-block; }
 .rContent, .replyBtnArea {
 	height: 100%;
 	width: 100%;
 }
 .replyBtnArea { text-align: right; }
-.replyUpdateWriter, .replyUpdatePassword{
-	width:30%;
+.replyUpdateWriter{
+	width: 16%;
+}
+.replyUpdatePassword{
+	width: 20%;
 }
 .replyUpdateContent {
 	resize: none;
@@ -67,11 +70,13 @@
 		<ul id="replyListArea">
 			<c:forEach items="${rList}" var="reply">
 				<li class="reply-row">
-					<div>
+					<div id="idPw" class="idPw">
 						<p class="rWriter">${reply.replyId}</p>
+						<p id="rPass" style="display:none;">${reply.replyPw}</p>
 <!-- 						
-						<input type="password" class="rPassword"/>
+						<label for="rPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
  -->						
+						<input type="password" class="rPass" name="rPass" placeholder="비밀번호를 입력하세요" /><!-- id="rPass${reply.replyNo}" -->
 						<p class="rDate">작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
@@ -148,16 +153,16 @@ function addReply()	{
 				type : "POST", 
 				data : {
 						"boardNo" : boardNo,
-						"replyContent" : replyContent,
 						"replyId" : replyId,
-						"replyPw" : replyPw
+						"replyPw" : replyPw,
+						"replyContent" : replyContent
 				}, // 비동기 통신을 할 때 전달할 파라미터
 				success : function(result){
 					if(result > 0){ // 댓글 삽입 성공
 						swal({"icon" : "success" , "title" : "댓글 등록 성공"});
-						$("#replyContent").val(""); // 댓글 작성 내용 삭제
 						$("#replyId").val(""); 
 						$("#replyPw").val("");
+						$("#replyContent").val(""); // 댓글 작성 내용 삭제
 						selectReplyList(); // 비동기로 댓글 목록 갱신
 					}
 				}, // 비동기 통신이 성공했을 때
@@ -198,15 +203,16 @@ function selectReplyList(){
 	            var li = $("<li>").addClass("reply-row");
 	         
 	            // 작성자, 작성일, 수정일 영역 
-	            var div = $("<div>");
-	            var rWriter = $("<p>").addClass("rWriter").text(item.replyId);
+	            var div = $("<div>").addClass("idPw");
+//				const textColor = $("<input>").attr({"type": "text", "id" : "textColor"}).val(info.event.textColor);
+//				const li9 = $("<li>").text( "글자색 : ").append(textColor); // 글자색
+	            var rWriter = $("<p>").addClass("rWriter").text( item.replyId);
+	            var rPass = $("<input>").attr({"type" : "password", "class" : "rPass", "placeholder" : "비밀번호를 입력하세요"}).text("");
 	            var rDate = $("<p>").addClass("rDate").text("작성일 : " + item.createDate);
 	            div.append(rWriter).append(rDate)
 	            
-	            
 	            // 댓글 내용
 	            var rContent = $("<p>").addClass("rContent").html(item.replyContent);
-	            
 	            
 	            // 대댓글, 수정, 삭제 버튼 영역
 	            var replyBtnArea = $("<div>").addClass("replyBtnArea");
@@ -221,8 +227,9 @@ function selectReplyList(){
 	               replyBtnArea.append(showUpdate).append(deleteReply);
 	            //}
 	            
-	            
 	            // 댓글 요소 하나로 합치기
+	            li.append(div).append(rWriter).append(rDate);
+	            li.append(div).append(rPass).append(rDate);
 	            li.append(div).append(rContent).append(replyBtnArea);
 	            
 	            
@@ -252,55 +259,120 @@ function selectReplyList(){
 function showUpdateReply(replyNo, el){
 	// el : 수정 버튼 클릭 이벤트가 발생한 요소
 	
-	   // 이미 열려있는 댓글 수정 창이 있을 경우 닫아주기
-	   if($(".replyUpdateContent").length > 0){
-	      $(".replyUpdateWriter").eq(0).parent().html(beforeReplyRow);
-	      $(".replyUpdatePassword").eq(0).parent().html(beforeReplyRow);
-	      $(".replyUpdateContent").eq(0).parent().html(beforeReplyRow);
-	   }
-	   // 댓글 수정화면 출력 전 요소를 저장해둠.
-	   beforeReplyRow = $(el).parent().parent().html();
-	   
-	   // 작성되어있던 내용(수정 전 댓글 내용) 
-	   var beforeWriter = $(el).parent().prev().html();
-	   var beforePassword = $(el).parent().prev().html();
-	   var beforeContent = $(el).parent().prev().html();
-	   
-	   // 이전 댓글 내용의 크로스사이트 스크립트 처리 해제, 개행문자 변경
-	   // -> 자바스크립트에는 replaceAll() 메소드가 없으므로 정규 표현식을 이용하여 변경
-	   beforeContent = beforeContent.replace(/&amp;/g, "&");   
-	   beforeContent = beforeContent.replace(/&lt;/g, "<");   
-	   beforeContent = beforeContent.replace(/&gt;/g, ">");   
-	   beforeContent = beforeContent.replace(/&quot;/g, "\"");   
-	   
-	   beforeContent = beforeContent.replace(/<br>/g, "\n");   
-	   
-	   
-	   // 기존 댓글 영역을 삭제하고 textarea를 추가 
-   	   $(el).parent().prev().remove();
-	   var writer = $("<input>").addClass("beforeWriter").attr("rows", "3").val(beforeContent);
-	   $(el).parent().before(writer);
-	   $(el).parent().prev().remove();
-	   var password = $("<input>").addClass("beforePassword").attr("rows", "3").val(beforeContent);
-	   $(el).parent().before(password);
-	   
-	   $(el).parent().prev().remove();
-	   var textarea = $("<textarea>").addClass("replyUpdateContent").attr("rows", "3").val(beforeContent);
-	   $(el).parent().before(textarea);
+	// 비밀번호 입력이 안되었을 때
+	let currentPass = document.getElementById("rPass").value;
+	
+    let replyPw = "${reply.replyPw}";       
+    
+    console.log("currentPass : " + currentPass);
+    console.log("replyPw : " + replyPw);
+	 if ($("#rPass"+"${reply.replyNo}").val().trim().length == 0) {
+	    alert("비밀번호를 입력해 주세요.");
+	    $("#rPass"+"${reply.replyNo}").focus();
+	    return false;
+	 }else{
+		    if(currentPass == replyPw){
+		    	
+		 	   // 이미 열려있는 댓글 수정 창이 있을 경우 닫아주기
+		 	   if($(".replyUpdateWriter").length > 0){
+		 		      $(".replyUpdateWriter").eq(0).parent().html(beforeReplyRow);
+		 	   }
+		 	   if($(".replyUpdatePassword").length > 0){
+		 		   $(".replyUpdatePassword").eq(0).parent().html(beforeReplyRow);
+		 	   }
+		 	   if($(".replyUpdateContent").length > 0){
+		 	      $(".replyUpdateContent").eq(0).parent().html(beforeReplyRow);
+		 	   }
+		    	
+		  	   // 댓글 수정화면 출력 전 요소를 저장해둠.
+		  	   beforeReplyRow = $(el).parent().parent().html();
+		  	   
+		  	   // 작성되어있던 내용(수정 전 댓글 내용) 
+		  	   var beforeWriter = $(el).parent().prev().parent().children().children().html();
+		  	   var beforePassword = $(el).parent().prev().parent().children().children("#rPass").val();
+		  	   var beforeContent = $(el).parent().prev().html();
+		  	   
+		  	   // 이전 댓글 내용의 크로스사이트 스크립트 처리 해제, 개행문자 변경
+		  	   // -> 자바스크립트에는 replaceAll() 메소드가 없으므로 정규 표현식을 이용하여 변경
+		  	   beforeWriter = beforeWriter.replace(/&amp;/g, "&");   
+		  	   beforeWriter = beforeWriter.replace(/&lt;/g, "<");   
+		  	   beforeWriter = beforeWriter.replace(/&gt;/g, ">");   
+		  	   beforeWriter = beforeWriter.replace(/&quot;/g, "\"");   
+		  	   
+		  	   beforeWriter = beforeWriter.replace(/<br>/g, "\n");   
+		  	   
+		  	   beforePassword = beforePassword.replace(/&amp;/g, "&");   
+		  	   beforePassword = beforePassword.replace(/&lt;/g, "<");   
+		  	   beforePassword = beforePassword.replace(/&gt;/g, ">");   
+		  	   beforePassword = beforePassword.replace(/&quot;/g, "\"");   
+		  	   
+		  	   beforePassword = beforePassword.replace(/<br>/g, "\n");   
+		  	   
+		  	   
+		  	   beforeContent = beforeContent.replace(/&amp;/g, "&");   
+		  	   beforeContent = beforeContent.replace(/&lt;/g, "<");   
+		  	   beforeContent = beforeContent.replace(/&gt;/g, ">");   
+		  	   beforeContent = beforeContent.replace(/&quot;/g, "\"");   
+		  	   
+		  	   beforeContent = beforeContent.replace(/<br>/g, "\n");   
+		 	
+		        // var rPass = $("<input>").attr({"type" : "password", "class" : "rPass"}).val("");	   
+		  	   // 기존 댓글 영역을 삭제하고 textarea를 추가 
+		 	   $(el).parent().parent().children("#idPw").children(".rWriter").remove();
+		  	   var writer = $("<input>").addClass("replyUpdateWriter").attr("rows", "3").val(beforeWriter);
+		  	   $(el).parent().parent().children("#idPw").children(".rDate").before(writer);
+		  	   
+		     	   $(el).parent().parent().children("#idPw").children(".rPass").remove();
+		  	   var password = $("<input>").attr({"class" : "replyUpdatePassword", "type" : "password", "rows" : "3"}).val(beforePassword);
+		  	   $(el).parent().parent().children("#idPw").children(".rDate").before(password);
+		  	   
+		     	   $(el).parent().prev().remove();
+		  	   var textarea = $("<textarea>").addClass("replyUpdateContent").attr("rows", "3").val(beforeContent);
+		  	   $(el).parent().before(textarea);
 
-	   
-	   
-	   // 수정 버튼
-	   var updateReply = $("<button>").addClass("btn btn-primary btn-sm ml-1 mb-4").text("댓글 수정").attr("onclick", "updateReply(" + replyNo + ", this)");
-	   
-	   // 취소 버튼
-	   var cancelBtn = $("<button>").addClass("btn btn-primary btn-sm ml-1 mb-4").text("취소").attr("onclick", "updateCancel(this)");
-	   
-	   var replyBtnArea = $(el).parent();
-	   
-	   $(replyBtnArea).empty(); 
-	   $(replyBtnArea).append(updateReply); 
-	   $(replyBtnArea).append(cancelBtn); 
+		  	   
+		  	   
+		  	   // 수정 버튼
+		  	   var updateReply = $("<button>").addClass("btn btn-primary btn-sm ml-1 mb-4").text("댓글 수정").attr("onclick", "updateReply(" + replyNo + ", this)");
+		  	   
+		  	   // 취소 버튼
+		  	   var cancelBtn = $("<button>").addClass("btn btn-primary btn-sm ml-1 mb-4").text("취소").attr("onclick", "updateCancel(this)");
+		  	   
+		  	   var replyBtnArea = $(el).parent();
+		  	   
+		  	   $(replyBtnArea).empty(); 
+		  	   $(replyBtnArea).append(updateReply); 
+		  	   $(replyBtnArea).append(cancelBtn); 
+//		  		ul.append(li6, li7, li8);
+//		  		$("#detailBody").append(ul);
+		 	   
+
+
+		    }else{
+		        alert("비밀번호가 틀렸습니다. 비밀번호는 영문자,숫자,특수문자 포함 6~10자리이내로 입력해주세요.");
+		        $("#rPass").focus();
+		        document.getElementById("rPass").value = null;
+		        return false;
+		     }
+	 }
+	/* 
+	<ul>
+		<li>
+			<div>
+				<p>작성자</p>
+				<input/>비밀번호
+				<p>작성일</p>
+			</div>
+			<p>내용</p>    =>   $(el).parent().before(textarea);
+			<div>
+				<button></button>
+				<button></button>
+			</div>
+		</li>
+	</ul>
+	*/
+	
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -315,12 +387,16 @@ function updateCancel(el){
 function updateReply(replyNo, el){
 	
 	// 수정된 댓글 내용
+	const replyId = $(el).parent().prev().val();
+	const replyPw = $(el).parent().prev().val();
 	const replyContent = $(el).parent().prev().val();
 	
 	$.ajax({
 		url : "${contextPath}/reply/updateReply",
 		type : "POST",
 		data : {"replyNo" : replyNo,
+				"replyId" : replyId,
+				"replyPw" : replyPw,
 				"replyContent" : replyContent},
 		success : function(result){
 			if(result > 0){
