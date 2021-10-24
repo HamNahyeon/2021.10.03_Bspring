@@ -28,7 +28,7 @@ import edu.kh.fin.board.model.vo.Reply;
 // RESTFUL : REST API를 제공하는 애플리케이션, 아키텍쳐
 
 @RequestMapping("/reply/*")
-@SessionAttributes({"loginMember"}) // 댓글 삽입 시 누가 썼는지 알아야 함 -> Session에서 얻어와야 함
+//@SessionAttributes({"loginMember"}) // 댓글 삽입 시 누가 썼는지 알아야 함 -> Session에서 얻어와야 함
 public class ReplyController {
 
 	@Autowired

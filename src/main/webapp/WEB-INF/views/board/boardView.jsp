@@ -223,9 +223,8 @@
 				</div>
 				
 				<%-- 댓글 영역 --%>
-<%-- 				
 				<jsp:include page="reply.jsp"></jsp:include>
- --%>				
+				
 			</div>
 <!-- 			
 			</form>
