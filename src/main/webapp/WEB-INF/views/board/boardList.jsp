@@ -142,11 +142,11 @@
 										<td>
 											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
 											
+<%-- 										
 											${pagination.listCount}
 											${bCount.index}
 											${pagination.currentPage - 1}
 											${pagination.limit}
-<%-- 										
 											
 											${pagination}
 											
