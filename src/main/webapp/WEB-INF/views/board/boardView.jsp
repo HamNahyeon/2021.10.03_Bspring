@@ -83,6 +83,10 @@
 	/* 글자 줄바꿈 css */
 		word-break:break-all;
 	}
+	#replyBoard{
+		background-color:yellowGreen;
+		border-color:yellowGreen;
+	}
 </style>
 </head>
 <body>
@@ -201,6 +205,12 @@
 					
 					<%-- 로그인된 회원과 해당 글 작성자가 같은 경우에만 버튼 노출--%>
 					<%-- <c:if test="${loginMember.memberNo == board.memberNo }"> --%>
+					
+					<!-- http://localhost:8081/fin/board/1/insert -->
+					<!-- http://localhost:8081/fin/board/1/223?cp=1 -->
+					
+					
+						<a href="list?type=${param.type}&cp=${param.cp}${searchStr}" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
 						<button id="deleteBtn" class="btn btn-primary float-right mr-2" onclick="deleteBoard();">삭제</button> 
 						<!-- onclick="fnRequest('delete');" -->
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm');">수정</button> 
@@ -220,6 +230,7 @@
 					
 					
 					<a href="list?type=${param.type}&cp=${param.cp}${searchStr}" class="btn btn-primary float-right mr-2">목록으로</a>
+
 				</div>
 				
 				<%-- 댓글 영역 --%>

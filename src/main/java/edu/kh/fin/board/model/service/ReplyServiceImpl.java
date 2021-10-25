@@ -48,13 +48,36 @@ public class ReplyServiceImpl implements ReplyService{
 		
 		return dao.updateReply(reply);
 	}
-
+	
+//	// 댓글 수정 비밀번호 반영
+//	@Transactional(rollbackFor=Exception.class)
+//	@Override
+//	public int updateReply(Reply reply, String rPass) {
+//		
+//		// 댓글 수정 용 비밀번호 조회
+//		String savePw = dao.selectPassword( reply.getReplyNo() );
+//		
+//		int result = 0;
+//		
+//		if(savePw.equals(rPass)) {
+//			// 크로스사이트 스크립트 방지처리
+//			reply.setReplyContent( BoardServiceImpl.replaceParameter( reply.getReplyContent() ) );
+//			reply.setReplyContent( reply.getReplyContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>") );
+//			
+//			result = dao.updateReply(reply);
+//		}else {
+//			result = -1;
+//		}
+//		
+//		return result;
+//	}
+	
 	// 댓글 삭제
 	@Transactional(rollbackFor=Exception.class)
 	@Override
 	public int deleteReply(Reply reply) {
 		return dao.deleteReply(reply);
 	}
-	
+
 	
 }

@@ -24,10 +24,18 @@ public interface ReplyService {
 	 */
 	int updateReply(Reply reply);
 
+//	/** 댓글 수정 비밀번호 반영
+//	 * @param reply
+//	 * @param rPass
+//	 * @return
+//	 */
+//	int updateReply(Reply reply, String rPass);
+	
 	/** 댓글 삭제
 	 * @param reply
 	 * @return result
 	 */
 	int deleteReply(Reply reply);
+
 
 }
