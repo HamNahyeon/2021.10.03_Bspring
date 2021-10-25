@@ -31,10 +31,18 @@
 			INSERT INTO REPLY VALUES
 			(SEQ_RNO.NEXTVAL, #{replyContent}, DEFAULT, DEFAULT, DEFAULT, #{replyId}, #{replyPw}, #{boardNo})
 	</insert>
+
+	<!-- 댓글 수정 삭제용 비밀번호조회 -->
+	<select id="selectPassword"  parameterType="_int" resultType="string">
+		SELECT REPLY_PASS FROM REPLY
+		WHERE REPLY_NO=#{replyNo}
+	</select>
 	
 	<!-- 댓글수정 -->
 	<update id="updateReply" parameterType="Reply">
 			UPDATE REPLY SET
+			REPLY_ID = #{replyId}
+			REPLY_PASS = #{replyPw}
 			REPLY_CONTENT = #{replyContent}
 			MODIFY_DT = SYSTIMESTAMP
 			WHERE REPLY_NO = #{replyNo}
