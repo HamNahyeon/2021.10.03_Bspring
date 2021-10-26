@@ -12,8 +12,12 @@ public class Board {
 	private int readCount;	
 	private Timestamp createDate;
 	
-	private String boardWriter;
-	private String boardPass;
+	private String boardWriter;		// 작성자
+	private String boardPass;		// 비밀번호
+	
+	private int boardGroup; 		// 그룹번호
+	private int boardDepth;			// 원글의 답글 / 원글의 답글의 답글 구분
+	private int boardStep;			// 그룹 내 pk
 	
 	private String boardContent;	// 글 내용
 	private int memberNo;			// 작성 회원 번호
@@ -196,6 +200,29 @@ public class Board {
 		this.boardPass = boardPass;
 	}
 
+	public int getBoardGroup() {
+		return boardGroup;
+	}
+
+	public void setBoardGroup(int boardGroup) {
+		this.boardGroup = boardGroup;
+	}
+
+	public int getBoardDepth() {
+		return boardDepth;
+	}
+
+	public void setBoardDepth(int boardDepth) {
+		this.boardDepth = boardDepth;
+	}
+
+	public int getBoardStep() {
+		return boardStep;
+	}
+
+	public void setBoardStep(int boardStep) {
+		this.boardStep = boardStep;
+	}
 
 	@Override
 	public String toString() {

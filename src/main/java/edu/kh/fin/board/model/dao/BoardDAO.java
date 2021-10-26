@@ -118,6 +118,24 @@ public class BoardDAO {
 			return 0;
 		}
 	}
+	
+	/** 답글 작성
+	 * @param board
+	 * @return boardNo
+	 */
+	public int insertReply(Board board) {
+		int result = sqlSession.insert("boardMapper.insertReply", board);
+		// insert 성공 시 1, 실패 시 0 
+		
+		// mapper에서 <selectKey> 수행 결과인 게시글 번호를
+		// 얕은 복사로 전달한 board에 추가했음
+		
+		if(result > 0) {
+			return board.getBoardNo();
+		}else {
+			return 0;
+		}
+	}
 
 	/** 파일 정보 삽입(List)
 	 * @param atList
@@ -182,11 +200,4 @@ public class BoardDAO {
 		return sqlSession.update("boardMapper.deleteBoard", board);
 	}
 
-
-
-
-
-
-	
-	
 }

@@ -61,6 +61,15 @@ public interface BoardService {
 	 */
 	int insertBoard(Board board, List<MultipartFile> images, String webPath, String savePath);
 	
+	/** 답글 작성
+	 * @param board
+	 * @param images
+	 * @param webPath
+	 * @param savePath
+	 * @return
+	 */
+	int insertReply(Board board, List<MultipartFile> images, String webPath, String savePath);
+	
 	/** 게시글 수정을 위한 상세조회
 	 * @param board
 	 * @return board
@@ -101,10 +110,5 @@ public interface BoardService {
 	 * @return
 	 */
 	String selectPassword(int boardNo);
-
-
 	
-
-
-
 }

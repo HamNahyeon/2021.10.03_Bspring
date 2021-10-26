@@ -216,6 +216,59 @@ public class BoardServiceImpl implements BoardService{
 		return boardNo;
 	}
 	
+	// 답글작성
+	@Transactional(rollbackFor=Exception.class)
+	@Override
+	public int insertReply(Board board, List<MultipartFile> images, String webPath, String savePath) {
+		board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
+		board.setBoardContent(replaceParameter( board.getBoardContent() ) );
+		board.setBoardWriter(replaceParameter(board.getBoardWriter()));
+		board.setBoardPass(replaceParameter(board.getBoardPass()));
+		
+		board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+		board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
+		
+		int boardNo = dao.insertReply(board);
+		
+		System.out.println("boardNo : " + boardNo);
+		if(boardNo > 0) { // 게시글 삽입 성공
+			
+			List<Attachment> atList = new ArrayList<Attachment>();
+			
+			for(int i = 0; i < images.size(); i++) {
+				if( !images.get(i).getOriginalFilename().equals("") ) {
+					String fileName = rename(images.get(i).getOriginalFilename());
+					
+					Attachment at = new Attachment();
+					at.setFileName(fileName); // 변경한 파일명
+					at.setFilePath(webPath); // 웹 접근 경로
+					at.setBoardNo(boardNo); // 게시글 삽입 결과(게시글 번호)
+					at.setFileLevel(i); // for문 반복자 == 파일레벨
+					
+					atList.add(at);
+				}
+			}
+			if(!atList.isEmpty()) { // atList가 비어있지 않을 때 == 업로드된 이미지가 있을 때
+				int result = dao.insertAttachmentList(atList);
+				if(atList.size() == result) { // 모두 삽입 성공한 경우
+					for(int i = 0; i < atList.size(); i++) {
+						try {
+							images.get( atList.get(i).getFileLevel() )
+							.transferTo( new File(savePath + "/" + atList.get(i).getFileName() ) );
+						} catch (Exception e) {
+							e.printStackTrace();
+							throw new SaveFileException();
+						}
+					}
+					
+				}else { // 하나라도 삽입 실패한 경우
+					throw new SaveFileException();
+				}
+			}
+		}
+		return boardNo;
+	}
+	
 	// 게시글 수정용 상세 조회 
 	@Override
 	public Board selectUpdateBoard(int boardNo) {
@@ -413,14 +466,5 @@ public class BoardServiceImpl implements BoardService{
 	public String selectPassword(int boardNo) {
 		return dao.selectPassword(boardNo);
 	}
-
-
-
-
-
-
-
-
-
 
 }

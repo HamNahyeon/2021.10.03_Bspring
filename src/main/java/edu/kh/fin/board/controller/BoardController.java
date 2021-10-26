@@ -204,6 +204,71 @@ public class BoardController {
 		return path;
 	}
 	
+	
+	
+	// 답글 삽입 화면 전환
+	@RequestMapping(value="{boardType}/insert/{boardGroup}/reply", method=RequestMethod.GET)
+	public String insertReply(Model model) {
+		
+		// DB에서 CATEGORY테이블 내용을 모두 조회 해오기
+		List<Category> category = service.selectCategory();
+		
+		model.addAttribute("category", category); 
+		// 요청 위임 페이지에서 사용할 수 있도록 데이터 전달
+		
+		return "board/boardReplyInsert";
+	}
+	
+	// 답글 삽입
+	@RequestMapping(value="{boardType}/insert/{boardGroup}/reply", method=RequestMethod.POST)
+	public String insertReply(@PathVariable("boardType")int boardType,
+							  @PathVariable("boardGroup") int boardGroup,
+										 @ModelAttribute Board board /* 커맨드객체 : 보드객체 필드값이랑 같으면 자동으로 대입 */,
+										 @RequestParam("images") List<MultipartFile> images /* 업로드된 이미지 파일 */,
+										 HttpServletRequest request, RedirectAttributes ra
+										 ) {
+		
+		// 2) @PathVariabel boardType을 board 커맨드 객체에 세팅
+		board.setBoardType(boardType);
+		
+		// 3) 웹상 접근 경로, 실제 파일 저장 경로 지정
+		String webPath = "resources/images/";
+		
+		// 게시판 타입에 따라 업로드되는 파일의 경로를 지정
+		switch(boardType) {
+			case 1 : webPath += "freeboard/"; break;
+			case 2 : webPath += "informationboard/"; break;
+			case 3 : webPath += "qnaboard/"; break;
+		}
+		
+		// 실제로 파일이 저장되는 경로 얻어오기
+		String savePath = request.getSession().getServletContext().getRealPath(webPath);
+		
+		// 4) 게시글 삽입 Service호출
+		int boardNo = service.insertReply(board, images, webPath, savePath);
+		// 변수명이 boardNo인 이유?
+		// -> 삽입 성공 시 해당 번호 글로 상세조회 하기 위해
+		
+		String path = null;
+		if(boardNo > 0) { // 삽입 성공
+			// 상세 조회 페이지로 리다이렉트 -> /fin/board/1/600
+			// 현재 페이지						   -> /fin/board/1/insert
+//			path = "redirect:/board/" + boardType + "/" + ;
+			path ="board/boardView";
+			// "redirect:/board/" + boardType + "/list";
+			MemberController.swalSetMessage(ra, "success", "게시글 삽입 성공", null);
+		}else { // 삽입 실패
+			// 이전 게시글 작성화면으로 리다이렉트
+			path= "redirect:" + request.getHeader("referer"); // 요청 이전 주소
+			MemberController.swalSetMessage(ra, "error", "게시글 삽입 실패", null);
+		}
+		
+		return path;
+	}
+	
+	
+	
+	
 	// 게시글 수정화면전환
 	@RequestMapping(value="{boardType}/updateForm", method=RequestMethod.POST)
 	public String updateForm(int boardNo, Model model) {
