@@ -231,19 +231,41 @@
 		
 		<!-- 답글 작성 -->
 		<insert id="insertReply" parameterType="Board" useGeneratedKeys="true">
+		
+				<!-- (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo}) -->
 				<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
 						SELECT SEQ_BNO.NEXTVAL FROM DUAL
 				</selectKey>
+<!-- 				
+			    <selectKey keyProperty="board_re_ref" resultType="_int"  order="BEFORE">
+			        SELECT BOARD_DEPTH(MAX(BOARD_DEPTH), 0) + 1 
+			        FROM BOARD
+    			</selectKey>
+ -->   			
 				INSERT INTO BOARD VALUES
 				(#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
-				
-				#{boardDepth} + 1, 
-				
-				#{boardStep} + 1
-				
+				(SELECT BOARD_DEPTH + 1 FROM BOARD WHERE BOARD_NO = #{boardNo}), 
+				(SELECT BOARD_STEP + 1 FROM BOARD WHERE BOARD_NO = #{boardNo})
 				)
-		</insert>		
+		</insert>
+		
+		<update id="updateDepth" parameterType="Board">
+			UPDATE BOARD 
+			SET BOARD_DEPTH = #{boardDepth} + 1
+			WHERE BOARD_NO = #{boardNo}
+		</update>
+		
+		<update id="insertReplyUpdate" parameterType="Board">
+			<![CDATA[
+				UPDATE BOARD 
+				SET BOARD_STEP = BOARD_STEP + 1 
+				WHERE
+					BOARD_DEPTH != 0 AND
+					BOARD_GROUP = #{boardGroup}
+					AND BOARD_STEP > (#{boardStep}-1)
+			]]>
+		</update>	
 		
 		<!-- 파일 정보 삽입(List) -->
 		<!-- parameterType="java.util.List" 원래 경로가 있지만 별칭이 원래 지정되어있음 -->

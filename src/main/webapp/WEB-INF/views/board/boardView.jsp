@@ -105,7 +105,10 @@
 				
 				<!-- Title -->
 				<h3 class="mt-4" id="boardTitle"> ${board.boardTitle} </h3>
-
+그룹 : ${board.boardGroup}
+${board.boardDepth}
+${board.boardStep}
+${board}
 				<!-- Writer -->
 				<p class="lead">
 					작성자 : ${board.boardWriter}
@@ -209,8 +212,10 @@
 					<!-- http://localhost:8081/fin/board/1/insert -->
 					<!-- http://localhost:8081/fin/board/1/223?cp=1 -->
 					
-					
-						<a href="insert/${board.boardNo}/reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
+						<a href="insert/${board.boardGroup}/reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
+<!-- 						
+						<a href="reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
+ -->						
 						<button id="deleteBtn" class="btn btn-primary float-right mr-2" onclick="deleteBoard();">삭제</button> 
 						<!-- onclick="fnRequest('delete');" -->
 						<button id="updateBtn" class="btn btn-primary float-right mr-2" onclick="fnRequest('updateForm');">수정</button> 

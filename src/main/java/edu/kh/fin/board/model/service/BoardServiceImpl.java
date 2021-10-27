@@ -73,8 +73,6 @@ public class BoardServiceImpl implements BoardService{
 		return dao.selectSearchList(search, pagination);
 	}
 	
-	
-
 	// 게시글 상세 조회
 	@Transactional(rollbackFor=Exception.class) // 모든 예외 발생 시 롤백
 	@Override

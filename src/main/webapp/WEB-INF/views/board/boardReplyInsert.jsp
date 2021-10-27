@@ -68,7 +68,6 @@
                </div>
             </c:if>
             
-            
             <div class="form-inline mb-2">
                <label class="input-group-addon mr-3 insert-label">제목</label> 
                <input type="text" class="form-control" id="boardTitle" name="boardTitle" size="70"><span style="color:#aaa;" id="tCounter" >(0 / 최대 30자)</span>
@@ -140,7 +139,10 @@
 
             <div class="text-center">
                <button type="submit" class="btn btn-primary">등록</button>
+               <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">이전으로</button>
+<!--                
                <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">목록으로</button>
+   -->             
                <!-- 
                   이전페이지로 돌아가기 
                   javascript:history.back();

@@ -124,17 +124,29 @@ public class BoardDAO {
 	 * @return boardNo
 	 */
 	public int insertReply(Board board) {
-		int result = sqlSession.insert("boardMapper.insertReply", board);
+		// int result2 = sqlSession.update("boardMapper.insertReplyUpdate", board);
 		// insert 성공 시 1, 실패 시 0 
 		
 		// mapper에서 <selectKey> 수행 결과인 게시글 번호를
 		// 얕은 복사로 전달한 board에 추가했음
 		
-		if(result > 0) {
-			return board.getBoardNo();
-		}else {
-			return 0;
-		}
+			int result = sqlSession.insert("boardMapper.insertReply", board);
+			// insert 성공 시 1, 실패 시 0 
+			
+			// mapper에서 <selectKey> 수행 결과인 게시글 번호를
+			// 얕은 복사로 전달한 board에 추가했음
+			
+			if(result > 0) {
+				int depth = sqlSession.update("boardMapper.updateDepth", board);
+				
+				if(depth > 0) {
+					return board.getBoardNo();
+				}else {
+					return 0;
+				}
+			}else {
+				return 0;
+			}
 	}
 
 	/** 파일 정보 삽입(List)

@@ -45,19 +45,42 @@ public class Board {
 	}
 	
 	// 게시글 조회용 
-	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
-				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass) {
+//	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
+//				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass,
+//				int boardGroup, int boardDepth, int boardStep) {
+//		super();
+//		this.boardNo = boardNo;
+//		this.categoryName = categoryName;
+//		this.boardTitle = boardTitle;
+//		this.boardContent = boardContent;
+//		this.boardWriter = boardWriter;
+//		this.readCount = readCount;
+//		this.createDate = createDate;
+//		this.modifyDate = modifyDate;
+//		this.boardType = boardType;
+//		this.boardPass = boardPass;
+//		this.boardGroup = boardGroup;
+//		this.boardDepth = boardDepth;
+//		this.boardStep = boardStep;
+//	}
+	
+	public Board(int boardNo, String boardTitle, String categoryName, int readCount, Timestamp createDate,
+			String boardWriter, String boardPass, int boardGroup, int boardDepth, int boardStep, String boardContent,
+			Timestamp modifyDate, int boardType) {
 		super();
 		this.boardNo = boardNo;
-		this.categoryName = categoryName;
 		this.boardTitle = boardTitle;
-		this.boardContent = boardContent;
-		this.boardWriter = boardWriter;
+		this.categoryName = categoryName;
 		this.readCount = readCount;
 		this.createDate = createDate;
+		this.boardWriter = boardWriter;
+		this.boardPass = boardPass;
+		this.boardGroup = boardGroup;
+		this.boardDepth = boardDepth;
+		this.boardStep = boardStep;
+		this.boardContent = boardContent;
 		this.modifyDate = modifyDate;
 		this.boardType = boardType;
-		this.boardPass = boardPass;
 	}
 
 	public int getBoardNo() {
@@ -228,15 +251,10 @@ public class Board {
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardContent=" + boardContent
+				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardGroup=" + boardGroup
+				+ ", boardDepth=" + boardDepth + ", boardStep=" + boardStep + ", boardContent=" + boardContent
 				+ ", memberNo=" + memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType="
 				+ boardType + ", categoryCode=" + categoryCode + "]";
 	}
-
-
-
-
-	
-	
 
 }
