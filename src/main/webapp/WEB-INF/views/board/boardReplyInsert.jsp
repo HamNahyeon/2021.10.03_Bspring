@@ -56,7 +56,7 @@
             - application/x-www-form-urlencoded : 모든 문자를 서버로 전송하기 전에 인코딩 (form태그 기본값)
             - multipart/form-data : 모든 문자를 인코딩 하지 않음.(원본 데이터가 유지되어 이미지, 파일등을 서버로 전송 할 수 있음.) 
          -->
-         <form action="insert" method="post"  enctype="multipart/form-data" role="form" onsubmit="return boardValidate();">
+         <form action="reply" method="post"  enctype="multipart/form-data" role="form" onsubmit="return boardValidate();">
             <c:if test="${!empty category}"> 
                <div class="mb-2">
                   <label class="input-group-addon mr-3 insert-label">카테고리</label> 
@@ -67,7 +67,6 @@
                   </select>
                </div>
             </c:if>
-            
             
             <div class="form-inline mb-2">
                <label class="input-group-addon mr-3 insert-label">제목</label> 
@@ -140,7 +139,10 @@
 
             <div class="text-center">
                <button type="submit" class="btn btn-primary">등록</button>
+               <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">이전으로</button>
+<!--                
                <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">목록으로</button>
+   -->             
                <!-- 
                   이전페이지로 돌아가기 
                   javascript:history.back();
@@ -225,6 +227,7 @@
          }
          
          var boardPass = $('#boardPass').val();
+         // ^[A-Za-z\d!@#\$%\^\&\*\(\)\-\+\-\=\?\.\,]{6,10}$ 
 //         var passReg = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
          var passReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{6,10}$/;
          

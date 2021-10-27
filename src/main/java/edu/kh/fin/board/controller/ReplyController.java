@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -62,10 +64,38 @@ public class ReplyController {
 		return service.insertReply(reply);
 	}
 	
+//	// 댓글 수정 비밀번호 반영
+//	//@ResponseBody
+//	@RequestMapping(value="updateReply", method=RequestMethod.POST)
+//	public String updateReply(
+//							Reply reply,
+//							@RequestParam("rPass") String rPass,
+//							RedirectAttributes ra
+//							) {
+//		
+//		int result = service.updateReply(reply, rPass);
+//		
+//		String path="redirect:";
+//		
+//		if(result > 0) {
+//			swalSetMessage(ra,"success", "댓글 수정 성공", null);
+//			path +="";
+//		}else {
+//			swalSetMessage(ra,"error", "댓글 수정 실패", null);
+//			path +="";
+//		}
+//		
+//		return path;
+//	}
+	
 	// 댓글 수정
 	//@ResponseBody
 	@RequestMapping(value="updateReply", method=RequestMethod.POST)
-	public int updateReply(Reply reply) {
+	public int updateReply(
+							Reply reply,
+							@RequestParam("rPass") String rPass,
+							RedirectAttributes ra
+							) {
 		return service.updateReply(reply);
 	}
 	
@@ -74,5 +104,15 @@ public class ReplyController {
 	@RequestMapping(value="deleteReply", method=RequestMethod.GET)
 	public int deleteReply(Reply reply) {
 		return service.deleteReply(reply);
+	}
+	
+	
+	// SweetAlert를 이용한 메시지 전달용 메서드
+	public static void swalSetMessage(RedirectAttributes ra, String icon, String title, String text) {
+		// RedirectAttibutes : 리다이렉트 시 값을 전달하는 용도의 객체 
+		
+		ra.addFlashAttribute("icon", icon);
+		ra.addFlashAttribute("title", title);
+		ra.addFlashAttribute("text", text);
 	}
 }

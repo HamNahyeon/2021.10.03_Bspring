@@ -12,8 +12,12 @@ public class Board {
 	private int readCount;	
 	private Timestamp createDate;
 	
-	private String boardWriter;
-	private String boardPass;
+	private String boardWriter;		// 작성자
+	private String boardPass;		// 비밀번호
+	
+	private int boardGroup; 		// 그룹번호
+	private int boardDepth;			// 원글의 답글 / 원글의 답글의 답글 구분
+	private int boardStep;			// 그룹 내 pk
 	
 	private String boardContent;	// 글 내용
 	private int memberNo;			// 작성 회원 번호
@@ -41,19 +45,42 @@ public class Board {
 	}
 	
 	// 게시글 조회용 
-	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
-				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass) {
+//	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
+//				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass,
+//				int boardGroup, int boardDepth, int boardStep) {
+//		super();
+//		this.boardNo = boardNo;
+//		this.categoryName = categoryName;
+//		this.boardTitle = boardTitle;
+//		this.boardContent = boardContent;
+//		this.boardWriter = boardWriter;
+//		this.readCount = readCount;
+//		this.createDate = createDate;
+//		this.modifyDate = modifyDate;
+//		this.boardType = boardType;
+//		this.boardPass = boardPass;
+//		this.boardGroup = boardGroup;
+//		this.boardDepth = boardDepth;
+//		this.boardStep = boardStep;
+//	}
+	
+	public Board(int boardNo, String boardTitle, String categoryName, int readCount, Timestamp createDate,
+			String boardWriter, String boardPass, int boardGroup, int boardDepth, int boardStep, String boardContent,
+			Timestamp modifyDate, int boardType) {
 		super();
 		this.boardNo = boardNo;
-		this.categoryName = categoryName;
 		this.boardTitle = boardTitle;
-		this.boardContent = boardContent;
-		this.boardWriter = boardWriter;
+		this.categoryName = categoryName;
 		this.readCount = readCount;
 		this.createDate = createDate;
+		this.boardWriter = boardWriter;
+		this.boardPass = boardPass;
+		this.boardGroup = boardGroup;
+		this.boardDepth = boardDepth;
+		this.boardStep = boardStep;
+		this.boardContent = boardContent;
 		this.modifyDate = modifyDate;
 		this.boardType = boardType;
-		this.boardPass = boardPass;
 	}
 
 	public int getBoardNo() {
@@ -196,20 +223,38 @@ public class Board {
 		this.boardPass = boardPass;
 	}
 
+	public int getBoardGroup() {
+		return boardGroup;
+	}
+
+	public void setBoardGroup(int boardGroup) {
+		this.boardGroup = boardGroup;
+	}
+
+	public int getBoardDepth() {
+		return boardDepth;
+	}
+
+	public void setBoardDepth(int boardDepth) {
+		this.boardDepth = boardDepth;
+	}
+
+	public int getBoardStep() {
+		return boardStep;
+	}
+
+	public void setBoardStep(int boardStep) {
+		this.boardStep = boardStep;
+	}
 
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardContent=" + boardContent
+				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardGroup=" + boardGroup
+				+ ", boardDepth=" + boardDepth + ", boardStep=" + boardStep + ", boardContent=" + boardContent
 				+ ", memberNo=" + memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType="
 				+ boardType + ", categoryCode=" + categoryCode + "]";
 	}
-
-
-
-
-	
-	
 
 }

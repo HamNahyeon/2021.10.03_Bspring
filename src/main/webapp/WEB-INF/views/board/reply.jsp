@@ -72,11 +72,11 @@
 				<li class="reply-row">
 					<div id="idPw" class="idPw">
 						<p class="rWriter">${reply.replyId}</p>
-						<p id="rPass" style="display:none;">${reply.replyPw}</p>
+						<p id="${reply.replyNo}" style="display:none;">${reply.replyPw}</p>
 <!-- 						
 						<label for="rPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
  -->						
-						<input type="password" class="rPass" name="rPass" placeholder="비밀번호를 입력하세요" /><!-- id="rPass${reply.replyNo}" -->
+						<input type="password" class="rPass" id="rPass${reply.replyNo}" name="rPass" placeholder="비밀번호를 입력하세요" /><!-- id="rPass${reply.replyNo}" -->
 						<p class="rDate">작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
@@ -260,15 +260,19 @@ function showUpdateReply(replyNo, el){
 	// el : 수정 버튼 클릭 이벤트가 발생한 요소
 	
 	// 비밀번호 입력이 안되었을 때
-	let currentPass = document.getElementById("rPass").value;
+	let currentPass = document.getElementById("rPass${reply.replyNo}").value;
+	let replyPass = document.getElementById("${reply.replyNo}").value;
 	
-    let replyPw = "${reply.replyPw}";       
+    // let replyPw = "${reply.replyPw}"; 
     
-    console.log("currentPass : " + currentPass);
-    console.log("replyPw : " + replyPw);
-	 if ($("#rPass"+"${reply.replyNo}").val().trim().length == 0) {
+    console.log(replyPw);
+    console.log(currentPass);
+    console.log("rPass"+replyNo);
+    
+	 if ($("#rPass"+replyNo).val().trim().length == 0) {
+//	 if ($(el).val().trim().length == 0) {
 	    alert("비밀번호를 입력해 주세요.");
-	    $("#rPass"+"${reply.replyNo}").focus();
+	    $("#rPass"+replyNo).focus();
 	    return false;
 	 }else{
 		    if(currentPass == replyPw){
@@ -350,8 +354,8 @@ function showUpdateReply(replyNo, el){
 
 		    }else{
 		        alert("비밀번호가 틀렸습니다. 비밀번호는 영문자,숫자,특수문자 포함 6~10자리이내로 입력해주세요.");
-		        $("#rPass").focus();
-		        document.getElementById("rPass").value = null;
+		        $("#rPass"+replyNo).focus();
+		        document.getElementById("rPass${reply.replyNo}").value = null;
 		        return false;
 		     }
 	 }
