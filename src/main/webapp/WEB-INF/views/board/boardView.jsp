@@ -212,7 +212,7 @@ ${board}
 					<!-- http://localhost:8081/fin/board/1/insert -->
 					<!-- http://localhost:8081/fin/board/1/223?cp=1 -->
 					
-						<a href="insert/${board.boardGroup}/reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
+						<a href="insert/${board.boardNo}/reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
 <!-- 						
 						<a href="reply" id="replyBoard" class="btn btn-primary float-right mr-2">답글달기</a>
  -->						

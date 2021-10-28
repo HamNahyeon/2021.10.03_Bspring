@@ -72,7 +72,7 @@
 				<li class="reply-row">
 					<div id="idPw" class="idPw">
 						<p class="rWriter">${reply.replyId}</p>
-						<p id="${reply.replyNo}" style="display:none;">${reply.replyPw}</p>
+						<input id="${reply.replyNo}" style="display:none;" value="${reply.replyPw}" />
 <!-- 						
 						<label for="rPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
  -->						
