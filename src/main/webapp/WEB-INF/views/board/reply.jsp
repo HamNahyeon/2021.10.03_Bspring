@@ -208,6 +208,7 @@ function selectReplyList(){
 //				const li9 = $("<li>").text( "글자색 : ").append(textColor); // 글자색
 	            var rWriter = $("<p>").addClass("rWriter").text( item.replyId);
 	            var rPass = $("<input>").attr({"type" : "password", "class" : "rPass", "placeholder" : "비밀번호를 입력하세요"}).text("");
+/* 	            var rPass = $("<input>").attr({"type" : "password",  "style" : "display:none;"}).text("${reply.replyPass}"); */
 	            var rDate = $("<p>").addClass("rDate").text("작성일 : " + item.createDate);
 	            div.append(rWriter).append(rDate)
 	            
@@ -260,13 +261,13 @@ function showUpdateReply(replyNo, el){
 	// el : 수정 버튼 클릭 이벤트가 발생한 요소
 	
 	// 비밀번호 입력이 안되었을 때
-	let replyPass = document.getElementById("rPass"+${reply.replyNo}).value;
-	let currentPass = document.getElementById(${reply.replyNo}).value;
-	console.log("웨안대1");
-    // let replyPw = "${reply.replyPw}"; 
-    
-    console.log(replyPw);
-    console.log(currentPass);
+   	// var beforeWriter = $(el).parent().prev().parent().children().children().html();
+	// let replyPass = $(el).parent().prev().children().prev().html();
+	// let replyPass = document.getElementById("rPass"+replyNo).value;
+	let currentPass = document.getElementById(replyNo).value;
+
+	console.log("replyPass : " + replyPw);
+    console.log("currentPass : " + currentPass);
     console.log("rPass"+replyNo);
     
 	 if ($("#rPass"+replyNo).val().trim().length == 0) {
@@ -277,8 +278,8 @@ function showUpdateReply(replyNo, el){
 	    
 	    console.log("비밀번호 미입력");
 	 }else{
-		    if(currentPass == replyPw){
-		    	
+		    if(currentPass == $("#rPass"+replyNo).val()){
+		    	//---------------------------------------------------- 여기가 문제 왜 왜왜오애ㅗ애ㅗ애왜오애ㅗ애ㅗ오애오애ㅗ
 		 	   // 이미 열려있는 댓글 수정 창이 있을 경우 닫아주기
 		 	   if($(".replyUpdateWriter").length > 0){
 		 		      $(".replyUpdateWriter").eq(0).parent().html(beforeReplyRow);
