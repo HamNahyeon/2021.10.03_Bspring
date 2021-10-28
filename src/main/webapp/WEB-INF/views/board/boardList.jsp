@@ -142,13 +142,21 @@
 									<tr>
 										<%-- 글 번호 --%>
 										<td>
-										
-										<c:if test="${board.boardDepth == 0}">
 											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
-										</c:if>
-										
-											
-											
+
+<%--  									답글에 - 들여쓰기번호 작성--%>
+<%-- 
+ 										<c:choose>
+ 											<c:when test="${board.boardDepth == 0}">
+ 												${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
+ 											</c:when>
+ 											<c:otherwise>
+												<c:forEach var="p" begin="${board.boardDepth}" end="${board.boardDepth}" step="1">
+													${board.boardGroup} - ${p}											
+												</c:forEach>
+ 											</c:otherwise>
+ 										</c:choose>
+ --%>											
 <%-- 										
 											${pagination.listCount}
 											${bCount.index}
