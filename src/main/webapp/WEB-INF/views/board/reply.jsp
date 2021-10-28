@@ -72,7 +72,7 @@
 				<li class="reply-row">
 					<div id="idPw" class="idPw">
 						<p class="rWriter">${reply.replyId}</p>
-						<p id="${reply.replyNo}" style="display:none;">${reply.replyPw}</p>
+						<input id="${reply.replyNo}" style="display:none;" value="${reply.replyPw}" />
 <!-- 						
 						<label for="rPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
  -->						
@@ -260,9 +260,9 @@ function showUpdateReply(replyNo, el){
 	// el : 수정 버튼 클릭 이벤트가 발생한 요소
 	
 	// 비밀번호 입력이 안되었을 때
-	let currentPass = document.getElementById("rPass${reply.replyNo}").value;
-	let replyPass = document.getElementById("${reply.replyNo}").value;
-	
+	let replyPass = document.getElementById("rPass"+${reply.replyNo}).value;
+	let currentPass = document.getElementById(${reply.replyNo}).value;
+	console.log("웨안대1");
     // let replyPw = "${reply.replyPw}"; 
     
     console.log(replyPw);
@@ -274,6 +274,8 @@ function showUpdateReply(replyNo, el){
 	    alert("비밀번호를 입력해 주세요.");
 	    $("#rPass"+replyNo).focus();
 	    return false;
+	    
+	    console.log("비밀번호 미입력");
 	 }else{
 		    if(currentPass == replyPw){
 		    	
@@ -357,6 +359,7 @@ function showUpdateReply(replyNo, el){
 		        $("#rPass"+replyNo).focus();
 		        document.getElementById("rPass${reply.replyNo}").value = null;
 		        return false;
+		        console.log("비밀번호틀림");
 		     }
 	 }
 	/* 

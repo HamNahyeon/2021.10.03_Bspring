@@ -14,6 +14,10 @@ import edu.kh.fin.board.model.vo.Category;
 import edu.kh.fin.board.model.vo.Pagination;
 import edu.kh.fin.board.model.vo.Search;
 
+/**
+ * @author hamnahyeon
+ *
+ */
 @Repository
 public class BoardDAO {
 
@@ -210,6 +214,39 @@ public class BoardDAO {
 	 */
 	public int deleteBoard(Board board) {
 		return sqlSession.update("boardMapper.deleteBoard", board);
+	}
+
+	/** 그룹번호조회
+	 * @param boardNo
+	 * @return
+	 */
+	public Board selectBoardGroup(int boardNo) {
+		return sqlSession.selectOne("boardMapper.selectBoardGroup", boardNo);
+	}
+
+	/**
+	 * @param boardGroup
+	 * @return
+	 */
+	public int updateDepth(int boardGroup) {
+		return sqlSession.update("boardMapper.updateDepth", boardGroup);
+	}
+
+	/**
+	 * @param boardGroup
+	 * @return
+	 */
+	public int updateStep(Board boardGroup) {
+		return sqlSession.update("boardMapper.updateStep", boardGroup);
+	}
+
+	/** 보드 그룹번호가 0일 때 > 답글이 달릴 때 
+	 * @param boardNo
+	 * @return
+	 */
+	public Board updateBoardGroup(int boardNo) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

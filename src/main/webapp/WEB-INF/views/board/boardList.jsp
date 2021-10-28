@@ -80,7 +80,9 @@
 			<div class="list-wrapper">
 				<table class="table table-hover table-striped my-5" id="list-table">
 					<thead>
+<%-- 					
 						<h6 id="listCount">총 게시글 수 : ${pagination.listCount}</td>
+ --%>						
 						<tr>
 							<th>글번호</th>
 							<th>카테고리</th>
@@ -141,7 +143,20 @@
 										<%-- 글 번호 --%>
 										<td>
 											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
-											
+
+<%--  									답글에 - 들여쓰기번호 작성--%>
+<%-- 
+ 										<c:choose>
+ 											<c:when test="${board.boardDepth == 0}">
+ 												${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
+ 											</c:when>
+ 											<c:otherwise>
+												<c:forEach var="p" begin="${board.boardDepth}" end="${board.boardDepth}" step="1">
+													${board.boardGroup} - ${p}											
+												</c:forEach>
+ 											</c:otherwise>
+ 										</c:choose>
+ --%>											
 <%-- 										
 											${pagination.listCount}
 											${bCount.index}
@@ -179,7 +194,13 @@
 										
 										<%-- 글 제목 --%>
 										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
-											<a href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">                                
+											<a href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
+												<c:forEach begin="1" end="${board.boardDepth}" step="1">
+													<span style="padding-left:30px"></span>
+												</c:forEach>
+											
+												<c:forEach var="p" begin="1" end="${board.boardDepth}">RE:</c:forEach>  
+												
 <%-- 												
 												썸네일 출력
 												<c:choose>

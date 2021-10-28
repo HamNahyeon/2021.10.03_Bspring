@@ -110,5 +110,5 @@ public interface BoardService {
 	 * @return
 	 */
 	String selectPassword(int boardNo);
-	
+
 }

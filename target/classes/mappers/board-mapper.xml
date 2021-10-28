@@ -142,7 +142,7 @@
 				SELECT * FROM BOARD_LIST
 				WHERE BOARD_STATUS = 'Y'
 				AND BOARD_TYPE_NO = #{boardType}
-				ORDER BY BOARD_GROUP DESC, BOARD_DEPTH<!-- , BOARD_STEP, BOARD_NO DESC -->
+				ORDER BY BOARD_GROUP DESC, BOARD_STEP, BOARD_DEPTH, BOARD_NO DESC
 		</select>
 		
 		<!-- 게시글 목록 조회 (검색)-->	
@@ -176,12 +176,8 @@
 						#{code}
 					</foreach>
 				</if>
-				ORDER BY BOARD_NO DESC
+				ORDER BY BOARD_GROUP DESC, BOARD_STEP, BOARD_DEPTH,  BOARD_NO DESC
 		</select>
-		
-		
-		
-		
 		
 		<!-- 게시글 상세조회
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
@@ -230,12 +226,34 @@
 		</insert>
 		
 		<!-- 답글 작성 -->
+<!-- 		
+		<insert id="insertReply" parameterType="Board" useGeneratedKeys="true">
+		
+				(SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo})
+				<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
+						SELECT SEQ_BNO.NEXTVAL FROM DUAL
+				</selectKey>
+				
+			    <selectKey keyProperty="board_re_ref" resultType="_int"  order="BEFORE">
+			        SELECT BOARD_DEPTH(MAX(BOARD_DEPTH), 0) + 1 
+			        FROM BOARD
+    			</selectKey>
+   			
+				INSERT INTO BOARD VALUES
+				(#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
+				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
+				#{boardDepth} + 1, 
+				#{boardStep} + 1
+				)
+		</insert>
+ -->		
 		<insert id="insertReply" parameterType="Board" useGeneratedKeys="true">
 		
 				<!-- (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo}) -->
 				<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
 						SELECT SEQ_BNO.NEXTVAL FROM DUAL
 				</selectKey>
+
 <!-- 				
 			    <selectKey keyProperty="board_re_ref" resultType="_int"  order="BEFORE">
 			        SELECT BOARD_DEPTH(MAX(BOARD_DEPTH), 0) + 1 
@@ -243,12 +261,20 @@
     			</selectKey>
  -->   			
 				INSERT INTO BOARD VALUES
-				(#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
+				(#{boardNo}, 
+				<foreach collection="boardStep" item="boardTitle" open="(" close= ")" separator="RE:" index="boardStep">
+						#{boardTitle}
+				</foreach>
+				, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
-				(SELECT BOARD_DEPTH + 1 FROM BOARD WHERE BOARD_NO = #{boardNo}), 
-				(SELECT BOARD_STEP + 1 FROM BOARD WHERE BOARD_NO = #{boardNo})
+				#{boardDepth} + 1, 
+				#{boardStep} + 1
 				)
 		</insert>
+
+		<select id="selectBoardGroup" parameterType="Board" resultMap="board_rm">
+		      SELECT * FROM BOARD WHERE BOARD_NO = #{boardNo}
+		</select>
 		
 		<update id="updateDepth" parameterType="Board">
 			UPDATE BOARD 
@@ -256,7 +282,7 @@
 			WHERE BOARD_NO = #{boardNo}
 		</update>
 		
-		<update id="insertReplyUpdate" parameterType="Board">
+		<update id="updateStep" parameterType="Board">
 			<![CDATA[
 				UPDATE BOARD 
 				SET BOARD_STEP = BOARD_STEP + 1 
