@@ -91,11 +91,7 @@ public class ReplyController {
 	// 댓글 수정
 	//@ResponseBody
 	@RequestMapping(value="updateReply", method=RequestMethod.POST)
-	public int updateReply(
-							Reply reply,
-							@RequestParam("rPass") String rPass,
-							RedirectAttributes ra
-							) {
+	public int updateReply(Reply reply,RedirectAttributes ra) {
 		return service.updateReply(reply);
 	}
 	
@@ -105,7 +101,6 @@ public class ReplyController {
 	public int deleteReply(Reply reply) {
 		return service.deleteReply(reply);
 	}
-	
 	
 	// SweetAlert를 이용한 메시지 전달용 메서드
 	public static void swalSetMessage(RedirectAttributes ra, String icon, String title, String text) {

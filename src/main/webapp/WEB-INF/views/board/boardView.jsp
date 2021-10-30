@@ -105,10 +105,9 @@
 				
 				<!-- Title -->
 				<h3 class="mt-4" id="boardTitle"> ${board.boardTitle} </h3>
-그룹 : ${board.boardGroup}
-${board.boardDepth}
-${board.boardStep}
+				
 ${board}
+
 				<!-- Writer -->
 				<p class="lead">
 					작성자 : ${board.boardWriter}

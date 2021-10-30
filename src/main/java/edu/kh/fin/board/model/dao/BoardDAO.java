@@ -232,7 +232,7 @@ public class BoardDAO {
 		return sqlSession.update("boardMapper.updateDepth", boardGroup);
 	}
 
-	/**
+	/** step번호 업데이트
 	 * @param boardGroup
 	 * @return
 	 */
@@ -248,5 +248,6 @@ public class BoardDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

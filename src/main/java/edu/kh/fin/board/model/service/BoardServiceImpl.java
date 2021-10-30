@@ -219,9 +219,9 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int insertReply(Board board, List<MultipartFile> images, String webPath, String savePath) {
 		
-		if(board.getBoardGroup() == 0) {
-			Board boardGroup = dao.updateBoardGroup(board.getBoardNo());
-		}
+//		if(board.getBoardGroup() == 0) {
+//			Board updateGroup = dao.updateBoardGroup(board.getBoardNo());
+//		}
 		
 		Board boardGroup = dao.selectBoardGroup(board.getBoardNo());
 		
@@ -231,8 +231,8 @@ public class BoardServiceImpl implements BoardService{
 			
 			board.setBoardGroup(boardGroup.getBoardGroup());
 			board.setBoardDepth(boardGroup.getBoardDepth());
-			board.setBoardStep(boardGroup.getBoardStep());
-
+			//board.setBoardStep(boardGroup.getBoardStep());
+			
 //			board.setBoardGroup(boardGroup);
 			// Integer.parsInt(String.valueof("변환 값"));
 			// int boardDepth = dao.updateDepth(boardGroup.getBoardGroup());
@@ -248,8 +248,9 @@ public class BoardServiceImpl implements BoardService{
 			board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
 			board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
 			
+			int updateStep = dao.updateStep(boardGroup);
 			int boardNo = dao.insertReply(board);
-			int boardStep = dao.updateStep(boardGroup);
+			
 			
 			System.out.println("boardNo : " + boardNo);
 			if(boardNo > 0) { // 게시글 삽입 성공

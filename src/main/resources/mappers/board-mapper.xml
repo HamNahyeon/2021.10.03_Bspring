@@ -142,7 +142,8 @@
 				SELECT * FROM BOARD_LIST
 				WHERE BOARD_STATUS = 'Y'
 				AND BOARD_TYPE_NO = #{boardType}
-				ORDER BY BOARD_GROUP DESC, BOARD_STEP, BOARD_DEPTH, BOARD_NO DESC
+				GROUP BY BOARD_GROUP
+				ORDER BY BOARD_GROUP DESC, BOARD_DEPTH,  BOARD_NO DESC
 		</select>
 		
 		<!-- 게시글 목록 조회 (검색)-->	
@@ -176,7 +177,7 @@
 						#{code}
 					</foreach>
 				</if>
-				ORDER BY BOARD_GROUP DESC, BOARD_STEP, BOARD_DEPTH,  BOARD_NO DESC
+				ORDER BY BOARD_GROUP DESC, BOARD_DEPTH, BOARD_STEP,  BOARD_NO DESC
 		</select>
 		
 		<!-- 게시글 상세조회
@@ -261,10 +262,7 @@
     			</selectKey>
  -->   			
 				INSERT INTO BOARD VALUES
-				(#{boardNo}, 
-				<foreach collection="boardStep" item="boardTitle" open="(" close= ")" separator="RE:" index="boardStep">
-						#{boardTitle}
-				</foreach>
+				(#{boardNo}, #{boardTitle}
 				, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
 				#{boardDepth} + 1, 
