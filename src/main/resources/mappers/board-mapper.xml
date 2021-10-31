@@ -142,8 +142,7 @@
 				SELECT * FROM BOARD_LIST
 				WHERE BOARD_STATUS = 'Y'
 				AND BOARD_TYPE_NO = #{boardType}
-				GROUP BY BOARD_GROUP
-				ORDER BY BOARD_GROUP DESC, BOARD_DEPTH,  BOARD_NO DESC
+				ORDER BY BOARD_GROUP DESC, BOARD_STEP
 		</select>
 		
 		<!-- 게시글 목록 조회 (검색)-->	
@@ -177,7 +176,7 @@
 						#{code}
 					</foreach>
 				</if>
-				ORDER BY BOARD_GROUP DESC, BOARD_DEPTH, BOARD_STEP,  BOARD_NO DESC
+				ORDER BY BOARD_GROUP DESC, BOARD_STEP
 		</select>
 		
 		<!-- 게시글 상세조회
@@ -266,13 +265,19 @@
 				, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
 				#{boardDepth} + 1, 
-				#{boardStep} + 1
+				#{boardStep}
 				)
 		</insert>
 
 		<select id="selectBoardGroup" parameterType="Board" resultMap="board_rm">
 		      SELECT * FROM BOARD WHERE BOARD_NO = #{boardNo}
 		</select>
+		
+		<update id="updateBoardGroup" parameterType="Board">
+			UPDATE BOARD 
+			SET BOARD_GROUP = #{boardNo}
+			WHERE BOARD_NO = #{boardNo}
+		</update>
 		
 		<update id="updateDepth" parameterType="Board">
 			UPDATE BOARD 
@@ -281,14 +286,13 @@
 		</update>
 		
 		<update id="updateStep" parameterType="Board">
-			<![CDATA[
 				UPDATE BOARD 
 				SET BOARD_STEP = BOARD_STEP + 1 
 				WHERE
 					BOARD_DEPTH != 0 AND
 					BOARD_GROUP = #{boardGroup}
-					AND BOARD_STEP > (#{boardStep}-1)
-			]]>
+					AND BOARD_STEP > #{boardStep}-1
+					AND BOARD_NO != #{boardNo}
 		</update>	
 		
 		<!-- 파일 정보 삽입(List) -->

@@ -64,15 +64,24 @@
 #listCount{
 	float:right;
 }
-
+/* 
+.table > th, .boardWriter, .readCount, . createDate, .boardNo, .boardTitle{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
+  height: 20px;
+}
+ */
 </style>
 
 </head>
 <body>
 
-
-
-
+<!-- 
+한글 : <input type="text" name=addr style="ime-mode:active">
+영문 : <input type="text" name=addr style="ime-mode:inactive">
+ -->
 
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<div class="container my-5">
@@ -141,7 +150,7 @@
 								<c:forEach items="${boardList}" var="board" varStatus="bCount">
 									<tr>
 										<%-- 글 번호 --%>
-										<td>
+										<td class="boardNo">
 											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
 
 <%--  									답글에 - 들여쓰기번호 작성--%>
@@ -190,7 +199,7 @@
  --%>										
 										
 										<%-- 카테고리 --%>
-										<td> ${board.categoryName} </td>
+										<td class="boardCategory"> ${board.categoryName} </td>
 										
 										<%-- 글 제목 --%>
 										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
@@ -222,13 +231,13 @@
 									 	</td>
 										
 										<%-- 작성자 --%>
-										<td> ${board.boardWriter} </td>
+										<td class="boardWriter"> ${board.boardWriter} </td>
 										
 										<%-- 조회수 --%>
-										<td> ${board.readCount} </td>
+										<td class="readCount"> ${board.readCount} </td>
 										
 										<%-- 작성일 --%>
-										<td> 
+										<td class="createDate"> 
 											<fmt:formatDate var="createDate" value="${board.createDate}"  pattern="yyyy-MM-dd"/>                          
 											<fmt:formatDate var="today" value="<%= new java.util.Date() %>"  pattern="yyyy-MM-dd"/>                          
 											

@@ -76,14 +76,12 @@
 <!-- 						
 						<label for="rPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
  -->						
-						<input type="password" class="rPass" id="rPass${reply.replyNo}" name="rPass" placeholder="비밀번호를 입력하세요" /><!-- id="rPass${reply.replyNo}" -->
-<!-- 						
-						<span style="color:#aaa;" id="SRPCounter"  >(0 / 최대 10자)</span>
- -->						
+						<input type="password" class="rPass" id="rPass${reply.replyNo}" name="rPass" placeholder="비밀번호를 입력하세요" /><span style="color:#aaa;" class="SRPCounter" id="SRPCounter${reply.replyNo}"  >(0 / 최대 10자)</span>
+
 						<p class="rDate">&nbsp;&nbsp;&nbsp; 작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
-					<p class="rContent">${reply.replyContent }</p>
+					<pre class="rContent">${reply.replyContent }</pre>
 					
 <%-- 					
 					<c:if test="${reply.memberNo == loginMember.memberNo}">
@@ -216,16 +214,16 @@ function selectReplyList(){
  	            // var cPass = $("<input>").attr({"type" : "password", "class" : "cPass", "style" : "display:none;", "id" : item.replyNo}).html(item.replyPw);
  	            //var cPass = $("<input>").attr({"type" : "password", "class" : "cPass", "style" : "display:none;", "id" : item.replyNo}).html(item.replyPw);
  	            var cPass = $("<p>").attr({"class" : "cPass", "style":"display:none;", "id" : item.replyNo}).html(item.replyPw);
+ 	            var SRPCounter = $("<span>").attr({"class" : "SRPCounter", "id" : "SRPCounter"+item.replyNo,  "style" : "color:#aaa"}).text("(0 / 최대 10자)");
  	           /* <span style="color:#aaa;" id="RPCounter"  >(0 / 최대 10자)</span> */
- 	            /* var SRPCounter = $("<span>").attr({"id" : "SRPCounter",  "style" : "color:#aaa", "value" : ""}).text("${reply.replyPass}"); */
  	            /* <input id="${reply.replyNo}" style="display:none;" value="${reply.replyPw}" /> */
  	            
  	            console.log("cPass:" + JSON.stringify(cPass));
  	            var rDate = $("<p>").addClass("rDate").text("작성일 : " + item.createDate);
-	            div.append(rWriter).append(rPass).append(cPass).append(rDate);
+	            div.append(rWriter).append(rPass).append(SRPCounter).append(cPass).append(rDate);
 	            
 	            // 댓글 내용
-	            var rContent = $("<p>").addClass("rContent").html(item.replyContent);
+	            var rContent = $("<pre>").addClass("rContent").html(item.replyContent);
 	            
 	            // 대댓글, 수정, 삭제 버튼 영역
 	            var replyBtnArea = $("<div>").addClass("replyBtnArea");
@@ -304,6 +302,10 @@ function showUpdateReply(replyNo, el){
 		 	   if($(".replyUpdateContent").length > 0){
 		 	      $(".replyUpdateContent").eq(0).parent().html(beforeReplyRow);
 		 	   }
+		 	   if($(".rPass").length > 0){
+		 	      $(".rPass").eq(0).parent().html(beforeReplyRow);
+		 	      $(".SRPCounter").remove();
+		 	   }
 		    	
 		  	   // 댓글 수정화면 출력 전 요소를 저장해둠.
 		  	   beforeReplyRow = $(el).parent().parent().html();
@@ -344,24 +346,16 @@ function showUpdateReply(replyNo, el){
 		 	   $(el).parent().parent().children("#idPw").children(".rWriter").remove();
 		  	   var writer = $("<input>").addClass("replyUpdateWriter").attr("rows", "3").val(beforeWriter);
 		  	   $(el).parent().parent().children("#idPw").children(".rDate").before(writer);
- */		  	   
-		  	   
-		       $(el).parent().parent().children("#idPw").children(".rPass").remove();
+
 		  	   var password = $("<input>").attr({"class" : "replyUpdatePassword", "type" : "password", "rows" : "3"}).val(beforePassword);
-/* 		  	   
 		  	   $(el).parent().parent().children("#idPw").children(".rDate").before(password);
  */		  	   
+		  	   $(el).parent().parent().children("#idPw").children(".rPass").remove();
 	     	   $(el).parent().prev().remove();
 		  	   var textarea = $("<textarea>").addClass("replyUpdateContent").attr("rows" , "3").val(beforeContent);
-		  	   $(el).parent().before(textarea);
 		  	   
-		  	   var contentCount = $("<span>").attr("rows" : "3", "style" : "color:#aaa;", "id" : "CCCounter").val("(0 / 최대 100자)");
-/* 		  	   
-	     	   $(el).parent().prev().remove();
-		  	   $(el).parent().before(contentCount);
- */		  	   
-		  	   /* <span style="color:#aaa;" id="RICounter"  > (0 / 최대 10자)*/
-
+		  	   var SRPCounter = $("<span>").attr({"class" : "RUCCounter", "id" : "RUCCounter",  "style" : "color:#aaa"}).text("(0 / 최대 100자)");
+		  	   $(el).parent().before(textarea).before(SRPCounter);
 		  	   
 		  	   // 수정 버튼
 		  	   var updateReply = $("<button>").addClass("btn btn-primary btn-sm ml-1 mb-4").text("댓글 수정").attr("onclick", "updateReply(" + replyNo + ", this)");
@@ -377,8 +371,6 @@ function showUpdateReply(replyNo, el){
 //		  		ul.append(li6, li7, li8);
 //		  		$("#detailBody").append(ul);
 		 	   
-
-
 		    }else{
 		        alert("비밀번호가 틀렸습니다. 비밀번호는 영문자,숫자,특수문자 포함 6~10자리이내로 입력해주세요.");
 		        $("#rPass"+replyNo).focus();
@@ -404,6 +396,57 @@ function showUpdateReply(replyNo, el){
 	</ul>
 	*/
 	
+	
+	   $(document).ready(function(){
+		      $("#RUCCounter").html("(" + $(".replyUpdateContent").val().length + " / 최대 100자)");
+		   });
+	 //-----------------------------------------------------------글 수정 스크립트처리
+	 
+	 $(".replyUpdateContent").on("input", function(e){
+	     var content = $(this).val();
+	     $('#RUCCounter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
+	 
+	     if (content.length > 100){
+	         alert("최대 100자까지 입력 가능합니다.");
+	         $(this).val(content.substring(0, 100));
+	         $('#RUCCounter').html("(100 / 최대 100자)");
+	     }
+	     
+	 });
+
+	 $('.replyUpdateContent').keyup(function (e){
+	     var content = $(this).val();
+	     $('#RUCCounter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
+	 
+	     if (content.length > 100){
+	         alert("최대 100자까지 입력 가능합니다.");
+	         $(this).val(content.substring(0, 100));
+	         $('#RUCCounter').html("(100 / 최대 100자)");
+	     }
+	 });
+	 $(".replyUpdateContent").bind('paste', function(e){
+	      var el = $(this);
+	      setTimeout(function(){
+	          var text = $(el).val();
+	      },100);
+	 });
+	 
+	 $(".replyUpdateContent").focusout(function(){
+	     var content = $(this).val();
+	     $('#RUCCounter"').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
+	 
+	     if (content.length > 100){
+	         alert("최대 100자까지 입력 가능합니다.");
+	         $(this).val(content.substring(0, 100));
+	         $('#RUCCounter').html("(100 / 최대 100자)");
+	     }
+	    $(".replyUpdateContent").bind('paste',function(e){
+	         var el = $(this);
+	         setTimeout(function(){
+	             var text = $(el).val();
+	         },100);
+	    });
+	 });
 
 }
 
@@ -419,9 +462,11 @@ function updateCancel(el){
 function updateReply(replyNo, el){
 	
 	// 수정된 댓글 내용
-	const replyId = $(el).parent().prev().val();
-	const replyPw = $(el).parent().prev().val();
-	const replyContent = $(el).parent().prev().val();
+	// const replyId = $(el).parent().prev().val();
+	// const replyPw = $(el).parent().prev().val();
+	//const replyContent = $(el).parent().prev().val();
+	const replyContent = $(el).parent().prev().prev().val();
+	console.log("replyContent : " + replyContent);
 	
 	$.ajax({
 		url : "${contextPath}/reply/updateReply",
@@ -587,74 +632,27 @@ function deleteReply(replyNo){
               },10);
          });
       });
-    //-----------------------------------------------------------수정삭제 시 입력 비밀번호 스크립트처리    "#rPass"+${reply.replyNo} SRPCounter
-      $("#rPass"+replyNo).on("input", function(e){
-          var boardPass = $("#rPass"+replyNo).val();
-          var idReg = /\s/;
-          
-          if(idReg.test(boardPass)){
-        	alert("비밀번호는 공백이 입력이 불가합니다. 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
-           $("#rPass"+replyNo).focus();
-           var updatePass = $("#rPass"+replyNo).val().replace(idReg, "");
-           $("#rPass"+replyNo).val(updatePass);
-        	  return false;
-          }
-          
-      });
       
-      $("#rPass+${reply.replyNo}").keyup(function (e){
-          var content = $(this).val();
-          $('#SRPCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+    //-----------------------------------------------------------글내용 스크립트처리      "#replyContent"   RCCounter
       
-          if (content.length > 10){
-              alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
-              $(this).val(content.substring(0, 10));
-              $('#SRPCounter').html("(10 / 최대 10자)");
-          }
-      });
-      $("#rPass+${reply.replyNo}").bind('paste', function(e){
-           var el = $(this);
-           setTimeout(function(){
-              var text = $(el).val();
-           },10);
-      });
-      
-      $("#rPass+${reply.replyNo}").focusout(function(){
-          var content = $(this).val();
-          $('#SRPCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅   
-      
-          if (content.length > 10){
-              alert("최대 10자까지 입력 가능합니다.");
-              $(this).val(content.substring(0, 10));
-              $('#SRPCounter').html("(10 / 최대 10자)");
-          }
-         $("#rPass+${reply.replyNo}").bind('paste',function(e){
-              var el = $(this);
-              setTimeout(function(){
-                  var text = $(el).val();
-              },10);
-         });
-      });
-      
-    //-----------------------------------------------------------글내용 스크립트처리      "#replyContent"  
       $("#replyContent").on("input", function(e){
-          var content = $('#boardPass').val();
+          var content = $(this).val();
           $('#RCCounter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
       
           if (content.length > 100){
-              alert("댓글은 최대 100글자까지 작성가능합니다.");
+              alert("최대 100자까지 입력 가능합니다.");
               $(this).val(content.substring(0, 100));
               $('#RCCounter').html("(100 / 최대 100자)");
           }
           
       });
-      
+    
       $('#replyContent').keyup(function (e){
           var content = $(this).val();
           $('#RCCounter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
       
           if (content.length > 100){
-              alert("댓글은 최대 100글자까지 작성가능합니다.");
+              alert("최대 100자까지 입력 가능합니다.");
               $(this).val(content.substring(0, 100));
               $('#RCCounter').html("(100 / 최대 100자)");
           }
@@ -662,13 +660,13 @@ function deleteReply(replyNo){
       $("#replyContent").bind('paste', function(e){
            var el = $(this);
            setTimeout(function(){
-              var text = $(el).val();
+               var text = $(el).val();
            },100);
       });
       
       $("#replyContent").focusout(function(){
           var content = $(this).val();
-          $('#RCCounter').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
+          $('#RCCounter"').html("("+content.length+" / 최대 100자)");    //글자수 실시간 카운팅
       
           if (content.length > 100){
               alert("최대 100자까지 입력 가능합니다.");
@@ -683,8 +681,6 @@ function deleteReply(replyNo){
          });
       });
       
-      
-      
       // ----------------------------------------페이지 로딩 시 글자수 카운팅
 /*       
    $(document).ready(function(){
@@ -694,4 +690,54 @@ function deleteReply(replyNo){
       $("#pCounter").html("(" + $("#boardPass").val().length + " / 최대 10자)");
    });
  */	   
+ 
+ 
+ //-----------------------------------------------------------수정삭제 시 입력 비밀번호 스크립트처리    "#rPass${reply.replyNo}           SRPCounter${reply.replyNo}
+ $("#rPass${reply.replyPass}").on("input", function(e){
+     var boardPass = $("#rPass${reply.replyPass}").val();
+     var idReg = /\s/;
+     
+     if(idReg.test(boardPass)){
+   	alert("비밀번호는 공백이 입력이 불가합니다. 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
+      $("#rPass${reply.replyPass}").focus();
+      var updatePass = $("#rPass${reply.replyPass}").val().replace(idReg, "");
+      $("#rPass${reply.replyPass}").val(updatePass);
+   	  return false;
+     }
+ });
+ 
+ $("#rPass${reply.replyPass}").keyup(function (e){
+     var content = $(this).val();
+     $('#SRPCounter${reply.replyPass}').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+ 
+     if (content.length > 10){
+         alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+         $(this).val(content.substring(0, 10));
+         $('#SRPCounter${reply.replyPass}').html("(10 / 최대 10자)");
+     }
+ });
+ $("#rPass${reply.replyPass}").bind('paste', function(e){
+      var el = $(this);
+      setTimeout(function(){
+         var text = $(el).val();
+      },10);
+ });
+ 
+ $("#rPass${reply.replyPass}").focusout(function(){
+     var content = $(this).val();
+     $('#SRPCounter${reply.replyPass}').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅   
+ 
+     if (content.length > 10){
+         alert("최대 10자까지 입력 가능합니다.");
+         $(this).val(content.substring(0, 10));
+         $('#SRPCounter${reply.replyPass}').html("(10 / 최대 10자)");
+     }
+    $("#rPass${reply.replyPass}").bind('paste',function(e){
+         var el = $(this);
+         setTimeout(function(){
+             var text = $(el).val();
+         },10);
+    });
+ });
+ 
 </script>

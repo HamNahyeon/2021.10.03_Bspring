@@ -244,9 +244,8 @@ public class BoardDAO {
 	 * @param boardNo
 	 * @return
 	 */
-	public Board updateBoardGroup(int boardNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public int updateBoardGroup(int boardNo) {
+		return sqlSession.update("boardMapper.updateBoardGroup", boardNo);
 	}
 
 

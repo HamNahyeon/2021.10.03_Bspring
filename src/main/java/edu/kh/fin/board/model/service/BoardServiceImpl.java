@@ -219,79 +219,76 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int insertReply(Board board, List<MultipartFile> images, String webPath, String savePath) {
 		
-//		if(board.getBoardGroup() == 0) {
-//			Board updateGroup = dao.updateBoardGroup(board.getBoardNo());
-//		}
-		
-		Board boardGroup = dao.selectBoardGroup(board.getBoardNo());
-		
-		System.out.println("boardGroup : " + boardGroup);
-		
-		if(boardGroup.getBoardGroup() > 0) {
-			
-			board.setBoardGroup(boardGroup.getBoardGroup());
-			board.setBoardDepth(boardGroup.getBoardDepth());
-			//board.setBoardStep(boardGroup.getBoardStep());
-			
-//			board.setBoardGroup(boardGroup);
-			// Integer.parsInt(String.valueof("변환 값"));
-			// int boardDepth = dao.updateDepth(boardGroup.getBoardGroup());
+				Board boardGroup = dao.selectBoardGroup(board.getBoardNo());
+				
+				System.out.println("boardGroup : " + boardGroup);
+				
+				if(boardGroup.getBoardGroup() > 0) {
+					
+					board.setBoardGroup(boardGroup.getBoardGroup());
+					board.setBoardDepth(boardGroup.getBoardDepth());
+					board.setBoardStep(boardGroup.getBoardStep());
+					System.out.println("boardGroup1 : " + boardGroup);
+					
+//					board.setBoardGroup(boardGroup);
+					// Integer.parsInt(String.valueof("변환 값"));
+					// int boardDepth = dao.updateDepth(boardGroup.getBoardGroup());
 
-			//			board.setBoardDepth(boardDepth);
-//			board.setBoardStep(boardStep);
-			
-			board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
-			board.setBoardContent(replaceParameter( board.getBoardContent() ) );
-			board.setBoardWriter(replaceParameter(board.getBoardWriter()));
-			board.setBoardPass(replaceParameter(board.getBoardPass()));
-			
-			board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
-			board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
-			
-			int updateStep = dao.updateStep(boardGroup);
-			int boardNo = dao.insertReply(board);
-			
-			
-			System.out.println("boardNo : " + boardNo);
-			if(boardNo > 0) { // 게시글 삽입 성공
-				
-				List<Attachment> atList = new ArrayList<Attachment>();
-				
-				for(int i = 0; i < images.size(); i++) {
-					if( !images.get(i).getOriginalFilename().equals("") ) {
-						String fileName = rename(images.get(i).getOriginalFilename());
+					//			board.setBoardDepth(boardDepth);
+//					board.setBoardStep(boardStep);
+					
+					board.setBoardTitle(replaceParameter( board.getBoardTitle() ) );
+					board.setBoardContent(replaceParameter( board.getBoardContent() ) );
+					board.setBoardWriter(replaceParameter(board.getBoardWriter()));
+					board.setBoardPass(replaceParameter(board.getBoardPass()));
+					
+					board.setBoardContent(  board.getBoardContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>")  );
+					board.setBoardContent(  board.getBoardContent().replaceAll(" ", "&nbsp")  );
+					
+					int boardNo = dao.insertReply(board);
+					System.out.println("boardGroup2 : " + boardGroup);
+					
+					if(boardNo > 0) { // 게시글 삽입 성공
+						int updateStep = dao.updateStep(boardGroup);
 						
-						Attachment at = new Attachment();
-						at.setFileName(fileName); // 변경한 파일명
-						at.setFilePath(webPath); // 웹 접근 경로
-						at.setBoardNo(boardNo); // 게시글 삽입 결과(게시글 번호)
-						at.setFileLevel(i); // for문 반복자 == 파일레벨
 						
-						atList.add(at);
-					}
-				}
-				if(!atList.isEmpty()) { // atList가 비어있지 않을 때 == 업로드된 이미지가 있을 때
-					int result = dao.insertAttachmentList(atList);
-					if(atList.size() == result) { // 모두 삽입 성공한 경우
-						for(int i = 0; i < atList.size(); i++) {
-							try {
-								images.get( atList.get(i).getFileLevel() )
-								.transferTo( new File(savePath + "/" + atList.get(i).getFileName() ) );
-							} catch (Exception e) {
-								e.printStackTrace();
+						List<Attachment> atList = new ArrayList<Attachment>();
+						
+						for(int i = 0; i < images.size(); i++) {
+							if( !images.get(i).getOriginalFilename().equals("") ) {
+								String fileName = rename(images.get(i).getOriginalFilename());
+								
+								Attachment at = new Attachment();
+								at.setFileName(fileName); // 변경한 파일명
+								at.setFilePath(webPath); // 웹 접근 경로
+								at.setBoardNo(boardNo); // 게시글 삽입 결과(게시글 번호)
+								at.setFileLevel(i); // for문 반복자 == 파일레벨
+								
+								atList.add(at);
+							}
+						}
+						if(!atList.isEmpty()) { // atList가 비어있지 않을 때 == 업로드된 이미지가 있을 때
+							int result = dao.insertAttachmentList(atList);
+							if(atList.size() == result) { // 모두 삽입 성공한 경우
+								for(int i = 0; i < atList.size(); i++) {
+									try {
+										images.get( atList.get(i).getFileLevel() )
+										.transferTo( new File(savePath + "/" + atList.get(i).getFileName() ) );
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new SaveFileException();
+									}
+								}
+								
+							}else { // 하나라도 삽입 실패한 경우
 								throw new SaveFileException();
 							}
 						}
-						
-					}else { // 하나라도 삽입 실패한 경우
-						throw new SaveFileException();
 					}
+					return boardNo;
+				}else {
+					return 0;
 				}
-			}
-			return boardNo;
-		}else {
-			return 0;
-		}
 		
 	}
 	
