@@ -248,5 +248,21 @@ public class BoardDAO {
 		return sqlSession.update("boardMapper.updateBoardGroup", boardNo);
 	}
 
+	/** 그룹내에서 내 앞에 존재하는 글
+	 * @param board
+	 * @return
+	 */
+	public List<Board> selectGroupCount(Board board) {
+		return sqlSession.selectList("boardMapper.selectBoardGroup", board);
+	}
+
+	/** 답글이 있는 게시글 삭제
+	 * @param board
+	 * @return
+	 */
+	public int deleteReplyBoard(Board board) {
+		return sqlSession.update("boardMapper.deleteReplyBoard", board);
+	}
+
 
 }

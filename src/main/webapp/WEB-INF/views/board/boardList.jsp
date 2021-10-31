@@ -202,8 +202,15 @@
 										<td class="boardCategory"> ${board.categoryName} </td>
 										
 										<%-- 글 제목 --%>
+										<%-- 
+											if(input.length >= 14){
+											    return input.substr(0,14)+"...";
+											}
+										 --%>
+										 
+										
 										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
-											<a href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
+											<a id = "bTitle" href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
 												<c:forEach begin="1" end="${board.boardDepth}" step="1">
 													<span style="padding-left:30px"></span>
 												</c:forEach>
@@ -393,6 +400,18 @@
 
 
 	<script>
+	
+		// 페이지가 로드 되었을 때 글제목 길이 제한
+/* 		
+	   $(document).ready(function(){
+		   const title = $("#bTitle").text();
+		   console.log(title);
+		   const result = title.substr(0,20) + "...";
+		   console.log(result);
+		   
+		   $("#bTitle").text(result);
+	   });
+ */	
 			// 검색 내용이 있을 경우 검색창에 해당 내용을 작성해두는 기능
 			(function(){
 				var searchKey = "${param.sk}"; 
@@ -412,8 +431,8 @@
 				
 				// 검색어 입력창에 searchValue 값 출력
 				$("input[name=sv]").val(searchValue);
+			
 				
-
 				
 				// 쿼리스트링에 카테고리가 있을 경우 체크하기
 				

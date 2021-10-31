@@ -84,7 +84,7 @@
 				FROM (SELECT COUNT(*) CNT
 					  FROM BOARD_LIST
 					  JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
-					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y')
+					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS IN ('Y', 'O'))
 		</select>
 		
 		<!-- 동적 SQL : if, foreach, bind -->
@@ -94,7 +94,7 @@
 				FROM (SELECT COUNT(*) CNT
 					  FROM BOARD_LIST
 					  JOIN BOARD_TYPE USING(BOARD_TYPE_NO)
-					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y'
+					  WHERE BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS IN ('Y', 'O')
 				
 				<!-- 검색어를 나타내는 sv가 있을 때만 조건을 추가 -->
 				<if test="sv != null">
@@ -140,7 +140,7 @@
 		<!-- 게시글 목록 조회 -->	
 		<select id="selectBoardList" parameterType="_int" resultMap="board_rm">
 				SELECT * FROM BOARD_LIST
-				WHERE BOARD_STATUS = 'Y'
+				WHERE BOARD_STATUS IN  ('Y', 'O')
 				AND BOARD_TYPE_NO = #{boardType}
 				ORDER BY BOARD_GROUP DESC, BOARD_STEP
 		</select>
@@ -148,7 +148,7 @@
 		<!-- 게시글 목록 조회 (검색)-->	
 		<select id="selectSearchList" parameterType="Search" resultMap="board_rm">
 				SELECT * FROM BOARD_LIST
-				WHERE BOARD_STATUS = 'Y'
+				WHERE BOARD_STATUS IN  ('Y', 'O')
 				AND BOARD_TYPE_NO = #{boardType}
 				
 				<if test="sv != null">
@@ -382,6 +382,19 @@
 				BOARD_STATUS = 'N'
 				WHERE BOARD_NO = #{boardNo}
 		</delete>
+		 <!-- 답글이 있는 게시글 삭제 sql -->
+		<update id="deleteReplyBoard" parameterType="Board">
+				UPDATE BOARD SET 
+				BOARD_STATUS = 'O'
+				WHERE BOARD_NO = #{boardNo}
+		</update>
+		
+		<select id="selectGroupCount" parameterType="_int" resultMap="board_rm">
+			SELECT * FROM BOARD
+			WHERE BOARD_GROUP = #{boardGroup}
+			AND BOARD_STEP <![CDATA[ < ]]> #{boardStep}
+		</select>
+		
 		
 </mapper>
 

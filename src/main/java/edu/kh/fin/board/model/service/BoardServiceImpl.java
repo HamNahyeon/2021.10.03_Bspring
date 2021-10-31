@@ -465,22 +465,21 @@ public class BoardServiceImpl implements BoardService{
 	@Override
 	public int deleteBoard(Board board) {
 		
-		//String savePwd = dao.selectPassword( board.getBoardNo() );
-		//System.out.println("savePwd : " + savePwd);
-		//System.out.println(board.getBoardNo());
-		int result = 0;
-		// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
-		//if( savePwd.equals(currentPass)) {
+		 int result = 0;
+			//String savePwd = dao.selectPassword( board.getBoardNo() );
+			//System.out.println("savePwd : " + savePwd);
+			//System.out.println(board.getBoardNo());
+			// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
+			//if( savePwd.equals(currentPass)) {
+				
+				result = dao.deleteBoard(board);
+				
+				//System.out.println("게시글 삭제 결과 ser : " + result);
+				
+			//}
 			
-			result = dao.deleteBoard(board);
-			
-			System.out.println("게시글 삭제 결과 ser : " + result);
-			
-		//}
-		
-		return result;
-	}
-
+			return result;
+	 }
 	/**
 	 * 삭제용 비밀번호 조회
 	 */

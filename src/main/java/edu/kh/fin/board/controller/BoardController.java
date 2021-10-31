@@ -118,7 +118,7 @@ public class BoardController {
 			return "board/boardView";
 		}else { // 상세 조회 실패 시 (해당 게시글 번호의 글이 없는 경우)
 			
-			MemberController.swalSetMessage(ra, "error", "게시글 상세 조회 실패", "해당 글이 존재하지 않습니다.");
+			MemberController.swalSetMessage(ra, "error", "게시글 상세 조회 실패", "삭제된 게시글 입니다.");
 			return "redirect:list"; // 게시글 목록 조회로 리다이렉트
 		}
 
