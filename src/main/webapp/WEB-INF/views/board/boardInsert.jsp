@@ -43,6 +43,12 @@
 </style>
 </head>
 <body>
+
+<!-- 
+한글 : <input type="text" name=addr style="ime-mode:active">
+영문 : <input type="text" name=addr style="ime-mode:inactive">
+변환불가(영문만가능) : <input type="text" name=addr style="ime-mode:disabled">
+ -->
       <jsp:include page="../common/header.jsp"></jsp:include>
 
       <div class="container my-5">
@@ -76,12 +82,12 @@
 
             <div class="form-inline mb-2">
                <label for="boardWriter" class="input-group-addon mr-3 insert-label">작성자</label>
-               <input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" placeholder="이름은 10글자 이내로 입력해주세요"><span style="color:#aaa;" id="wCounter">(0 / 최대 10자)</span>
+               <input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" placeholder="이름은 10글자 이내로 입력해주세요" ><span style="color:#aaa;" id="wCounter">(0 / 최대 10자)</span>
             </div>
             
             <div class="form-inline mb-2">
                <label for="boardPass" class="input-group-addon mr-3 insert-label">비밀번호</label>
-               <input type="password" class="form-control" id="boardPass" name="boardPass" size="70"  placeholder="비밀번호는 영문자,특수문자,숫자 포함 6~10글자 이내로 입력"><span style="color:#aaa;" id="pCounter">(0 / 최대 10자)</span>
+               <input type="password" class="form-control" id="boardPass" name="boardPass" size="70"  placeholder="비밀번호는 영문자,특수문자,숫자 포함 6~10글자 이내로 입력" ><span style="color:#aaa;" id="pCounter">(0 / 최대 10자)</span>
             </div>
 
             <div class="form-inline mb-2">

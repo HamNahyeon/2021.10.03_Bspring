@@ -142,6 +142,11 @@
                <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">이전으로</button>
 <!--                
                <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">목록으로</button>
+ -->               
+               <!-- http://localhost:8080/fin/board/1/list -->
+               <!-- http://localhost:8080/fin/board/list?type=&cp= -->
+<!--                
+               <button type="button" class="btn btn-primary" onclick="location.href='javascript:history.back();'">목록으로</button>
    -->             
                <!-- 
                   이전페이지로 돌아가기 

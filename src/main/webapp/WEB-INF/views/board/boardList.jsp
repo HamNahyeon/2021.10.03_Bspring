@@ -64,15 +64,24 @@
 #listCount{
 	float:right;
 }
-
+/* 
+.table > th, .boardWriter, .readCount, . createDate, .boardNo, .boardTitle{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
+  height: 20px;
+}
+ */
 </style>
 
 </head>
 <body>
 
-
-
-
+<!-- 
+한글 : <input type="text" name=addr style="ime-mode:active">
+영문 : <input type="text" name=addr style="ime-mode:inactive">
+ -->
 
 	<jsp:include page="../common/header.jsp"></jsp:include>
 	<div class="container my-5">
@@ -141,7 +150,7 @@
 								<c:forEach items="${boardList}" var="board" varStatus="bCount">
 									<tr>
 										<%-- 글 번호 --%>
-										<td>
+										<td class="boardNo">
 											${(pagination.listCount-bCount.index) - (pagination.currentPage -1) * pagination.limit}
 
 <%--  									답글에 - 들여쓰기번호 작성--%>
@@ -190,11 +199,18 @@
  --%>										
 										
 										<%-- 카테고리 --%>
-										<td> ${board.categoryName} </td>
+										<td class="boardCategory"> ${board.categoryName} </td>
 										
 										<%-- 글 제목 --%>
+										<%-- 
+											if(input.length >= 14){
+											    return input.substr(0,14)+"...";
+											}
+										 --%>
+										 
+										
 										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
-											<a href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
+											<a id = "bTitle" href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
 												<c:forEach begin="1" end="${board.boardDepth}" step="1">
 													<span style="padding-left:30px"></span>
 												</c:forEach>
@@ -222,13 +238,13 @@
 									 	</td>
 										
 										<%-- 작성자 --%>
-										<td> ${board.boardWriter} </td>
+										<td class="boardWriter"> ${board.boardWriter} </td>
 										
 										<%-- 조회수 --%>
-										<td> ${board.readCount} </td>
+										<td class="readCount"> ${board.readCount} </td>
 										
 										<%-- 작성일 --%>
-										<td> 
+										<td class="createDate"> 
 											<fmt:formatDate var="createDate" value="${board.createDate}"  pattern="yyyy-MM-dd"/>                          
 											<fmt:formatDate var="today" value="<%= new java.util.Date() %>"  pattern="yyyy-MM-dd"/>                          
 											
@@ -384,6 +400,18 @@
 
 
 	<script>
+	
+		// 페이지가 로드 되었을 때 글제목 길이 제한
+/* 		
+	   $(document).ready(function(){
+		   const title = $("#bTitle").text();
+		   console.log(title);
+		   const result = title.substr(0,20) + "...";
+		   console.log(result);
+		   
+		   $("#bTitle").text(result);
+	   });
+ */	
 			// 검색 내용이 있을 경우 검색창에 해당 내용을 작성해두는 기능
 			(function(){
 				var searchKey = "${param.sk}"; 
@@ -403,8 +431,8 @@
 				
 				// 검색어 입력창에 searchValue 값 출력
 				$("input[name=sv]").val(searchValue);
+			
 				
-
 				
 				// 쿼리스트링에 카테고리가 있을 경우 체크하기
 				

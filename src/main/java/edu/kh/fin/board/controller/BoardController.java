@@ -118,7 +118,7 @@ public class BoardController {
 			return "board/boardView";
 		}else { // 상세 조회 실패 시 (해당 게시글 번호의 글이 없는 경우)
 			
-			MemberController.swalSetMessage(ra, "error", "게시글 상세 조회 실패", "해당 글이 존재하지 않습니다.");
+			MemberController.swalSetMessage(ra, "error", "게시글 상세 조회 실패", "삭제된 게시글 입니다.");
 			return "redirect:list"; // 게시글 목록 조회로 리다이렉트
 		}
 
@@ -141,6 +141,7 @@ public class BoardController {
 	@RequestMapping(value="{boardType}/insert", method=RequestMethod.POST)
 	public String insertBoard(@PathVariable("boardType")int boardType,
 										 @ModelAttribute Board board /* 커맨드객체 : 보드객체 필드값이랑 같으면 자동으로 대입 */,
+										 @RequestParam(value="cp", required=false, defaultValue="1")int cp,
 //										 @ModelAttribute("loginMember")Member loginMember /* 세션 로그인 정보 */,
 										 @RequestParam("images") List<MultipartFile> images /* 업로드된 이미지 파일 */,
 										 HttpServletRequest request, RedirectAttributes ra
@@ -193,8 +194,10 @@ public class BoardController {
 		if(boardNo > 0) { // 삽입 성공
 			// 상세 조회 페이지로 리다이렉트 -> /fin/board/1/600
 			// 현재 페이지						   -> /fin/board/1/insert
-			path ="redirect:" + boardNo;
+			path ="redirect:/board/" + boardType + "/list?type=cp=" + cp;
+			// path ="redirect:";
 			MemberController.swalSetMessage(ra, "success", "게시글 삽입 성공", null);
+			
 		}else { // 삽입 실패
 			// 이전 게시글 작성화면으로 리다이렉트
 			path= "redirect:" + request.getHeader("referer"); // 요청 이전 주소
@@ -223,6 +226,7 @@ public class BoardController {
 	@RequestMapping(value="{boardType}/insert/{boardNo}/reply", method=RequestMethod.POST)
 	public String insertReply(@PathVariable("boardType")int boardType,
 							  @PathVariable("boardNo")int boardNo,
+							  @RequestParam(value="cp", required=false, defaultValue="1")int cp,
 							  @ModelAttribute Board board /* 커맨드객체 : 보드객체 필드값이랑 같으면 자동으로 대입 */,
 							  @ModelAttribute Board boardGroup /* 커맨드객체 : 보드객체 필드값이랑 같으면 자동으로 대입 */,
 							  @RequestParam("images") List<MultipartFile> images /* 업로드된 이미지 파일 */,
@@ -259,9 +263,8 @@ public class BoardController {
 			// http://localhost:8081/fin/board/1/305
 			// http://localhost:8081/fin/board/1/insert/305/reply
 			// http://localhost:8081/fin/board/1/insert
-			path = "redirect:/board/" + boardType + "/" + boardNo2;
-//			path ="redirect:/board/" + boardType + "/list";
-			// "redirect:/board/" + boardType + "/list";
+			// path = "redirect:/board/" + boardType + "/" + boardNo2;
+			path ="redirect:/board/" + boardType + "/list?type=cp=" + cp;
 			MemberController.swalSetMessage(ra, "success", "게시글 삽입 성공", null);
 		}else { // 삽입 실패
 			// 이전 게시글 작성화면으로 리다이렉트
