@@ -47,7 +47,7 @@
 /* 게시글 제목에 영역 이미지 설정 */
 .boardTitle img {
 	width: 70px;
-	padding: 10px
+	padding: 10px;
 }
 
 .pagination {
@@ -63,6 +63,9 @@
 }
 #listCount{
 	float:right;
+}
+#insertList{
+	margin-right:10px;
 }
 /* 
 .table > th, .boardWriter, .readCount, . createDate, .boardNo, .boardTitle{
@@ -211,12 +214,36 @@
 										
 										<td class="boardTitle" style="text-overflow:ellipsis;">                                                         
 											<a id = "bTitle" href="${board.boardNo}?cp=${pagination.currentPage}${searchStr}">  
+											
 												<c:forEach begin="1" end="${board.boardDepth}" step="1">
 													<span style="padding-left:30px"></span>
 												</c:forEach>
-											
-												<c:forEach var="p" begin="1" end="${board.boardDepth}">RE:</c:forEach>  
 												
+												<c:choose>
+													<c:when test="${board.boardDepth > 0 }">
+														RE:${board.boardTitle }${board.boardStatus}
+													</c:when>
+													<c:otherwise>
+														${board.boardTitle }${board.boardStatus}
+													</c:otherwise>
+<%-- 													
+													<c:otherwise>
+														<c:choose>
+															<c:when test="${board.boardStatus == 'Y'}">
+																${board.boardTitle}
+															</c:when>
+															<c:when test="${board.boardStatus == 'O'}">
+																삭제된 게시글 입니다.
+															</c:when>
+															<c:otherwise>
+															</c:otherwise>
+														</c:choose>
+													</c:otherwise>
+ --%>													
+												</c:choose>
+<%-- 											
+												<c:forEach var="p" begin="1" end="${board.boardDepth}">RE:</c:forEach>  
+ --%>												
 <%-- 												
 												썸네일 출력
 												<c:choose>
@@ -232,7 +259,7 @@
 												
 												</c:choose>
  --%>											
-											 	${board.boardTitle }   
+											 	  
 											</a>
 											
 									 	</td>
@@ -278,7 +305,9 @@
  --%>			
 				<%-- <button type="button" class="btn btn-primary float-right" id="insertBtn"
 				 onclick="location.href='../board2/insertForm?type=${pagination.boardType}';">글쓰기</button> --%>
-				<a  class="btn btn-primary float-right" id="insertBtn" href='insert'>글쓰기</a>
+				<a  class="btn btn-primary float-right" id="insertBtn" href='insert' >글쓰기</a>
+				<a  class="btn btn-primary float-right" id="insertList" href="${contextPath}/board/1/list">처음목록으로</a>
+
 <%-- 				
 			</c:if>
  --%>			

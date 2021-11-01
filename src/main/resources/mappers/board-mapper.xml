@@ -183,7 +183,7 @@
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
 		<select id="selectBoard" parameterType="_int" resultMap="board_rm">
 				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,
-				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO, BOARD_PASS, BOARD_GROUP, BOARD_DEPTH, BOARD_STEP
+				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO, BOARD_PASS, BOARD_GROUP, BOARD_DEPTH, BOARD_STEP, BOARD_STATUS
 				FROM BOARD
 				JOIN CATEGORY USING(CATEGORY_CD)
 				WHERE BOARD_NO = #{boardNo}
@@ -389,10 +389,11 @@
 				WHERE BOARD_NO = #{boardNo}
 		</update>
 		
-		<select id="selectGroupCount" parameterType="_int" resultMap="board_rm">
-			SELECT * FROM BOARD
+		<select id="selectGroupCount" parameterType="_int" resultType="string">
+			SELECT BOARD_NO FROM BOARD
 			WHERE BOARD_GROUP = #{boardGroup}
-			AND BOARD_STEP <![CDATA[ < ]]> #{boardStep}
+			AND BOARD_STEP <![CDATA[ > ]]> #{boardStep}
+			AND BOARD_STATUS = 'Y'
 		</select>
 		
 		

@@ -252,8 +252,8 @@ public class BoardDAO {
 	 * @param board
 	 * @return
 	 */
-	public List<Board> selectGroupCount(Board board) {
-		return sqlSession.selectList("boardMapper.selectBoardGroup", board);
+	public List<Board> selectGroupCount(Board boardGroup) {
+		return sqlSession.selectList("boardMapper.selectBoardGroup", boardGroup);
 	}
 
 	/** 답글이 있는 게시글 삭제

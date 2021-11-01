@@ -248,10 +248,10 @@
          }
          
          var boardWriter = $('#boardWriter').val();
-         var idReg = /^[ㄱ-ㅎ가-힣]{2,10}$/;
+         var idReg = /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
          
          if(!idReg.test(boardWriter)){
-       	  alert("작성자는 한글 2~10글자만 입력이 가능합니다. 다시 입력하세요.");
+       	  alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
           $("#boardWriter").focus();
        	  return false;
          }
@@ -274,10 +274,10 @@
 
       $("#boardWriter").on("input", function(e){
           var boardWriter = $('#boardWriter').val();
-          var idReg = /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
+          var idReg = /[0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
           
           if(idReg.test(boardWriter)){
-        	  alert("작성자는 한글 2~10자만 입력 가능합니다. 다시 입력해주세요.");
+        	  alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
            $("#boardWriter").focus();
            var updateWriter = $("#boardWriter").val().replace(idReg, "");
            $("#boardWriter").val(updateWriter);
@@ -469,7 +469,7 @@
           $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
       
           if (content.length > 10){
-              alert("최대 10자까지 입력 가능합니다.");
+              alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
               $(this).val(content.substring(0, 10));
               $('#wCounter').html("(10 / 최대 10자)");
           }
@@ -521,7 +521,7 @@
           $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
       
           if (content.length > 10){
-              alert("최대 10자까지 입력 가능합니다.");
+              alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
               $(this).val(content.substring(0, 10));
               $('#wCounter').html("(10 / 최대 10자)");
           }
@@ -538,7 +538,7 @@
           $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
       
           if (content.length > 10){
-              alert("최대 10자까지 입력 가능합니다.");
+              alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
               $(this).val(content.substring(0, 10));
               $('#pCounter').html("(10 / 최대 10자)");
           }
