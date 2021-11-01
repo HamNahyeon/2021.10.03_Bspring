@@ -11,6 +11,7 @@ public class Board {
 	private String categoryName;
 	private int readCount;	
 	private Timestamp createDate;
+	private String boardStatus;
 	
 	private String boardWriter;		// 작성자
 	private String boardPass;		// 비밀번호
@@ -66,7 +67,7 @@ public class Board {
 	
 	public Board(int boardNo, String boardTitle, String categoryName, int readCount, Timestamp createDate,
 			String boardWriter, String boardPass, int boardGroup, int boardDepth, int boardStep, String boardContent,
-			Timestamp modifyDate, int boardType) {
+			Timestamp modifyDate, int boardType, String boardStatus) {
 		super();
 		this.boardNo = boardNo;
 		this.boardTitle = boardTitle;
@@ -81,6 +82,7 @@ public class Board {
 		this.boardContent = boardContent;
 		this.modifyDate = modifyDate;
 		this.boardType = boardType;
+		this.boardStatus = boardStatus;
 	}
 
 	public int getBoardNo() {
@@ -246,15 +248,25 @@ public class Board {
 	public void setBoardStep(int boardStep) {
 		this.boardStep = boardStep;
 	}
+	
+	public String getBoardStatus() {
+		return boardStatus;
+	}
+
+	public void setBoardStatus(String boardStatus) {
+		this.boardStatus = boardStatus;
+	}
 
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardWriter=" + boardWriter + ", boardPass=" + boardPass + ", boardGroup=" + boardGroup
-				+ ", boardDepth=" + boardDepth + ", boardStep=" + boardStep + ", boardContent=" + boardContent
-				+ ", memberNo=" + memberNo + ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType="
-				+ boardType + ", categoryCode=" + categoryCode + "]";
+				+ ", boardStatus=" + boardStatus + ", boardWriter=" + boardWriter + ", boardPass=" + boardPass
+				+ ", boardGroup=" + boardGroup + ", boardDepth=" + boardDepth + ", boardStep=" + boardStep
+				+ ", boardContent=" + boardContent + ", memberNo=" + memberNo + ", modifyDate=" + modifyDate
+				+ ", atList=" + atList + ", boardType=" + boardType + ", categoryCode=" + categoryCode + "]";
 	}
+
+
 
 }

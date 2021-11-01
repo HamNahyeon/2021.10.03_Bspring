@@ -105,9 +105,7 @@
 				
 				<!-- Title -->
 				<h3 class="mt-4" id="boardTitle"> ${board.boardTitle} </h3>
-				
 ${board}
-
 				<!-- Writer -->
 				<p class="lead">
 					작성자 : ${board.boardWriter}

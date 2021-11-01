@@ -48,6 +48,7 @@ public class ReplyServiceImpl implements ReplyService{
 		// 크로스사이트 스크립트 방지처리
 		reply.setReplyContent( BoardServiceImpl.replaceParameter( reply.getReplyContent() ) );
 		reply.setReplyContent( reply.getReplyContent().replaceAll("(\r\n|\r|\n|\n\r)", "<br>") );
+		reply.setReplyContent(reply.getReplyContent().replaceAll("&nbsp", " "));
 		
 		return dao.updateReply(reply);
 	}

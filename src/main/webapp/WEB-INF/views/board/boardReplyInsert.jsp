@@ -223,10 +223,10 @@
          }
          
          var boardWriter = $('#boardWriter').val();
-         var idReg = /^[ㄱ-ㅎ가-힣]{2,10}$/;
+         var idReg = /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]{2,10}$/;
          
          if(!idReg.test(boardWriter)){
-       	  alert("이름은 한글로 2~10자만 입력가능합니다.");
+       	  alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
           $("#boardWriter").focus();
        	  return false;
          }
@@ -234,10 +234,12 @@
          var boardPass = $('#boardPass').val();
          // ^[A-Za-z\d!@#\$%\^\&\*\(\)\-\+\-\=\?\.\,]{6,10}$ 
 //         var passReg = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
+
          var passReg = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{6,10}$/;
          
-         if(!passReg.test(boardPass)){
+         if(!passReg.test(boardPass) || idReg.test(boardPass) || idReg2.test(boardPass)){
        	  alert("비밀번호는 영문자,숫자,특수문자 포함 6~10자리이내로 입력해주세요.");
+          var updatePass = $("#boardPass").val().replace(idReg, "");
           $("#boardPass").focus();
        	  return false;
          }
@@ -293,29 +295,13 @@
       
       $("#boardWriter").on("input", function(e){
           var boardWriter = $('#boardWriter').val();
-          var idReg = /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
+          var idReg = /[0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
           
           if(idReg.test(boardWriter)){
-        	  alert("작성자는 한글 2~10자만 입력 가능합니다. 다시 입력해주세요.");
+        	  alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
            $("#boardWriter").focus();
            var updateWriter = $("#boardWriter").val().replace(idReg, "");
            $("#boardWriter").val(updateWriter);
-        	  return false;
-          }
-          
-      });
- 
-      
-      $("#boardPass").on("input", function(e){
-          var boardPass = $('#boardPass').val();
-          var idReg = /\s/;
-          var idReg2 = /^ㄱ-힣$/;
-          
-          if(idReg.test(boardPass) || idReg2.test(boardPass)){
-        	alert("비밀번호는 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
-           $("#boardPass").focus();
-           var updatePass = $("#boardPass").val().replace(idReg, "");
-           $("#boardPass").val(updatePass);
         	  return false;
           }
           
@@ -369,7 +355,7 @@
           $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
 
           if (content.length > 10){
-              alert("최대 10자까지 입력 가능합니다.");
+              alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
               $(this).val(content.substring(0, 10));
               $('#wCounter').html("(10 / 최대 10자)");
           }
@@ -380,43 +366,6 @@
                var text = $(el).val();
            },10);
       });
-      
-      $('#boardPass').keyup(function (e){
-    	  
-//          var regExp = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
-          var regExp = /^[A-Za-z\d~!@#$%^&*()+|=]{6, 10}$/;
-          
-          var inputPwd = $(this).val().trim();
-        //'숫자', '문자', '특수문자' 무조건 1개 이상, 비밀번호 '최소 8자에서 최대 16자'까지 허용 
-        //(특수문자는 정의된 특수문자만 사용 가능) 
-        //^(?=.*[A-Za-z])(?=.*\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\d~!@#$%^&*()+|=]{8,16}$
-
-          if(regExp.test(inputPwd)){
-              alert("비밀번호가 유효하지않습니다. 비밀번호는 영어대소문자,숫자,특수문자를 섞어 6~10자리내로 입력해주세요");
-              var a = $("#boardPass").val().replace(regExp,"");
-              $("#boardPass").val(a);
-              //$("#checkPwd1").text("유효한 비밀번호 입니다.").css("color", "green");
-          }
-    	  
-    	  
-          var content = $(this).val();
-          $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
-      
-          if (content.length > 10){
-              alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
-              $(this).val(content.substring(0, 10));
-              $('#pCounter').html("(10 / 최대 10자)");
-          }
-          
-          
-      });
-      $("#boardPass").bind('paste', function(e){
-           var el = $(this);
-           setTimeout(function(){
-              var text = $(el).val();
-           },10);
-      });
-      
 
       $('#boardContent').keyup(function (e){
           var content = $(this).val();
@@ -457,7 +406,7 @@
        $('#wCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
    
        if (content.length > 10){
-           alert("최대 10자까지 입력 가능합니다.");
+           alert("작성자는 한글 혹은 영문 2~10자만 입력가능합니다.");
            $(this).val(content.substring(0, 10));
            $('#wCounter').html("(10 / 최대 10자)");
        }
@@ -469,37 +418,12 @@
       });
    });
    
-   $("#boardPass").onKeyDown(function(){
-	   var pressedKey = String.fromCharCode(event.keyCode).toLowerCase();
-	   if (event.ctrlKey && (pressedKey == "c" || pressedKey == "v")) {
-	   event.returnValue = false;
-	   }
-   });
-
-/*    
-   $("#boardPass").focusout(function(){
-       var content = $(this).val();
-       $('#pCounter"').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
-   
-       if (content.length > 10){
-           alert("최대 10자까지 입력 가능합니다.");
-           $(this).val(content.substring(0, 10));
-           $('#pCounter').html("(10 / 최대 10자)");
-       }
-      $("#boardPass").bind('paste',function(e){
-           var el = $(this);
-           setTimeout(function(){
-               var text = $(el).val();
-           },10);
-      });
-   });
-   */ 
    $("#boardContent").focusout(function(){
        var content = $(this).val();
        $('#cCounter"').html("("+content.length+" / 최대 300자)");    //글자수 실시간 카운팅
    
        if (content.length > 300){
-           alert("최대 10자까지 입력 가능합니다.");
+           alert("최대 300자까지 입력 가능합니다.");
            $(this).val(content.substring(0, 300));
            $('#cCounter').html("(300 / 최대 300자)");
        }
@@ -509,6 +433,55 @@
                var text = $(el).val();
            },300);
       });
+   });
+   
+   // -----------------------------------------------------비밀번호스크립트
+   
+		
+	$('#boardPass').keyup(function (e){
+	    var content = $(this).val();
+	    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+	
+	    if (content.length > 10){
+	        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+	        $(this).val(content.substring(0, 10));
+	        $('#pCounter').html("(10 / 최대 10자)");
+	    }
+	});
+	$("#boardPass").bind('paste',function(e){
+       var el = $(this);
+       setTimeout(function(){
+           var text = $(el).val();
+       },10);
+	});
+	$("#boardPass").focusout(function(){
+	    var content = $(this).val();
+	    $('#pCounter').html("("+content.length+" / 최대 10자)");    //글자수 실시간 카운팅
+	
+	    if (content.length > 10){
+	        alert("비밀번호는 영어대소문자, 숫자, 특수문자 포함하여 최대 10자까지 입력가능합니다.");
+	        $(this).val(content.substring(0, 10));
+	        $('#pCounter').html("(10 / 최대 10자)");
+	    }
+		$("#boardPass").bind('paste',function(e){
+	        var el = $(this);
+	        setTimeout(function(){
+	            var text = $(el).val();
+	        },10);
+		});
+	});
+   $("#boardPass").on("input", function(e){
+       var currentPass = $('#currentPass').val();
+       var idReg = /\s/;
+       
+       if(idReg.test(currentPass)){
+     	alert("비밀번호는 공백이 입력이 불가합니다. 영문,숫자,특수문자를 섞어서 6~10자리내로 입력해주세요");
+        $("#boardPass").focus();
+        var updatePass = $("#boardPass").val().replace(idReg, "");
+        $("#boardPass").val(updatePass);
+     	  return false;
+       }
+       
    });
       
    </script>

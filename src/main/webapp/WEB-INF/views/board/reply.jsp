@@ -78,10 +78,10 @@
  -->						
 						<input type="password" class="rPass" id="rPass${reply.replyNo}" name="rPass" placeholder="비밀번호를 입력하세요" /><span style="color:#aaa;" class="SRPCounter" id="SRPCounter${reply.replyNo}"  >(0 / 최대 10자)</span>
 
-						<p class="rDate">&nbsp;&nbsp;&nbsp; 작성일 : <fmt:formatDate value="${reply.createDate }" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
+						<p class="rDate">&nbsp;&nbsp;&nbsp; 작성일 : <fmt:formatDate value="${reply.createDate}" pattern="yyyy년 MM월 dd일 HH:mm"/></p>
 					</div>
 	
-					<pre class="rContent">${reply.replyContent }</pre>
+					<pre class="rContent">${reply.replyContent}</pre>
 					
 <%-- 					
 					<c:if test="${reply.memberNo == loginMember.memberNo}">
@@ -167,6 +167,9 @@ function addReply()	{
 						$("#replyId").val(""); 
 						$("#replyPw").val("");
 						$("#replyContent").val(""); // 댓글 작성 내용 삭제
+				        $("#RICounter").html("( 0 / 최대 10자)");
+				        $("#RPCounter").html("( 0 / 최대 10자)");
+				        $("#RCCounter").html("( 0 / 최대 100자)");
 						selectReplyList(); // 비동기로 댓글 목록 갱신
 					}
 				}, // 비동기 통신이 성공했을 때
@@ -255,6 +258,7 @@ function selectReplyList(){
 		}
 		
 	});
+	
 }
 
 // -----------------------------------------------------------------------------------------
