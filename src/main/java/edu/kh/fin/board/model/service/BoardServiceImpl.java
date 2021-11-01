@@ -120,7 +120,6 @@ public class BoardServiceImpl implements BoardService {
 		// 2) 글 부분 삽입
 		// 기존) 다음 글 번호를 조회한 후 게시글을 삽입
 		// 마이바티스 사용) insert 후 특정 컬럼 값을 반환하게 만드는 useGeneratedKeys, <selectKey> 사용
-
 		int boardNo = dao.insertBoard(board);
 
 		System.out.println("boardNo : " + boardNo);
@@ -471,7 +470,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int deleteBoard(Board board) {
 
-
 		Board boardGroup = dao.selectBoardGroup(board.getBoardNo());
 		System.out.println("boardGroup1 : " + boardGroup);
 
@@ -480,17 +478,17 @@ public class BoardServiceImpl implements BoardService {
 		
 		System.out.println("boardGroup2 : " + boardGroup);
 		
-		List<Board> selectGroupCount = dao.selectGroupCount(boardGroup);
+		//int selectGroupCount = dao.selectGroupCount(boardGroup);
 		
 		System.out.println("boardGroup3 : " + boardGroup);
-		System.out.println("selectGroupCount : " + selectGroupCount);
+		//System.out.println("selectGroupCount : " + selectGroupCount);
 
 		int result = 0;
-		System.out.println("size : " + selectGroupCount.size());
-		if (selectGroupCount.size() != 1) {
-			result = dao.deleteReplyBoard(board);
-			return result;
-		} else {
+		//if (selectGroupCount == 1) {
+			//result = dao.deleteReplyBoard(board);
+			//int downStep = dao.downStep(board);
+			//return result;
+		//} else {
 			// String savePwd = dao.selectPassword( board.getBoardNo() );
 			// System.out.println("savePwd : " + savePwd);
 			// System.out.println(board.getBoardNo());
@@ -501,7 +499,7 @@ public class BoardServiceImpl implements BoardService {
 			// }
 			return result;
 		}
-	}
+	//}
 
 	/**
 	 * 삭제용 비밀번호 조회

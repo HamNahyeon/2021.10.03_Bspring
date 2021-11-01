@@ -12,6 +12,7 @@ public class Board {
 	private int readCount;	
 	private Timestamp createDate;
 	private String boardStatus;
+	private int groupNo;
 	
 	private String boardWriter;		// 작성자
 	private String boardPass;		// 비밀번호
@@ -46,34 +47,18 @@ public class Board {
 	}
 	
 	// 게시글 조회용 
-//	public Board(int boardNo, String categoryName, String boardTitle, String boardContent, String boardWriter, 
-//				int readCount, Timestamp createDate, Timestamp modifyDate, int boardType, String boardPass,
-//				int boardGroup, int boardDepth, int boardStep) {
-//		super();
-//		this.boardNo = boardNo;
-//		this.categoryName = categoryName;
-//		this.boardTitle = boardTitle;
-//		this.boardContent = boardContent;
-//		this.boardWriter = boardWriter;
-//		this.readCount = readCount;
-//		this.createDate = createDate;
-//		this.modifyDate = modifyDate;
-//		this.boardType = boardType;
-//		this.boardPass = boardPass;
-//		this.boardGroup = boardGroup;
-//		this.boardDepth = boardDepth;
-//		this.boardStep = boardStep;
-//	}
-	
-	public Board(int boardNo, String boardTitle, String categoryName, int readCount, Timestamp createDate,
-			String boardWriter, String boardPass, int boardGroup, int boardDepth, int boardStep, String boardContent,
-			Timestamp modifyDate, int boardType, String boardStatus) {
+	public Board(int boardNo, String boardTitle, String memberName, String categoryName, int readCount,
+			Timestamp createDate, String boardStatus, int groupNo, String boardWriter, String boardPass, int boardGroup,
+			int boardDepth, int boardStep, String boardContent, Timestamp modifyDate, int boardType) {
 		super();
 		this.boardNo = boardNo;
 		this.boardTitle = boardTitle;
+		this.memberName = memberName;
 		this.categoryName = categoryName;
 		this.readCount = readCount;
 		this.createDate = createDate;
+		this.boardStatus = boardStatus;
+		this.groupNo = groupNo;
 		this.boardWriter = boardWriter;
 		this.boardPass = boardPass;
 		this.boardGroup = boardGroup;
@@ -82,7 +67,6 @@ public class Board {
 		this.boardContent = boardContent;
 		this.modifyDate = modifyDate;
 		this.boardType = boardType;
-		this.boardStatus = boardStatus;
 	}
 
 	public int getBoardNo() {
@@ -256,16 +240,29 @@ public class Board {
 	public void setBoardStatus(String boardStatus) {
 		this.boardStatus = boardStatus;
 	}
+	
+	
+
+	public int getGroupNo() {
+		return groupNo;
+	}
+
+	public void setGroupNo(int groupNo) {
+		this.groupNo = groupNo;
+	}
 
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardStatus=" + boardStatus + ", boardWriter=" + boardWriter + ", boardPass=" + boardPass
-				+ ", boardGroup=" + boardGroup + ", boardDepth=" + boardDepth + ", boardStep=" + boardStep
-				+ ", boardContent=" + boardContent + ", memberNo=" + memberNo + ", modifyDate=" + modifyDate
-				+ ", atList=" + atList + ", boardType=" + boardType + ", categoryCode=" + categoryCode + "]";
+				+ ", boardStatus=" + boardStatus + ", groupNo=" + groupNo + ", boardWriter=" + boardWriter
+				+ ", boardPass=" + boardPass + ", boardGroup=" + boardGroup + ", boardDepth=" + boardDepth
+				+ ", boardStep=" + boardStep + ", boardContent=" + boardContent + ", memberNo=" + memberNo
+				+ ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType=" + boardType + ", categoryCode="
+				+ categoryCode + "]";
 	}
+
+
 
 
 

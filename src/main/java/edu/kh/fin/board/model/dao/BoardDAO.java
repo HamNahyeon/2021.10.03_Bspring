@@ -208,14 +208,6 @@ public class BoardDAO {
 		return sqlSession.selectList("boardMapper.selectDBList", standard);
 	}
 
-	/** 게시글 삭제
-	 * @param board
-	 * @return
-	 */
-	public int deleteBoard(Board board) {
-		return sqlSession.update("boardMapper.deleteBoard", board);
-	}
-
 	/** 그룹번호조회
 	 * @param boardNo
 	 * @return
@@ -224,7 +216,7 @@ public class BoardDAO {
 		return sqlSession.selectOne("boardMapper.selectBoardGroup", boardNo);
 	}
 
-	/**
+	/** 그룹번호 업데이트
 	 * @param boardGroup
 	 * @return
 	 */
@@ -248,12 +240,12 @@ public class BoardDAO {
 		return sqlSession.update("boardMapper.updateBoardGroup", boardNo);
 	}
 
-	/** 그룹내에서 내 앞에 존재하는 글
+	/** 게시글 삭제
 	 * @param board
 	 * @return
 	 */
-	public List<Board> selectGroupCount(Board boardGroup) {
-		return sqlSession.selectList("boardMapper.selectBoardGroup", boardGroup);
+	public int deleteBoard(Board board) {
+		return sqlSession.update("boardMapper.deleteBoard", board);
 	}
 
 	/** 답글이 있는 게시글 삭제
@@ -263,6 +255,21 @@ public class BoardDAO {
 	public int deleteReplyBoard(Board board) {
 		return sqlSession.update("boardMapper.deleteReplyBoard", board);
 	}
+
+//	/** 삭제하려는 게시글에 답글이 달렸는가
+//	 * @param board
+//	 * @return 
+//	 */
+//	public int selectGroupCount(Board boardGroup) {
+//		return sqlSession.selectOne("boardMapper.selectGroupCount", boardGroup);
+//	}
+//	/** 삭제 시 답글의 게시글 조회순서 업데이트
+//	 * @param board
+//	 * @return
+//	 */
+//	public int downStep(Board board) {
+//		return sqlSession.update("boardMapper.downStep", board);
+//	}
 
 
 }

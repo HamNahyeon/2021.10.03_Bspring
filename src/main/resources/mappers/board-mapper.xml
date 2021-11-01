@@ -42,6 +42,7 @@
 				<result property="boardGroup" column="BOARD_GROUP"/>
 				<result property="boardDepth" column="BOARD_DEPTH"/>
 				<result property="boardStep" column="BOARD_STEP"/>
+				<result property="groupNo" column="GROUP_NO"/>
 				
 				
 				<result property="boardContent" column="BOARD_CONTENT"/>
@@ -182,7 +183,7 @@
 		<!-- 게시글 상세조회
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
 		<select id="selectBoard" parameterType="_int" resultMap="board_rm">
-				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,
+				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER, GROUP_NO
 				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO, BOARD_PASS, BOARD_GROUP, BOARD_DEPTH, BOARD_STEP, BOARD_STATUS
 				FROM BOARD
 				JOIN CATEGORY USING(CATEGORY_CD)
@@ -247,44 +248,43 @@
 				)
 		</insert>
  -->		
-		<insert id="insertReply" parameterType="Board" useGeneratedKeys="true">
-		
-				<!-- (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo}) -->
+		<insert id="insertBoard" parameterType="Board" useGeneratedKeys="true">
 				<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
 						SELECT SEQ_BNO.NEXTVAL FROM DUAL
 				</selectKey>
-
-<!-- 				
-			    <selectKey keyProperty="board_re_ref" resultType="_int"  order="BEFORE">
-			        SELECT BOARD_DEPTH(MAX(BOARD_DEPTH), 0) + 1 
-			        FROM BOARD
-    			</selectKey>
- -->   			
-				INSERT INTO BOARD VALUES
-				(#{boardNo}, #{boardTitle}
-				, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
-				#{boardDepth} + 1, 
-				#{boardStep}
+				INSERT INTO BOARD 
+				(
+				BOARD_NO, BOARD_TITLE, BOARD_CONTENT, READ_COUNT, CREATE_DT, MODIFY_DT, 
+				BOARD_STATUS, CATEGORY_CD, BOARD_TYPE_NO, BOARD_WRITER, BOARD_PASS, 
+				BOARD_GROUP, BOARD_DEPTH, BOARD_STEP, GROUP_NO
+				)
+				VALUES
+				(
+				#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
+				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardNo}, DEFAULT, DEFAULT, DEFAULT
 				)
 		</insert>
 
+		<!-- 부모게시글의 그룹번호 조회 -->
 		<select id="selectBoardGroup" parameterType="Board" resultMap="board_rm">
 		      SELECT * FROM BOARD WHERE BOARD_NO = #{boardNo}
 		</select>
 		
+		<!-- 그룹번호 업데이트 -->
 		<update id="updateBoardGroup" parameterType="Board">
 			UPDATE BOARD 
 			SET BOARD_GROUP = #{boardNo}
 			WHERE BOARD_NO = #{boardNo}
 		</update>
 		
+		<!-- 답글의 게시글 깊이 업데이트 -->		
 		<update id="updateDepth" parameterType="Board">
 			UPDATE BOARD 
 			SET BOARD_DEPTH = #{boardDepth} + 1
 			WHERE BOARD_NO = #{boardNo}
 		</update>
 		
+		<!-- 답글의 게시글 조회순서 업데이트 -->
 		<update id="updateStep" parameterType="Board">
 				UPDATE BOARD 
 				SET BOARD_STEP = BOARD_STEP + 1 
@@ -376,12 +376,14 @@
 											-> 내용 안에 포함된 <> 기호가 문자 자체로 인식됨
 		 -->
 		 
+
+		 
 		 <!-- 게시글 삭제 sql -->
-		<delete id="deleteBoard" parameterType="Board">
+		<update id="deleteBoard" parameterType="Board">
 				UPDATE BOARD SET
 				BOARD_STATUS = 'N'
 				WHERE BOARD_NO = #{boardNo}
-		</delete>
+		</update>
 		 <!-- 답글이 있는 게시글 삭제 sql -->
 		<update id="deleteReplyBoard" parameterType="Board">
 				UPDATE BOARD SET 
@@ -389,12 +391,27 @@
 				WHERE BOARD_NO = #{boardNo}
 		</update>
 		
-		<select id="selectGroupCount" parameterType="_int" resultType="string">
-			SELECT BOARD_NO FROM BOARD
+<!-- 		
+ 		삭제할 게시글이 답글이 있는지 확인
+		<select id="selectGroupCount" parameterType="Board" resultType="_int">
+			SELECT count(*) FROM BOARD
 			WHERE BOARD_GROUP = #{boardGroup}
-			AND BOARD_STEP <![CDATA[ > ]]> #{boardStep}
+			AND BOARD_STEP = #{boardStep} +1
+			AND BOARD_DEPTH = #{boardDepth} + 1
 			AND BOARD_STATUS = 'Y'
 		</select>
+		답글의 게시글 조회순서 업데이트
+		<update id="downStep" parameterType="Board">
+				UPDATE BOARD 
+				SET BOARD_STEP = BOARD_STEP -1
+				WHERE
+					BOARD_DEPTH != 0 AND
+					BOARD_GROUP = #{boardGroup}
+					AND BOARD_STEP > #{boardStep}-1
+					AND BOARD_NO != #{boardNo}
+		</update>	
+ -->		
+
 		
 		
 </mapper>
