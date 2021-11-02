@@ -5,14 +5,18 @@ import java.util.List;
 
 public class Board {
 
+	int boardPK;
+
 	private int boardNo;
+	
 	private String boardTitle;
 	private String memberName;
 	private String categoryName;
 	private int readCount;	
 	private Timestamp createDate;
 	private String boardStatus;
-	
+	private int groupNo;
+
 	private String boardWriter;		// 작성자
 	private String boardPass;		// 비밀번호
 	
@@ -27,6 +31,8 @@ public class Board {
 	
 	// 삽입 시 필요한 필드 추가
 	int boardType;
+	int replyCount;
+
 	private int categoryCode;
 	
 	
@@ -65,15 +71,23 @@ public class Board {
 //		this.boardStep = boardStep;
 //	}
 	
+
+
+	public int getBoardNo() {
+		return boardNo;
+	}
+	
 	public Board(int boardNo, String boardTitle, String categoryName, int readCount, Timestamp createDate,
-			String boardWriter, String boardPass, int boardGroup, int boardDepth, int boardStep, String boardContent,
-			Timestamp modifyDate, int boardType, String boardStatus) {
+			String boardStatus, int groupNo, String boardWriter, String boardPass, int boardGroup, int boardDepth,
+			int boardStep, String boardContent, Timestamp modifyDate, int boardType, int replyCount) {
 		super();
 		this.boardNo = boardNo;
 		this.boardTitle = boardTitle;
 		this.categoryName = categoryName;
 		this.readCount = readCount;
 		this.createDate = createDate;
+		this.boardStatus = boardStatus;
+		this.groupNo = groupNo;
 		this.boardWriter = boardWriter;
 		this.boardPass = boardPass;
 		this.boardGroup = boardGroup;
@@ -82,14 +96,9 @@ public class Board {
 		this.boardContent = boardContent;
 		this.modifyDate = modifyDate;
 		this.boardType = boardType;
-		this.boardStatus = boardStatus;
+		this.replyCount = replyCount;
 	}
 
-	public int getBoardNo() {
-		return boardNo;
-	}
-
-	
 	public void setBoardNo(int boardNo) {
 		this.boardNo = boardNo;
 	}
@@ -257,15 +266,42 @@ public class Board {
 		this.boardStatus = boardStatus;
 	}
 
+	public int getGroupNo() {
+		return groupNo;
+	}
+
+	public void setGroupNo(int groupNo) {
+		this.groupNo = groupNo;
+	}
+
+	public int getReplyCount() {
+		return replyCount;
+	}
+
+	public void setReplyCount(int replyCount) {
+		this.replyCount = replyCount;
+	}
+
+	public int getBoardPK() {
+		return boardPK;
+	}
+
+	public void setBoardPK(int boardPK) {
+		this.boardPK = boardPK;
+	}
+
 	@Override
 	public String toString() {
 		return "Board [boardNo=" + boardNo + ", boardTitle=" + boardTitle + ", memberName=" + memberName
 				+ ", categoryName=" + categoryName + ", readCount=" + readCount + ", createDate=" + createDate
-				+ ", boardStatus=" + boardStatus + ", boardWriter=" + boardWriter + ", boardPass=" + boardPass
-				+ ", boardGroup=" + boardGroup + ", boardDepth=" + boardDepth + ", boardStep=" + boardStep
-				+ ", boardContent=" + boardContent + ", memberNo=" + memberNo + ", modifyDate=" + modifyDate
-				+ ", atList=" + atList + ", boardType=" + boardType + ", categoryCode=" + categoryCode + "]";
+				+ ", boardStatus=" + boardStatus + ", groupNo=" + groupNo + ", boardWriter=" + boardWriter
+				+ ", boardPass=" + boardPass + ", boardGroup=" + boardGroup + ", boardDepth=" + boardDepth
+				+ ", boardStep=" + boardStep + ", boardContent=" + boardContent + ", memberNo=" + memberNo
+				+ ", modifyDate=" + modifyDate + ", atList=" + atList + ", boardType=" + boardType + ", replyCount="
+				+ replyCount + ", categoryCode=" + categoryCode + "]";
 	}
+
+
 
 
 

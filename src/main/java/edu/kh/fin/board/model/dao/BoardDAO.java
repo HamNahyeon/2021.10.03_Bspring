@@ -141,13 +141,14 @@ public class BoardDAO {
 			// 얕은 복사로 전달한 board에 추가했음
 			
 			if(result > 0) {
-				int depth = sqlSession.update("boardMapper.updateDepth", board);
-				
-				if(depth > 0) {
 					return board.getBoardNo();
-				}else {
-					return 0;
-				}
+//				int depth = sqlSession.update("boardMapper.updateDepth", board);
+//				
+//				if(depth > 0) {
+//					return board.getBoardNo();
+//				}else {
+//					return 0;
+//				}
 			}else {
 				return 0;
 			}
@@ -224,13 +225,13 @@ public class BoardDAO {
 		return sqlSession.selectOne("boardMapper.selectBoardGroup", boardNo);
 	}
 
-	/**
-	 * @param boardGroup
-	 * @return
-	 */
-	public int updateDepth(int boardGroup) {
-		return sqlSession.update("boardMapper.updateDepth", boardGroup);
-	}
+//	/**
+//	 * @param boardGroup
+//	 * @return
+//	 */
+//	public int updateDepth(int boardGroup) {
+//		return sqlSession.update("boardMapper.updateDepth", boardGroup);
+//	}
 
 	/** step번호 업데이트
 	 * @param boardGroup
@@ -252,8 +253,8 @@ public class BoardDAO {
 	 * @param board
 	 * @return
 	 */
-	public List<Board> selectGroupCount(Board boardGroup) {
-		return sqlSession.selectList("boardMapper.selectBoardGroup", boardGroup);
+	public int selectGroupCount(Board board) {
+		return sqlSession.selectOne("boardMapper.selectGroupCount", board);
 	}
 
 	/** 답글이 있는 게시글 삭제
@@ -263,6 +264,16 @@ public class BoardDAO {
 	public int deleteReplyBoard(Board board) {
 		return sqlSession.update("boardMapper.deleteReplyBoard", board);
 	}
+
+	/** 답글이 없을경우 게시글업데이트
+	 * @param board
+	 * @return
+	 */
+	public int updateBoardStatus(Board board) {
+		return sqlSession.update("boardMapper.updateBoardStatus", board);
+	}
+
+
 
 
 }

@@ -94,7 +94,7 @@ ime-mode:active;
 
             <div class="form-inline mb-2">
                <label for="boardWriter" class="input-group-addon mr-3 insert-label">작성자</label>
-               <input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" placeholder="이름은 10글자 이내로 입력해주세요" pattern="[ㄱ-ㅎ가-힣]*"><span style="color:#aaa;" id="wCounter">(0 / 최대 10자)</span>
+               <input type="text" class="form-control" id="boardWriter" name="boardWriter" size="70" placeholder="이름은 10글자 이내로 입력해주세요" pattern="[a-zA-Zㄱ-ㅎ가-힣]*"><span style="color:#aaa;" id="wCounter">(0 / 최대 10자)</span>
             </div>
             
             <div class="form-inline mb-2">

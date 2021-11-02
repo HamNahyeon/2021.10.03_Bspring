@@ -221,6 +221,7 @@ public class BoardServiceImpl implements BoardService {
 			board.setBoardGroup(boardGroup.getBoardGroup());
 			board.setBoardDepth(boardGroup.getBoardDepth());
 			board.setBoardStep(boardGroup.getBoardStep());
+			board.setBoardNo(boardGroup.getBoardNo());
 			System.out.println("boardGroup1 : " + boardGroup);
 
 //					board.setBoardGroup(boardGroup);
@@ -445,7 +446,7 @@ public class BoardServiceImpl implements BoardService {
 		return date + str + ext;
 	}
 
-	// 게시글 삭제
+//	// 게시글 삭제
 //	@Transactional(rollbackFor=Exception.class)
 //	@Override
 //	public int deleteBoard(Board board) {
@@ -471,37 +472,46 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int deleteBoard(Board board) {
 
-
 		Board boardGroup = dao.selectBoardGroup(board.getBoardNo());
 		System.out.println("boardGroup1 : " + boardGroup);
 
 		boardGroup.setBoardGroup(boardGroup.getBoardGroup());
 		boardGroup.setBoardStep(boardGroup.getBoardStep());
+		boardGroup.setGroupNo(boardGroup.getGroupNo());
 		
 		System.out.println("boardGroup2 : " + boardGroup);
-		
-		List<Board> selectGroupCount = dao.selectGroupCount(boardGroup);
-		
+		int selectGroupCount = dao.selectGroupCount(board);
 		System.out.println("boardGroup3 : " + boardGroup);
 		System.out.println("selectGroupCount : " + selectGroupCount);
 
 		int result = 0;
-		System.out.println("size : " + selectGroupCount.size());
-		if (selectGroupCount.size() != 1) {
+		if(selectGroupCount > 0) {
 			result = dao.deleteReplyBoard(board);
 			return result;
-		} else {
-			// String savePwd = dao.selectPassword( board.getBoardNo() );
-			// System.out.println("savePwd : " + savePwd);
-			// System.out.println(board.getBoardNo());
-			// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
-			// if( savePwd.equals(currentPass)) {
+		}else {
 			result = dao.deleteBoard(board);
-			// System.out.println("게시글 삭제 결과 ser : " + result);
-			// }
 			return result;
 		}
 	}
+
+//		System.out.println("selectGroupCount : " + selectGroupCount);
+//		if (selectGroupCount != null ) {
+//			result = dao.deleteReplyBoard(board);
+//			return result;
+//		}else {
+//			result = dao.deleteBoard(board);
+//			return result;
+//		}
+//		//} else {
+//			// String savePwd = dao.selectPassword( board.getBoardNo() );
+//			// System.out.println("savePwd : " + savePwd);
+//			// System.out.println(board.getBoardNo());
+//			// 조회한 비밀번호와 입력받은 현재 비밀번호가 일치하는지 확인
+//			// if( savePwd.equals(currentPass)) {
+//			//result = dao.deleteBoard(board);
+//			// System.out.println("게시글 삭제 결과 ser : " + result);
+//			// }
+//			//return result;
 
 	/**
 	 * 삭제용 비밀번호 조회

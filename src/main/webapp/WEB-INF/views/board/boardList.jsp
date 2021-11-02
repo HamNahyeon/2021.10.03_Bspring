@@ -92,9 +92,7 @@
 			<div class="list-wrapper">
 				<table class="table table-hover table-striped my-5" id="list-table">
 					<thead>
-<%-- 					
 						<h6 id="listCount">총 게시글 수 : ${pagination.listCount}</td>
- --%>						
 						<tr>
 							<th>글번호</th>
 							<th>카테고리</th>
@@ -221,10 +219,24 @@
 												
 												<c:choose>
 													<c:when test="${board.boardDepth > 0 }">
-														RE:${board.boardTitle }${board.boardStatus}
+														<c:choose>
+															<c:when test="${board.boardStatus == 'Y'}">
+																RE:${board.boardTitle }
+															</c:when>
+															<c:otherwise>
+																RE:삭제된게시글입니다.
+															</c:otherwise>
+														</c:choose>
 													</c:when>
 													<c:otherwise>
-														${board.boardTitle }${board.boardStatus}
+														<c:choose>
+															<c:when test="${board.boardStatus == 'Y'}">
+																${board.boardTitle }
+															</c:when>
+															<c:otherwise>
+																삭제된게시글입니다.
+															</c:otherwise>
+														</c:choose>
 													</c:otherwise>
 <%-- 													
 													<c:otherwise>
