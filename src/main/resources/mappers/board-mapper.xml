@@ -42,12 +42,15 @@
 				<result property="boardGroup" column="BOARD_GROUP"/>
 				<result property="boardDepth" column="BOARD_DEPTH"/>
 				<result property="boardStep" column="BOARD_STEP"/>
-				
+				<result property="groupNo" column="GROUP_NO"/>
 				
 				<result property="boardContent" column="BOARD_CONTENT"/>
 				<result property="memberNo" column="MEMBER_NO"/>
 				<result property="modifyDate" column="MODIFY_DT"/>
-				
+				<result property="boardStatus" column="BOARD_STATUS"/>
+<!-- 				
+				<result property="replyCount" column="RCNT"/>	
+ -->				
 				<!-- Board VO의 atList필드는
 					  게시글 번호가 일치하는 이미지 정보를 모두 얻어와 List로 저장하는 변수이다.
 					  
@@ -137,14 +140,31 @@
 				)
 		</select>
 		
-		<!-- 게시글 목록 조회 -->	
+		<!-- 게시글 목록 조회 -->
 		<select id="selectBoardList" parameterType="_int" resultMap="board_rm">
 				SELECT * FROM BOARD_LIST
-				WHERE BOARD_STATUS IN  ('Y', 'O')
+				WHERE BOARD_STATUS IN('Y', 'O')
 				AND BOARD_TYPE_NO = #{boardType}
 				ORDER BY BOARD_GROUP DESC, BOARD_STEP
 		</select>
-		
+<!--  	
+		<select id="selectBoardList" parameterType="_int" resultMap="board_rm">
+			SELECT ROWNUM SELECT_NO, A.* FROM BOARD A
+			WHERE BOARD_TYPE_NO = #{boardType} 
+				AND		( BOARD_STATUS ='Y' 
+			    OR      ( 0 <![CDATA[ < ]]> (SELECT COUNT(*) FROM BOARD
+			                        WHERE BOARD_GROUP = (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo})
+			                        AND BOARD_STEP = 1 + (SELECT BOARD_STEP FROM BOARD WHERE BOARD_NO = #{boardNo}) 
+			                        AND BOARD_DEPTH > (SELECT BOARD_DEPTH FROM BOARD WHERE BOARD_NO = #{boardNo})                     
+			                        AND BOARD_STATUS = 'Y')
+			                
+			                AND
+			                1 = (SELECT COUNT(*) FROM BOARD WHERE BOARD_STATUS = 'N' AND BOARD_NO= #{boardNo})
+			                )
+			)
+			ORDER BY BOARD_GROUP DESC, BOARD_STEP
+		</select>
+  -->
 		<!-- 게시글 목록 조회 (검색)-->	
 		<select id="selectSearchList" parameterType="Search" resultMap="board_rm">
 				SELECT * FROM BOARD_LIST
@@ -182,7 +202,7 @@
 		<!-- 게시글 상세조회
 			   + 해당 게시글에 첨부된 이미지 목록도 조회 -->
 		<select id="selectBoard" parameterType="_int" resultMap="board_rm">
-				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,
+				SELECT BOARD_NO, CATEGORY_NM, BOARD_TITLE, BOARD_CONTENT, BOARD_WRITER,GROUP_NO,
 				READ_COUNT, CREATE_DT, MODIFY_DT, BOARD_TYPE_NO, BOARD_PASS, BOARD_GROUP, BOARD_DEPTH, BOARD_STEP, BOARD_STATUS
 				FROM BOARD
 				JOIN CATEGORY USING(CATEGORY_CD)
@@ -222,7 +242,7 @@
 				</selectKey>
 				INSERT INTO BOARD VALUES
 				(#{boardNo}, #{boardTitle}, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
-				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardNo}, DEFAULT, DEFAULT )
+				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardNo}, DEFAULT, DEFAULT, DEFAULT )
 		</insert>
 		
 		<!-- 답글 작성 -->
@@ -250,10 +270,9 @@
 		<insert id="insertReply" parameterType="Board" useGeneratedKeys="true">
 		
 				<!-- (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo}) -->
-				<selectKey keyProperty="boardNo" resultType="_int" order="BEFORE">
+				<selectKey keyProperty="boardPK" resultType="_int" order="BEFORE">
 						SELECT SEQ_BNO.NEXTVAL FROM DUAL
 				</selectKey>
-
 <!-- 				
 			    <selectKey keyProperty="board_re_ref" resultType="_int"  order="BEFORE">
 			        SELECT BOARD_DEPTH(MAX(BOARD_DEPTH), 0) + 1 
@@ -261,11 +280,11 @@
     			</selectKey>
  -->   			
 				INSERT INTO BOARD VALUES
-				(#{boardNo}, #{boardTitle}
+				(#{boardPK}, #{boardTitle}
 				, #{boardContent}, DEFAULT, DEFAULT, DEFAULT, DEFAULT,
 				#{categoryCode}, #{boardType}, #{boardWriter}, #{boardPass}, #{boardGroup}, 
 				#{boardDepth} + 1, 
-				#{boardStep}
+				#{boardStep}, #{boardNo}
 				)
 		</insert>
 
@@ -278,22 +297,23 @@
 			SET BOARD_GROUP = #{boardNo}
 			WHERE BOARD_NO = #{boardNo}
 		</update>
-		
+<!-- 		
 		<update id="updateDepth" parameterType="Board">
 			UPDATE BOARD 
 			SET BOARD_DEPTH = #{boardDepth} + 1
 			WHERE BOARD_NO = #{boardNo}
 		</update>
-		
+ -->		
 		<update id="updateStep" parameterType="Board">
-				UPDATE BOARD 
-				SET BOARD_STEP = BOARD_STEP + 1 
-				WHERE
-					BOARD_DEPTH != 0 AND
-					BOARD_GROUP = #{boardGroup}
-					AND BOARD_STEP > #{boardStep}-1
-					AND BOARD_NO != #{boardNo}
+			UPDATE BOARD 
+			SET BOARD_STEP = BOARD_STEP + 1 
+			WHERE
+				BOARD_DEPTH != 0 AND
+				BOARD_GROUP = #{boardGroup}
+				AND BOARD_STEP > #{boardStep}-1
+				AND BOARD_NO != #{boardNo}
 		</update>	
+
 		
 		<!-- 파일 정보 삽입(List) -->
 		<!-- parameterType="java.util.List" 원래 경로가 있지만 별칭이 원래 지정되어있음 -->
@@ -377,26 +397,63 @@
 		 -->
 		 
 		 <!-- 게시글 삭제 sql -->
-		<delete id="deleteBoard" parameterType="Board">
+<!-- 		 
+		<update id="deleteBoard" parameterType="Board">
 				UPDATE BOARD SET
-				BOARD_STATUS = 'N'
+				BOARD_STATUS='N'
+				WHERE BOARD_NO = #{boardNo}
+				OR (
+				0 = (SELECT COUNT(*) FROM BOARD
+                        WHERE BOARD_GROUP = (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo})
+                        AND BOARD_STEP = 1 + (SELECT BOARD_STEP FROM BOARD WHERE BOARD_NO = #{boardNo}) 
+                        AND BOARD_DEPTH > (SELECT BOARD_DEPTH FROM BOARD WHERE BOARD_NO = #{boardNo})                     
+                        AND BOARD_STATUS = 'Y'
+				)
+		</update>
+ -->		
+<!-- 		
+		<delete id="deleteBoard" parameterType="Board">
+				DELETE FROM BOARD
 				WHERE BOARD_NO = #{boardNo}
 		</delete>
+ -->	
+ 	
+		<update id="deleteBoard" parameterType="Board">
+				UPDATE BOARD SET 
+				BOARD_STATUS = 'N'
+				WHERE BOARD_NO = #{boardNo}
+		</update>
+		
 		 <!-- 답글이 있는 게시글 삭제 sql -->
 		<update id="deleteReplyBoard" parameterType="Board">
 				UPDATE BOARD SET 
 				BOARD_STATUS = 'O'
 				WHERE BOARD_NO = #{boardNo}
+				AND 0 <![CDATA[ < ]]> (SELECT COUNT(*) FROM BOARD WHERE GROUP_NO = #{boardNo} AND BOARD_STATUS = 'Y')
 		</update>
-		
-		<select id="selectGroupCount" parameterType="_int" resultType="string">
-			SELECT BOARD_NO FROM BOARD
-			WHERE BOARD_GROUP = #{boardGroup}
-			AND BOARD_STEP <![CDATA[ > ]]> #{boardStep}
-			AND BOARD_STATUS = 'Y'
+<!-- 		
+		<update id="deleteReplyBoard" parameterType="Board">
+				UPDATE BOARD SET 
+				BOARD_STATUS = 'N'
+				WHERE BOARD_NO = #{boardNo}
+		</update>
+ -->		
+		<select id="selectGroupCount" parameterType="_int" resultType="int">
+			SELECT COUNT(*) FROM BOARD_LIST
+			WHERE GROUP_NO = (SELECT GROUP_NO FROM BOARD WHERE BOARD_NO = #{boardNo} AND BOARD_STATUS = 'Y') AND BOARD_NO != #{boardNo}
 		</select>
-		
-		
+<!-- 	 
+		<select id="selectGroupCount" parameterType="Board" resultType="int">
+			<![CDATA[ 
+				SELECT COUNT(*) FROM BOARD
+				WHERE 
+					BOARD_TYPE_NO = #{boardType} AND BOARD_STATUS = 'Y'
+					AND BOARD_GROUP = (SELECT BOARD_GROUP FROM BOARD WHERE BOARD_NO = #{boardNo})
+					AND BOARD_STEP = 1 + (SELECT BOARD_STEP FROM BOARD WHERE BOARD_NO = #{boardNo}) 
+					AND BOARD_DEPTH > (SELECT BOARD_DEPTH FROM BOARD WHERE BOARD_NO = #{boardNo})                     
+			 ]]>
+		</select>
+ -->		
 </mapper>
 
 
