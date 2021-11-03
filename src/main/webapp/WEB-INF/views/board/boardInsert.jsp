@@ -11,6 +11,7 @@
     width: 80px;
     line-height: 40px
   }
+/*  
   .boardImg{
      cursor : pointer;
       width: 200px;
@@ -35,6 +36,7 @@
    #fileArea{
       display : none;
    }
+ */   
 input[type=password] {
    
 </style>
@@ -108,43 +110,7 @@ ime-mode:active;
             </div>
 
             <hr>
-<!-- 
-            <div class="form-inline mb-2">
-               <label class="input-group-addon mr-3 insert-label">썸네일</label>
-               <div class="boardImg thubnail" id="titleImgArea">
-                  <img id="titleImg">
-               </div>
-            </div>
-
-            <div class="form-inline mb-2">
-               <label class="input-group-addon mr-3 insert-label">업로드<br>이미지</label>
-               <div class="mr-2 boardImg" id="contentImgArea1">
-                  <img id="contentImg1">
-               </div>
-
-               <div class="mr-2 boardImg" id="contentImgArea2">
-                  <img id="contentImg2">
-               </div>
-
-               <div class="mr-2 boardImg" id="contentImgArea3">
-                  <img id="contentImg3">
-               </div>
-            </div>
-
-
-            ***** 파일 업로드 하는 부분 *****
-            <div id="fileArea">
-               name 속성값(images)을 동일하게 지정 
-                  -> @RequestParam을 이용하여 List로 파라미터를 전달받을 수 있음. 
-                  
-                  accept="image/*" 이미지 파일만 선택할 수 있도록하는 속성
-                  
-               <input type="file" id="img0" name="images" onchange="LoadImg(this,0)" accept="image/*"> 
-               <input type="file" id="img1" name="images" onchange="LoadImg(this,1)" accept="image/*"> 
-               <input type="file" id="img2" name="images" onchange="LoadImg(this,2)" accept="image/*"> 
-               <input type="file" id="img3" name="images" onchange="LoadImg(this,3)" accept="image/*">
-            </div>
- -->
+            
             <div class="form-group">
                <div>
                   <label for="content">내용</label>
@@ -152,8 +118,13 @@ ime-mode:active;
                <textarea class="form-control" id="boardContent" name="boardContent" rows="15"  style="resize: none;"></textarea>
                <span style="color:#aaa;" id="cCounter">(0 / 최대 300자)</span>
             </div>
-
-
+            
+   			<!-- 파일 업로드하는 부분 -->
+			<div class="form-inline mb-2">
+			   <label class="input-group-addon mr-3 insert-label">파일업로드</label>
+			   <input type="file" id="img0" name="images" onchange="LoadImg(this,0)" /> <!--  accept="image/*" -->
+			</div>
+			
             <hr class="mb-4">
 
             <div class="text-center">

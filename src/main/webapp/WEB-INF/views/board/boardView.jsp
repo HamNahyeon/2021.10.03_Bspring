@@ -199,7 +199,41 @@ ${board}
 				
 
 				<hr>
-				 
+				
+								
+				
+					<!-- 이미지 출력 -->
+					<c:forEach items="${board.atList}" var="at">
+						<c:choose>
+							<c:when test="${at.fileLevel == 0 && !empty at.fileName}">
+								<c:set var="img0" value="${contextPath}/${at.filePath}${at.fileName}"/>
+							</c:when>
+							<c:when test="${at.fileLevel == 1 && !empty at.fileName}">
+								<c:set var="img1" value="${contextPath}/${at.filePath}${at.fileName}"/>
+							</c:when>
+							<c:when test="${at.fileLevel == 2 && !empty at.fileName}">
+								<c:set var="img2" value="${contextPath}/${at.filePath}${at.fileName}"/>
+							</c:when>
+							<c:when test="${at.fileLevel == 3 && !empty at.fileName}">
+								<c:set var="img3" value="${contextPath}/${at.filePath}${at.fileName}"/>
+							</c:when>
+						</c:choose>
+					</c:forEach>
+					
+					
+					<div class="form-inline mb-2">
+						<label class="input-group-addon mr-3 insert-label">첨부파일</label>
+						<div class="boardImg thubnail" id="titleImgArea">
+							
+							<!-- img0 변수가 만들어진 경우 -->
+							<c:if test="${!empty img0}"> 
+								<img id="titleImg" src="${img0}">
+							</c:if>
+								
+						</div>
+					</div>
+				
+				<hr>
 				
 				<div>
 					
@@ -248,20 +282,12 @@ ${board}
 	</div>
 	<jsp:include page="../common/footer.jsp"></jsp:include>
 	
-	
 	<form action="#" method="POST" name="requestForm">
 		<input type="hidden" name="boardNo" value="${board.boardNo}">
 		<input type="hidden" name="cp" value="${param.cp}">
 		<input type="hidden" name="type" value="${param.type}">
 		<input type="hidden" name="currentPass" value="#currentPass">
 	</form>
-<%-- 	
-	<form action="#" method="POST" name="requestForm">
-		<input type="hidden" name="boardNo" value="${board.boardNo}">
-		<input type="hidden" name="cp" value="${param.cp}">
-		<input type="hidden" name="type" value="${param.type}">
-	</form>
- --%>	
 	
 	<script>
 		function fnRequest(addr){
