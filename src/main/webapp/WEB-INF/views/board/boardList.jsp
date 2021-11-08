@@ -64,8 +64,11 @@
 #listCount{
 	float:right;
 }
-#insertList{
+#insertList, #excelDown{
 	margin-right:10px;
+}
+#buttonArea{
+	height : 30px;
 }
 /* 
 .table > th, .boardWriter, .readCount, . createDate, .boardNo, .boardTitle{
@@ -317,8 +320,11 @@
  --%>			
 				<%-- <button type="button" class="btn btn-primary float-right" id="insertBtn"
 				 onclick="location.href='../board2/insertForm?type=${pagination.boardType}';">글쓰기</button> --%>
-				<a  class="btn btn-primary float-right" id="insertBtn" href='insert' >글쓰기</a>
-				<a  class="btn btn-primary float-right" id="insertList" href="${contextPath}/board/1/list">전체 게시글조회</a>
+				<div id="buttonArea">
+					<a  class="btn btn-primary float-right" id="insertBtn" href='insert' >글쓰기</a>
+					<a  class="btn btn-primary float-right" id="excelDown" href='excelDown' >엑셀다운로드</a>
+					<a  class="btn btn-primary float-right" id="insertList" href="${contextPath}/board/1/list">전체 게시글조회</a>
+				</div>
 
 <%-- 				
 			</c:if>

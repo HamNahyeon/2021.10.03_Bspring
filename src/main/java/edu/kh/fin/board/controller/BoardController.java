@@ -98,6 +98,19 @@ public class BoardController {
 		return "board/boardList";
 	}
 	
+	// 리스트 엑셀다운
+	@RequestMapping(value="{boardType}/excelDown", method=RequestMethod.GET)
+	public String excelDown(Model model) {
+		
+		// DB에서 CATEGORY테이블 내용을 모두 조회 해오기
+		List<Category> category = service.selectCategory();
+		
+		model.addAttribute("category", category); 
+		// 요청 위임 페이지에서 사용할 수 있도록 데이터 전달
+		
+		return "board/boardInsert";
+	}
+	
 	// 게시글 상세조회 
 	@RequestMapping("{boardType}/{boardNo}")
 	public String boardView(@PathVariable("boardType")int boardType,

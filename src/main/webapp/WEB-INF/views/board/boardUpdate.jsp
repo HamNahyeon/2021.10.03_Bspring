@@ -183,15 +183,49 @@
                <input type="file" id="img3" name="images" onchange="LoadImg(this,3)" accept="image/*">
             </div>
  --%>
+ 
 
             <div class="form-group">
                <div>
                   <label for="boardContent">내용</label>
                </div>
                <textarea class="form-control" id="boardContent" name="boardContent" rows="15" style="resize: none;">${board.boardContent}</textarea><span style="color:#aaa;" id="cCounter">(0 / 최대 300자)</span>
-               <!-- textarea에 값을 넣을 때는 한줄로 길게 작성해야 함 -> why? 코드상의 공백이 그대로 보여짐.. 그야말로 진짜 개행 -->
             </div>
 
+            <hr>
+
+            <c:forEach items="${board.atList}" var="at">
+            	<c:set var="img0" value="${contextPath}/${at.filePath}${at.fileName}"/>
+            </c:forEach>
+            
+			<div class="form-inline mb-2">
+				<label class="input-group-addon mr-3 insert-label">첨부파일</label>
+					
+					<c:forEach items="${board.atList}" var="at">
+
+		              <div class="boardImg thubnail" id="titleImgArea">
+		                 <!-- img0 변수가 만들어진 경우 -->
+		                 
+		                 <c:if test="${!empty img0 }">
+		                 	<label img id="titleImg" class="input-group-addon mr-3 insert-label">${at.fileName}</label>
+		                 </c:if>
+		                 <c:if test="${empty img0 }">
+		                 	<label img id="titleImg" class="input-group-addon mr-3 insert-label"> </label>
+		                 </c:if>
+<%-- 		                 
+   		                 <c:if test="${!empty img0 }">  <img id="titleImg" src="${img0}"> </c:if>
+		                 <c:if test="${empty img0 }">  <img id="titleImg"> </c:if>
+ --%>		                 
+		                 <span class="deleteImg">x</span>
+		              </div>
+					</c:forEach>
+			</div>
+
+            <div id="fileArea">
+               <!-- <input type="file" id="img0" name="images" onchange="LoadImg(this,0)" accept="image/*"> --> 
+   			   <input type="file" id="img0" name="images" onchange="LoadImg(this,0)" />
+            </div>
+            
             <hr class="mb-4">
 
             <div class="text-center">
@@ -409,7 +443,7 @@
          
          // console.log( $(this).prev().attr("src") ); // img의 src속성 값 반환
          
-         if( $(this).prev().attr("src") != undefined ){ // 이미지가 있을 경우에만 x버튼 동작을 취하라
+         if( $(this).prev().attr("val") != undefined ){ // 이미지가 있을 경우에만 x버튼 동작을 취하라
             // 3) 4개의 .deleteImg 중 몇 번 째 인덱스의 x버튼이 눌러졌는지 확인
             // 왜? index == 0,1,2,3으로 존재 == fileLevel
             const index = $(this).index(".deleteImg");
@@ -422,7 +456,7 @@
             deleteImages.push(index);
             
             // 5) x버튼이 눌러진 곳의 이미지 삭제
-            $(this).prev().removeAttr("src"); // 클릭한 x버튼의 이전 요소의 속성 중 src제거
+            $(this).prev().removeAttr("val"); // 클릭한 x버튼의 이전 요소의 속성 중 src제거
          }
          
       });

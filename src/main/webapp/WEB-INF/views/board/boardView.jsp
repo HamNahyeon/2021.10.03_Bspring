@@ -17,11 +17,21 @@
 	}
 
 	.boardImg{
-		width : 100%;
 		height: 100%;
-		border : 1px solid #ced4da;
 		position : relative;
 		
+	}
+	#fileDownload, #fileName{
+		float:left;
+	}
+	#fileDownload{
+		margin-left:20px;
+	}
+	#fileName p{
+		justify-content : center;
+		align-items:center;
+		display : flex;
+		line-height: 1.5;
 	}
 	/* 게시글 조회 댓글 영역 제거시 필요 style */
 	.footer{
@@ -57,16 +67,6 @@
 	
 	.board-dateArea{
 		font-size: 14px;
-	}
-	
-	.boardImg {
-		width: 200px;
-		height: 200px;
-	}
-	
-	.thubnail{
-		width: 300px;
-		height: 300px;
 	}
 	
 	.boardImg > img{
@@ -204,33 +204,24 @@ ${board}
 				
 					<!-- 이미지 출력 -->
 					<c:forEach items="${board.atList}" var="at">
-						<c:choose>
-							<c:when test="${at.fileLevel == 0 && !empty at.fileName}">
-								<c:set var="img0" value="${contextPath}/${at.filePath}${at.fileName}"/>
-							</c:when>
-							<c:when test="${at.fileLevel == 1 && !empty at.fileName}">
-								<c:set var="img1" value="${contextPath}/${at.filePath}${at.fileName}"/>
-							</c:when>
-							<c:when test="${at.fileLevel == 2 && !empty at.fileName}">
-								<c:set var="img2" value="${contextPath}/${at.filePath}${at.fileName}"/>
-							</c:when>
-							<c:when test="${at.fileLevel == 3 && !empty at.fileName}">
-								<c:set var="img3" value="${contextPath}/${at.filePath}${at.fileName}"/>
-							</c:when>
-						</c:choose>
+						<c:set var="img0" value="${contextPath}/${at.filePath}${at.fileName}"/>
 					</c:forEach>
 					
 					
 					<div class="form-inline mb-2">
 						<label class="input-group-addon mr-3 insert-label">첨부파일</label>
-						<div class="boardImg thubnail" id="titleImgArea">
 							
-							<!-- img0 변수가 만들어진 경우 -->
-							<c:if test="${!empty img0}"> 
-								<img id="titleImg" src="${img0}">
-							</c:if>
+							<c:forEach items="${board.atList}" var="at">
+								<div id = fileName>
+									<label class="input-group-addon mr-3 insert-label">${at.fileName}</label>
+								</div>
+								<div id="fileDownload" >
+									<a class="btn btn-primary float-right mr-2" 
+									href="${contextPath}/${at.filePath}${at.fileName}" 
+									download="${at.fileName}">파일다운로드</a>
+								</div>
+							</c:forEach>
 								
-						</div>
 					</div>
 				
 				<hr>
